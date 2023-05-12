@@ -1,6 +1,8 @@
 val ktor_version: String by project
 val kotlin_version: String by project
 val logback_version: String by project
+val quartz_version: String by project
+val hoplite_core_version: String by project
 
 plugins {
     kotlin("jvm") version "1.8.21"
@@ -38,6 +40,14 @@ repositories {
 dependencies {
     implementation("io.ktor:ktor-server-core-jvm:$ktor_version")
     implementation("io.ktor:ktor-server-netty-jvm:$ktor_version")
+
+    // Quartz, for CRON
+    implementation("org.quartz-scheduler:quartz:$quartz_version")
+
+    // A boilerplate-free Kotlin config library for loading configuration files as data classes
+    implementation("com.sksamuel.hoplite:hoplite-core:$hoplite_core_version")
+    implementation("com.sksamuel.hoplite:hoplite-yaml:$hoplite_core_version")
+
     implementation("ch.qos.logback:logback-classic:$logback_version")
     testImplementation("io.ktor:ktor-server-tests-jvm:$ktor_version")
     testImplementation("org.jetbrains.kotlin:kotlin-test-junit:$kotlin_version")
