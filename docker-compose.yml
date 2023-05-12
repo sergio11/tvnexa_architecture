@@ -66,6 +66,14 @@ services:
     ports:
       - "8081:80"
 
+  # IPTV Ingestion service
+  iptv_ingestion_service_1:
+    container_name: iptv_ingestion_service_1
+    image: 'ssanchez11/iptv_ingestion_service_1:0.0.1'
+    links:
+      - mariadb
+      - ftp_repository
+
   # IPTV API Service
   iptv_api_service_1:
     container_name: iptv_api_service_1
