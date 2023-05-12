@@ -1,11 +1,11 @@
-package dreamsoftware.com
+package com.dreamsoftware
 
+import com.dreamsoftware.plugins.configureRouting
 import io.ktor.client.request.*
 import io.ktor.client.statement.*
 import io.ktor.server.testing.*
 import kotlin.test.*
 import io.ktor.http.*
-import dreamsoftware.com.plugins.*
 
 class ApplicationTest {
     @Test

@@ -1,55 +1,75 @@
 version: '3.6'
 
-networks:
-  platform_network:
-    ipam:
-      config:
-        - subnet: 192.168.1.0/24
-
-
 # Platform Services
 services:
 
-  api_service:
-    container_name: api_service
-    image: 'ssanchez11/api_service:0.0.1'
-    depends_on:
-      - mongo
-
-  mongo:
-    image: mongo
-    container_name: mongo
-    env_file:
-      - .env
-    restart: always
-    networks:
-      platform_network:
-        ipv4_address: 192.168.1.27
-    environment:
-      - MONGO_INITDB_ROOT_USERNAME=${MONGO_ROOT_USER}
-      - MONGO_INITDB_ROOT_PASSWORD=${MONGO_ROOT_PASSWORD}
-      - MONGO_INITDB_DATABASE=${MONGO_DB}
-
-    # Web-based MongoDB admin interface, written with Node.js and express
-  mongo-express:
-    image: mongo-express
-    container_name: mongo-express
-    env_file:
-      - .env
-    restart: always
-    environment:
-      - ME_CONFIG_MONGODB_SERVER=mongo
-      - ME_CONFIG_MONGODB_PORT=27017
-      - ME_CONFIG_MONGODB_ENABLE_ADMIN=true
-      - ME_CONFIG_MONGODB_AUTH_DATABASE=admin
-      - ME_CONFIG_MONGODB_ADMINUSERNAME=${MONGO_ROOT_USER}
-      - ME_CONFIG_MONGODB_ADMINPASSWORD=${MONGO_ROOT_PASSWORD}
-      - ME_CONFIG_BASICAUTH_USERNAME=${MONGOEXPRESS_LOGIN}
-      - ME_CONFIG_BASICAUTH_PASSWORD=${MONGOEXPRESS_PASSWORD}
-    depends_on:
-      - mongo
-    networks:
-      platform_network:
-        ipv4_address: 192.168.1.28
+  # HAProxy Load Balancer Proxy
+  haproxy:
+    image: haproxytech/haproxy-alpine:2.7
+    container_name: haproxy
+    volumes:
+      - ./haproxy:/usr/local/etc/haproxy:ro
+    links:
+      - iptv_api_service_1
     ports:
-      - "8083:8081"
+      - "9090:9090"
+      - "8404:8404"
+
+  # FTP configuration repository
+  ftp_repository:
+    container_name: ftp_repository
+    image: garethflowers/ftp-server
+    env_file:
+      - .env
+    environment:
+      - FTP_PASS=${FTP_PASS}
+      - FTP_USER=${FTP_USER}
+    volumes:
+      - './ftp/data:/home/thunderotp'
+
+  # MariaDB Image
+  # MariaDB is a community-developed fork of MySQL intended to remain free under the GNU GPL.
+  mariadb:
+    image: mariadb:latest
+    container_name: mariadb
+    restart: always
+    env_file:
+      - .env
+    environment:
+      MYSQL_ALLOW_EMPTY_PASSWORD: "false"
+      # This variable is mandatory and specifies
+      # the password that will be set for the MariaDB root superuser account.
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+      # This variable is optional and allows you to specify the name of a database to be created on image startup.
+      MYSQL_DATABASE: ${MYSQL_DATABASE}
+      MYSQL_USER: ${MYSQL_USER}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
+    tty: true
+    ports:
+      - "3306:3306"
+    volumes:
+      - dbdata:/var/lib/mysql
+      - ./config/mysql:/etc/mysql/conf.d
+
+  # php My Admin
+  phpMyAdmin:
+    image: phpmyadmin/phpmyadmin
+    container_name: phpmyadmin
+    restart: always
+    depends_on:
+      - mariadb
+    environment:
+      PMA_HOST: ${PMA_HOST}
+      PMA_PORT: ${PMA_PORT}
+      PMA_USER: ${PMA_USER}
+      PMA_PASSWORD: ${PMA_PASSWORD}
+    ports:
+      - "8081:80"
+
+  # IPTV API Service
+  iptv_api_service_1:
+    container_name: iptv_api_service_1
+    image: 'ssanchez11/iptv_api_service:0.0.1'
+    links:
+      - mariadb
+      - ftp_repository

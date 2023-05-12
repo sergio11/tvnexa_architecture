@@ -1,4 +1,4 @@
-package dreamsoftware.com.plugins
+package com.dreamsoftware.plugins
 
 import io.ktor.server.plugins.callloging.*
 import org.slf4j.event.*

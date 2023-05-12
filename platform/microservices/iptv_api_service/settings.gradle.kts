@@ -1,0 +1,1 @@
+rootProject.name = "com.dreamsoftware.iptv_api_service"

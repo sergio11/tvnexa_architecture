@@ -1,1 +1,0 @@
-rootProject.name = "dreamsoftware.com.iptv_ingestion"
