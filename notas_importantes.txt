@@ -1,1 +1,4 @@
 https://github.com/prof18/ktor-chuck-norris-sample
+
+https://github.com/prof18/ktor-chuck-norris-sample/blob/main/ktor-2.x/src/main/kotlin/com/prof18/ktor/chucknorris/sample/database/DatabaseFactoryImpl.kt
+https://github.com/sergio11/passwordless_authentication_architecture/blob/main/platform/microservice/src/main/kotlin/com/dreamsoftware/model/AppConfig.kt

@@ -5,6 +5,7 @@ val exposed_version: String by project
 val mysql_connector_version: String by project
 val hikaricp_version: String by project
 val koin_version: String by project
+val hoplite_core_version: String by project
 
 plugins {
     kotlin("jvm") version "1.8.21"
@@ -62,10 +63,13 @@ dependencies {
     implementation("mysql:mysql-connector-java:$mysql_connector_version")
     implementation("com.zaxxer:HikariCP:$hikaricp_version")
 
+    // A boilerplate-free Kotlin config library for loading configuration files as data classes
+    implementation("com.sksamuel.hoplite:hoplite-core:$hoplite_core_version")
+    implementation("com.sksamuel.hoplite:hoplite-yaml:$hoplite_core_version")
+
     // Koin
     implementation("io.insert-koin:koin-ktor:$koin_version")
     implementation("io.insert-koin:koin-logger-slf4j:$koin_version")
-
 
     testImplementation("io.ktor:ktor-server-tests-jvm:$ktor_version")
     testImplementation("org.jetbrains.kotlin:kotlin-test-junit:$kotlin_version")
