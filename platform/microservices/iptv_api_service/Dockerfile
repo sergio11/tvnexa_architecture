@@ -11,8 +11,8 @@ RUN bash gradlew buildFatJar --no-daemon --debug
 # ---- Release ----
 FROM adoptopenjdk/openjdk11:jre-11.0.9.1_1-alpine AS release
 RUN mkdir -p /opt/app
-COPY --from=build /src/build/libs/iptv_service.jar /opt/app/iptv_service.jar
+COPY --from=build /src/build/libs/iptv_api_service.jar /opt/app/iptv_api_service.jar
 COPY --from=build /src/resources/wait-for-it.sh /opt/app/wait-for-it.sh
 WORKDIR /opt/app
 EXPOSE 8080
-CMD ["sh", "-c", "echo 'Launching IPTV service' -- java -jar iptv_service.jar"]
+CMD ["sh", "-c", "echo 'Launching IPTV service' -- java -jar iptv_api_service.jar"]
