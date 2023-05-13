@@ -52,7 +52,7 @@ dependencies {
     implementation("io.ktor:ktor-server-netty-jvm:$ktor_version")
 
     // Import common module
-    project(":iptv_common")
+    implementation(project(":iptv_common"))
 
     // Database
     implementation("org.jetbrains.exposed:exposed-core:$exposed_version")

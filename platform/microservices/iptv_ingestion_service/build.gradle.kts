@@ -42,7 +42,7 @@ dependencies {
     implementation("io.ktor:ktor-server-netty-jvm:$ktor_version")
 
     // Import common module
-    project(":iptv_common")
+    implementation(project(":iptv_common"))
 
     // Quartz, for CRON
     implementation("org.quartz-scheduler:quartz:$quartz_version")
