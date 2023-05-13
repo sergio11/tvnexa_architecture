@@ -41,14 +41,12 @@ dependencies {
     implementation("io.ktor:ktor-server-core-jvm:$ktor_version")
     implementation("io.ktor:ktor-server-netty-jvm:$ktor_version")
 
+    // Import common module
+    project(":iptv_common")
+
     // Quartz, for CRON
     implementation("org.quartz-scheduler:quartz:$quartz_version")
 
-    // A boilerplate-free Kotlin config library for loading configuration files as data classes
-    implementation("com.sksamuel.hoplite:hoplite-core:$hoplite_core_version")
-    implementation("com.sksamuel.hoplite:hoplite-yaml:$hoplite_core_version")
-
-    implementation("ch.qos.logback:logback-classic:$logback_version")
     testImplementation("io.ktor:ktor-server-tests-jvm:$ktor_version")
     testImplementation("org.jetbrains.kotlin:kotlin-test-junit:$kotlin_version")
 }
