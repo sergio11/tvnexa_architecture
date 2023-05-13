@@ -6,8 +6,8 @@ data class AppConfig(
 
 data class DatabaseConfig(
     val driverClass: String,
-    val url: String,
-    val user: String,
-    val password: String,
+    val databaseUrl: String,
+    val connUser: String,
+    val connPassword: String,
     val maxPoolSize: Int
 )

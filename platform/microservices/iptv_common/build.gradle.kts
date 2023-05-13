@@ -4,6 +4,10 @@ val hoplite_core_version: String by project
 val koin_version: String by project
 val commons_net_version: String by project
 val commons_io_version: String by project
+val exposed_version: String by project
+val mysql_connector_version: String by project
+val hikaricp_version: String by project
+val flyway_version: String by project
 
 plugins {
     kotlin("jvm") version "1.8.21"
@@ -34,6 +38,15 @@ dependencies {
     // A boilerplate-free Kotlin config library for loading configuration files as data classes
     api("com.sksamuel.hoplite:hoplite-core:$hoplite_core_version")
     api("com.sksamuel.hoplite:hoplite-yaml:$hoplite_core_version")
+
+    // Database
+    implementation("org.jetbrains.exposed:exposed-core:$exposed_version")
+    implementation("org.jetbrains.exposed:exposed-dao:$exposed_version")
+    implementation("org.jetbrains.exposed:exposed-jdbc:$exposed_version")
+    implementation("org.jetbrains.exposed:exposed-java-time:$exposed_version")
+    implementation("mysql:mysql-connector-java:$mysql_connector_version")
+    implementation("com.zaxxer:HikariCP:$hikaricp_version")
+    implementation("org.flywaydb:flyway-core:$flyway_version")
 
     // https://mvnrepository.com/artifact/commons-net/commons-net
     implementation("commons-net:commons-net:$commons_net_version")
