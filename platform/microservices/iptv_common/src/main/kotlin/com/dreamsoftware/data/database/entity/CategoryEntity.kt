@@ -4,16 +4,15 @@ import org.jetbrains.exposed.dao.id.EntityID
 import org.jetbrains.exposed.dao.id.IdTable
 import org.jetbrains.exposed.sql.Column
 
-object LanguageTable: IdTable<String>(name = "languages") {
-
-    val code = text("code")
+object CategoryTable: IdTable<String>(name = "categories") {
+    val categoryId = text("id")
     val name = text("name")
 
-    override val id: Column<EntityID<String>> = code.entityId()
+    override val id: Column<EntityID<String>> = categoryId.entityId()
     override val primaryKey: PrimaryKey = PrimaryKey(id)
 }
 
-data class LanguageEntity(
-    val code: String,
+data class CategoryEntity(
+    val id: String,
     val name: String
 )

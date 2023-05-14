@@ -19,6 +19,12 @@ class DatabaseFactoryImpl(
         runFlyway(datasource)
     }
 
+    override suspend fun <T> dbExec(
+        block: () -> T
+    ): T = withContext(Dispatchers.IO) {
+        transaction { block() }
+    }
+
     private fun runFlyway(datasource: DataSource) {
         with(Flyway.configure().dataSource(datasource).load()) {
             try {
@@ -30,11 +36,5 @@ class DatabaseFactoryImpl(
             }
             log.info("Flyway migration has finished")
         }
-    }
-
-    suspend fun <T> dbExec(
-        block: () -> T
-    ): T = withContext(Dispatchers.IO) {
-        transaction { block() }
     }
 }

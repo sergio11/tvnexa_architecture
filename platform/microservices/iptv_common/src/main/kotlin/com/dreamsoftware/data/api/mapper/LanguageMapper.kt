@@ -12,9 +12,8 @@ class LanguageMapper: IMapper<LanguageEntity, Language> {
 
     override fun mapList(input: Iterable<LanguageEntity>): Iterable<Language> = input.map(::map)
 
-    override fun mapReverse(output: Language): LanguageEntity = LanguageEntity.new {
-        code = output.code
-        name = output.name
+    override fun mapReverse(output: Language): LanguageEntity = with(output) {
+        LanguageEntity(code, name)
     }
 
     override fun mapReverseList(output: Iterable<Language>): Iterable<LanguageEntity> =
