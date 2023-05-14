@@ -1,12 +1,11 @@
-namespace :iptv do
+task default: %w[iptv:deploy]
 
-	task default: %w[deploy]
+namespace :iptv do
 
 	desc "Authenticating with existing credentials"
 	task :login do
 		puts `docker login 2>&1`
 	end
-
 
 	desc "Cleaning Environment Task"
 	task :cleaning_environment_task do
@@ -70,17 +69,32 @@ namespace :iptv do
 			puts `docker-compose -f ./docker-compose.yml stop 2>&1`
 		end
 
+		task :build_hotspot_image => [:check_docker_task, :login] do
+        			dockerImageName = "ssanchez11/otp_service_hotspot:0.0.1"
+        			microserviceFolder = "./platform/microservice"
+        			dockerFile = "#{microserviceFolder}/Dockerfile_hotspot"
+        			puts "Build Docker Image based on Hotspot at #{microserviceFolder}"
+        			puts `docker build -t #{dockerImageName} -f #{dockerFile} #{microserviceFolder}`
+        			puts `docker images`
+        			puts "Docker image #{dockerImageName} has been created! trying to upload it!"
+        			puts `docker push #{dockerImageName}`
+        		end
+
 		desc "Build Docker Image based on Hotspot JVM"
 		task :build_image => [:check_docker_task, :login] do
-			dockerImageName = "ssanchez11/api_service:0.0.1"
-			puts "Build Docker Image based on Hotspot"
-			puts `docker build -t #{dockerImageName}`
+		    microservicesFolder = "./platform/microservices"
+			iptvApiServiceDockerImage = "ssanchez11/iptv_api_service:0.0.1"
+			iptvIngestionServiceDockerImage = "ssanchez11/iptv_ingestion_service:0.0.1"
+			puts "Build Docker Image #{iptvApiServiceDockerImage} based on Hotspot"
+			puts `docker build -t #{iptvApiServiceDockerImage} -f #{microservicesFolder}/iptv_api_service/Dockerfile #{microservicesFolder}`
+			puts "Docker image #{iptvApiServiceDockerImage} has been created! trying to upload it!"
+			puts `docker push #{iptvApiServiceDockerImage}`
+			puts "Build Docker Image #{iptvIngestionServiceDockerImage} based on Hotspot"
+            puts `docker build -t #{iptvIngestionServiceDockerImage} -f #{microservicesFolder}/iptv_ingestion_service/Dockerfile #{microservicesFolder}`
+            puts "Docker image #{iptvIngestionServiceDockerImage} has been created! trying to upload it!"
+            puts `docker push #{iptvIngestionServiceDockerImage}`
 			puts `docker images`
-			puts "Docker image #{dockerImageName} has been created! trying to upload it!"
-			puts `docker push #{dockerImageName}`
 		end
-
-
 	end
 
 
