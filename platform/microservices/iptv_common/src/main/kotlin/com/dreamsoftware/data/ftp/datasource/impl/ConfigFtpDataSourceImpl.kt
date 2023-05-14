@@ -1,31 +1,27 @@
-package com.dreamsoftware.service.impl
+package com.dreamsoftware.data.ftp.datasource.impl
 
-import com.dreamsoftware.service.IFtpService
+import com.dreamsoftware.data.ftp.datasource.IConfigFtpDataSource
+import com.dreamsoftware.data.ftp.model.FtpConfig
 import org.apache.commons.io.FileUtils
 import org.apache.commons.net.ftp.FTPClient
 import org.apache.commons.net.ftp.FTPReply
 import java.io.File
 import java.nio.file.Files
 
-class FtpServiceImpl(
-    private val ftpClient: FTPClient
-): IFtpService {
+class ConfigFtpDataSourceImpl(
+    private val ftpClient: FTPClient,
+    private val ftpConfig: FtpConfig
+): IConfigFtpDataSource {
 
-    private companion object {
-        const val FTP_HOSTNAME = "ftp_repository"
-        const val FTP_USER = "thunderotp"
-        const val FTP_PASSWORD = "thunderotp00"
-    }
-
-    override fun getFile(fileName: String, fileExt: String): String {
+    override suspend fun getConfig(): String = with(ftpConfig) {
         var downloadedFile: File? = null
         with(ftpClient) {
             try {
-                println("try to connect to FTP Host: $FTP_HOSTNAME")
-                connect(FTP_HOSTNAME)
+                println("try to connect to FTP Host: $hostname")
+                connect(hostname)
                 enterLocalPassiveMode()
-                login(FTP_USER, FTP_PASSWORD)
-                if(!FTPReply.isPositiveCompletion(replyCode)) {
+                login(user, password)
+                if (!FTPReply.isPositiveCompletion(replyCode)) {
                     disconnect()
                 }
                 println("try to download file ${fileName}.${fileExt}")
@@ -38,12 +34,12 @@ class FtpServiceImpl(
                 ex.printStackTrace()
                 println("Ex occurred -> ${ex.message}")
             } finally {
-                if(isConnected) {
+                if (isConnected) {
                     disconnect()
                 }
             }
             println("Downloaded file path -> ${downloadedFile?.absolutePath}")
-            return downloadedFile?.absolutePath ?: throw IllegalStateException("File can not be downloaded")
+            downloadedFile?.absolutePath ?: throw IllegalStateException("File can not be downloaded")
         }
     }
 }

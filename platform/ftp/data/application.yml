@@ -6,3 +6,9 @@ appConfig:
     connPassword: dev,
     maxPoolSize: 10
   }
+  iptvOrgConfig: {
+      countriesEndpoint: "https://iptv-org.github.io/api/countries.json",
+      subdivisionsEndpoint: "https://iptv-org.github.io/api/subdivisions.json",
+      languagesEndpoint: "https://iptv-org.github.io/api/languages.json",
+      categoriesEndpoint: "https://iptv-org.github.io/api/categories.json"
+  }
