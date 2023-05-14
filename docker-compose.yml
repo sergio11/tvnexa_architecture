@@ -1,5 +1,9 @@
 version: '3.6'
 
+volumes:
+  mariadb_data:
+    driver: local
+
 # Platform Services
 services:
 
@@ -25,7 +29,7 @@ services:
       - FTP_PASS=${FTP_PASS}
       - FTP_USER=${FTP_USER}
     volumes:
-      - './ftp/data:/home/thunderotp'
+      - ./ftp/data:$FTP_HOME_USER_PATH
 
   # MariaDB Image
   # MariaDB is a community-developed fork of MySQL intended to remain free under the GNU GPL.
@@ -48,7 +52,7 @@ services:
     ports:
       - "3306:3306"
     volumes:
-      - dbdata:/var/lib/mysql
+      - mariadb_data:/var/lib/mysql
       - ./config/mysql:/etc/mysql/conf.d
 
   # php My Admin
@@ -69,7 +73,7 @@ services:
   # IPTV Ingestion service
   iptv_ingestion_service_1:
     container_name: iptv_ingestion_service_1
-    image: 'ssanchez11/iptv_ingestion_service_1:0.0.1'
+    image: ssanchez11/iptv_ingestion_service:0.0.1
     links:
       - mariadb
       - ftp_repository
@@ -77,7 +81,7 @@ services:
   # IPTV API Service
   iptv_api_service_1:
     container_name: iptv_api_service_1
-    image: 'ssanchez11/iptv_api_service:0.0.1'
+    image: ssanchez11/iptv_api_service:0.0.1
     links:
       - mariadb
       - ftp_repository
