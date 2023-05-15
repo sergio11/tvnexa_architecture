@@ -7,8 +7,16 @@ import com.dreamsoftware.data.database.datasource.language.ILanguageDatabaseData
 import com.dreamsoftware.data.database.entity.LanguageEntity
 import com.dreamsoftware.data.database.entity.LanguageTable
 import org.jetbrains.exposed.sql.ResultRow
+import org.jetbrains.exposed.sql.statements.UpdateBuilder
 
 internal class LanguageDatabaseDataSourceImpl(
     database: IDatabaseFactory,
     mapper: IOneSideMapper<ResultRow, LanguageEntity>
-): SupportDatabaseDataSource<LanguageEntity, String>(database, mapper, LanguageTable), ILanguageDatabaseDataSource
+): SupportDatabaseDataSource<LanguageEntity, String>(database, mapper, LanguageTable), ILanguageDatabaseDataSource {
+
+    override fun UpdateBuilder<Int>.onMapEntityToSave(entity: LanguageEntity) = with(entity){
+        this@onMapEntityToSave[LanguageTable.name] = name
+        this@onMapEntityToSave[LanguageTable.code] = code
+    }
+
+}
