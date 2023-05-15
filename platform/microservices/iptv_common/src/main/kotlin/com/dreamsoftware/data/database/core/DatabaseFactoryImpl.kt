@@ -8,7 +8,7 @@ import org.jetbrains.exposed.sql.transactions.transaction
 import org.slf4j.LoggerFactory
 import javax.sql.DataSource
 
-class DatabaseFactoryImpl(
+internal class DatabaseFactoryImpl(
     private val datasource: DataSource
 ): IDatabaseFactory {
 
@@ -22,6 +22,9 @@ class DatabaseFactoryImpl(
     override suspend fun <T> dbExec(
         block: () -> T
     ): T = withContext(Dispatchers.IO) {
+        if(!isConnected()) {
+            Database.connect(datasource)
+        }
         transaction { block() }
     }
 
@@ -35,6 +38,14 @@ class DatabaseFactoryImpl(
                 throw e
             }
             log.info("Flyway migration has finished")
+        }
+    }
+
+    private fun isConnected() = transaction {
+        try {
+            !connection.isClosed
+        } catch (e: Exception) {
+            false
         }
     }
 }

@@ -1,8 +1,9 @@
 package com.dreamsoftware.di
 
-import com.dreamsoftware.tasks.core.manager.JobSchedulerManager
-import com.dreamsoftware.tasks.core.manager.JobSchedulerManagerImpl
+import com.dreamsoftware.tasks.core.manager.IJobSchedulerManager
+import com.dreamsoftware.tasks.core.manager.IJobSchedulerManagerImpl
 import com.dreamsoftware.model.DatabaseConfig
+import com.dreamsoftware.tasks.IngestLanguagesJob
 import com.dreamsoftware.tasks.core.JobFactoryImpl
 import org.koin.core.qualifier.named
 import org.koin.dsl.module
@@ -41,7 +42,9 @@ val jobsModule = module {
             it.setJobFactory(get())
         }
     }
-    single<JobSchedulerManager> {
-        JobSchedulerManagerImpl(get())
+    single<IJobSchedulerManager> {
+        IJobSchedulerManagerImpl(get())
     }
+
+    factory { IngestLanguagesJob(get(), get()) }
 }
