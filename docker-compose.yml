@@ -12,7 +12,7 @@ services:
     image: haproxytech/haproxy-alpine:2.7
     container_name: haproxy
     volumes:
-      - ./haproxy:/usr/local/etc/haproxy:ro
+      - ./platform/haproxy:/usr/local/etc/haproxy:ro
     links:
       - iptv_api_service_1
     ports:
@@ -28,8 +28,11 @@ services:
     environment:
       - FTP_PASS=${FTP_PASS}
       - FTP_USER=${FTP_USER}
+    ports:
+      - "21:21"
+      - "22:22"
     volumes:
-      - ./ftp/data:$FTP_HOME_USER_PATH
+      - ./platform/ftp/data:$FTP_HOME_USER_PATH
 
   # MariaDB Image
   # MariaDB is a community-developed fork of MySQL intended to remain free under the GNU GPL.
@@ -85,3 +88,6 @@ services:
     links:
       - mariadb
       - ftp_repository
+    ports:
+      - "6969:6969"
+      - "6963:6963"
