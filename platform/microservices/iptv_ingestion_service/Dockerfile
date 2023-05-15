@@ -13,8 +13,8 @@ RUN bash gradlew buildFatJar --no-daemon
 # ---- Release ----
 FROM adoptopenjdk/openjdk11:jre-11.0.9.1_1-alpine AS release
 RUN mkdir -p /opt/app
-COPY --from=build /src/build/libs/iptv_ingestion_service.jar /opt/app/iptv_ingestion_service.jar
-COPY --from=build /src/resources/wait-for-it.sh /opt/app/wait-for-it.sh
+COPY --from=build /src/iptv_ingestion_service/build/libs/iptv_ingestion_service.jar /opt/app/iptv_ingestion_service.jar
+COPY --from=build /src/iptv_ingestion_service/resources/wait-for-it.sh /opt/app/wait-for-it.sh
 WORKDIR /opt/app
 EXPOSE 8080
 CMD ["sh", "-c", "echo 'waiting for 300 seconds for mariadb:3306 to be accessable before starting application' ./wait-for-it.sh -t 300 mariadb:3306 -- java -jar iptv_ingestion_service.jar"]

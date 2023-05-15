@@ -10,7 +10,7 @@ import com.dreamsoftware.data.iptvorg.datasource.subdivision.ISubdivisionNetwork
 import com.dreamsoftware.data.iptvorg.datasource.subdivision.impl.SubdivisionNetworkDataSourceImpl
 import org.koin.dsl.module
 
-val dataSources = module {
+val networkDataSources = module {
     includes(networkModule)
     factory<ICountryNetworkDataSource> { CountryNetworkDataSourceImpl(get(), get()) }
     factory<ICategoryNetworkDataSource> { CategoryNetworkDataSourceImpl(get(), get()) }

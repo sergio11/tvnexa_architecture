@@ -2,9 +2,11 @@ package com.dreamsoftware
 
 import com.dreamsoftware.di.appModule
 import com.dreamsoftware.plugins.configureRouting
+import com.dreamsoftware.tasks.core.manager.IJobSchedulerManager
 import io.ktor.server.application.*
 import io.ktor.server.engine.*
 import io.ktor.server.netty.*
+import org.koin.ktor.ext.getKoin
 import org.koin.ktor.plugin.Koin
 import org.koin.logger.slf4jLogger
 
@@ -19,4 +21,9 @@ fun Application.module() {
         modules(appModule)
     }
     configureRouting()
+    doOnStartup()
+}
+
+fun Application.doOnStartup() {
+    getKoin().get<IJobSchedulerManager>().start()
 }

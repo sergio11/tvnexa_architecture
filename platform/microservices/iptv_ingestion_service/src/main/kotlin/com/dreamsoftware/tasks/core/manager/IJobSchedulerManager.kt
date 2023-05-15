@@ -2,7 +2,7 @@ package com.dreamsoftware.tasks.core.manager
 
 import com.dreamsoftware.tasks.core.IJobBuilder
 
-interface JobSchedulerManager {
-
+interface IJobSchedulerManager {
     fun scheduleJob(jobBuilder: IJobBuilder)
+    fun start()
 }
