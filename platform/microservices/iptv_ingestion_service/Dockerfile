@@ -17,4 +17,4 @@ COPY --from=build /src/iptv_ingestion_service/build/libs/iptv_ingestion_service.
 COPY --from=build /src/iptv_ingestion_service/resources/wait-for-it.sh /opt/app/wait-for-it.sh
 WORKDIR /opt/app
 EXPOSE 8080
-CMD ["sh", "-c", "echo 'waiting for 300 seconds for mariadb:3306 to be accessable before starting application' ./wait-for-it.sh -t 300 mariadb:3306 -- java -jar iptv_ingestion_service.jar"]
+CMD ["sh", "-c", "echo 'waiting for 300 seconds for FTP Repository to be accessable before starting application' && ./wait-for-it.sh -t 300 ftp_repository:21 && echo 'waiting for 300 seconds for mariadb:3306 to be accessable before starting application' && ./wait-for-it.sh -t 300 mariadb:3306 -- java -jar iptv_ingestion_service.jar"]

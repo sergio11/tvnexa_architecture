@@ -23,5 +23,7 @@ val databaseModule = module {
             })
         }
     }
-    single<IDatabaseFactory> { DatabaseFactoryImpl(get()) }
+    single<IDatabaseFactory>(createdAtStart = true) { DatabaseFactoryImpl(get()).also {
+        it.connectAndMigrate()
+    } }
 }

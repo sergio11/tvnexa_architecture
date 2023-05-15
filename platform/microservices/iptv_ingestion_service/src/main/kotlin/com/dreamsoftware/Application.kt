@@ -2,6 +2,7 @@ package com.dreamsoftware
 
 import com.dreamsoftware.di.appModule
 import com.dreamsoftware.plugins.configureRouting
+import com.dreamsoftware.tasks.IngestLanguagesJob
 import com.dreamsoftware.tasks.core.manager.IJobSchedulerManager
 import io.ktor.server.application.*
 import io.ktor.server.engine.*
@@ -25,5 +26,8 @@ fun Application.module() {
 }
 
 fun Application.doOnStartup() {
-    getKoin().get<IJobSchedulerManager>().start()
+    with(getKoin().get<IJobSchedulerManager>()) {
+        start()
+        scheduleJob(IngestLanguagesJob)
+    }
 }

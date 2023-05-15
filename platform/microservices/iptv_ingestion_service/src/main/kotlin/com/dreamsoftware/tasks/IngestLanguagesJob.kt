@@ -28,7 +28,7 @@ class IngestLanguagesJob(
 
         override fun buildJob(): JobDetail = JobBuilder.newJob(IngestLanguagesJob::class.java)
             .withIdentity(JOB_ID, WATCH_JOB_GROUP)
-            .usingJobData(JOB_MAP_NAME_ID_KEY, "test")
+            .usingJobData(JOB_MAP_NAME_ID_KEY, JOB_ID)
             .build()
 
         override fun buildTrigger(): Trigger = TriggerBuilder.newTrigger()

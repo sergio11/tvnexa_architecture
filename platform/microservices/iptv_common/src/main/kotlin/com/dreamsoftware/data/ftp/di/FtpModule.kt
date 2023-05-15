@@ -7,8 +7,8 @@ import org.apache.commons.net.ftp.FTPClient
 import org.koin.dsl.module
 
 private const val FTP_HOSTNAME = "ftp_repository"
-private const val FTP_USER = "thunderotp"
-private const val FTP_PASSWORD = "thunderotp00"
+private const val FTP_USER = "dev"
+private const val FTP_PASSWORD = "dev"
 private const val CONFIG_FILE_NAME = "application"
 private const val CONFIG_FILE_EXT = "yml"
 

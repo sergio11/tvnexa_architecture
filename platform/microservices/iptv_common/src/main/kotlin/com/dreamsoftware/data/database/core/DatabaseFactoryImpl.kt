@@ -15,6 +15,7 @@ internal class DatabaseFactoryImpl(
     private val log = LoggerFactory.getLogger(this::class.java)
 
     override fun connectAndMigrate() {
+        log.debug("DatabaseFactory - connectAndMigrate start")
         Database.connect(datasource)
         runFlyway(datasource)
     }
@@ -29,7 +30,12 @@ internal class DatabaseFactoryImpl(
     }
 
     private fun runFlyway(datasource: DataSource) {
-        with(Flyway.configure().dataSource(datasource).load()) {
+        log.debug("DatabaseFactory - runFlyway migrations")
+        with(Flyway.configure()
+            .locations("classpath:com/dreamsoftware/data/database/migrations", "db/migration")
+            .dataSource(datasource)
+            .load()
+        ) {
             try {
                 info()
                 migrate()
