@@ -20,9 +20,7 @@ internal class DatabaseFactoryImpl(
         runFlyway(datasource)
     }
 
-    override suspend fun <T> dbExec(
-        block: () -> T
-    ): T = withContext(Dispatchers.IO) {
+    override suspend fun <T> dbExec(block: () -> T): T = withContext(Dispatchers.IO) {
         if(!isConnected()) {
             Database.connect(datasource)
         }
@@ -32,7 +30,7 @@ internal class DatabaseFactoryImpl(
     private fun runFlyway(datasource: DataSource) {
         log.debug("DatabaseFactory - runFlyway migrations")
         with(Flyway.configure()
-            .locations("classpath:com/dreamsoftware/data/database/migrations", "db/migration")
+            .locations( "db/migration", "classpath:com/dreamsoftware/data/database/migrations")
             .dataSource(datasource)
             .load()
         ) {

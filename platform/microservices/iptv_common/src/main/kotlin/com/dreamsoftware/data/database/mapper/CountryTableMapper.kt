@@ -9,7 +9,6 @@ class CountryTableMapper: IOneSideMapper<ResultRow, CountryEntity> {
 
     override fun map(input: ResultRow): CountryEntity = with(input) {
         CountryEntity(
-            id = get(CountryTable.id).value,
             name = get(CountryTable.name),
             code = get(CountryTable.code),
             flag = get(CountryTable.flag),
