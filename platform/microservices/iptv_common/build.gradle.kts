@@ -47,6 +47,8 @@ dependencies {
     implementation("mysql:mysql-connector-java:$mysql_connector_version")
     implementation("com.zaxxer:HikariCP:$hikaricp_version")
     implementation("org.flywaydb:flyway-core:$flyway_version")
+    implementation("org.flywaydb:flyway-mysql:$flyway_version")
+
 
     // https://mvnrepository.com/artifact/commons-net/commons-net
     implementation("commons-net:commons-net:$commons_net_version")

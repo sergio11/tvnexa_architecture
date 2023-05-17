@@ -12,13 +12,11 @@ import org.jetbrains.exposed.sql.statements.UpdateBuilder
 internal class CountryDatabaseDataSourceImpl(
     database: IDatabaseFactory,
     mapper: IOneSideMapper<ResultRow, CountryEntity>
-): SupportDatabaseDataSource<CountryEntity, Int>(database, mapper, CountryTable), ICountryDatabaseDataSource {
-
+): SupportDatabaseDataSource<CountryEntity, String>(database, mapper, CountryTable), ICountryDatabaseDataSource {
     override fun UpdateBuilder<Int>.onMapEntityToSave(entity: CountryEntity) = with(entity) {
         this@onMapEntityToSave[CountryTable.code] = code
         this@onMapEntityToSave[CountryTable.name] = name
         this@onMapEntityToSave[CountryTable.flag] = flag
         this@onMapEntityToSave[CountryTable.languages] = languages.joinToString(",")
     }
-
 }

@@ -37,7 +37,7 @@ services:
   # MariaDB Image
   # MariaDB is a community-developed fork of MySQL intended to remain free under the GNU GPL.
   mariadb:
-    image: mariadb:latest
+    image: mariadb:10.10
     container_name: mariadb
     restart: always
     env_file:
