@@ -9,7 +9,8 @@ import org.slf4j.LoggerFactory
 import javax.sql.DataSource
 
 internal class DatabaseFactoryImpl(
-    private val datasource: DataSource
+    private val datasource: DataSource,
+    private val schemaConfigList: List<IDbMigrationConfig>
 ): IDatabaseFactory {
 
     private val log = LoggerFactory.getLogger(this::class.java)
@@ -28,20 +29,28 @@ internal class DatabaseFactoryImpl(
     }
 
     private fun runFlyway(datasource: DataSource) {
-        log.debug("DatabaseFactory - runFlyway migrations")
-        with(Flyway.configure()
-            .locations( "db/migration", "classpath:com/dreamsoftware/data/database/migrations")
-            .dataSource(datasource)
-            .load()
-        ) {
-            try {
-                info()
-                migrate()
-            } catch (e: Exception) {
-                log.error("Exception running flyway migration", e)
-                throw e
+        log.debug("DatabaseFactory - runFlyway migrations - size ${schemaConfigList.size}")
+        schemaConfigList.map {
+            Flyway.configure().apply {
+                if(!it.schemaTableName.isNullOrBlank()) {
+                    table(it.schemaTableName)
+                }
+                if(!it.schemaLocation.isNullOrBlank()) {
+                    locations(it.schemaLocation)
+                }
+            }.dataSource(datasource).load()
+        }.forEach { flyway ->
+            with(flyway) {
+                try {
+                    log.info("Flyway migration ${configuration.table} starting, check migrations at ${configuration.locations.joinToString(",")}")
+                    info()
+                    migrate()
+                } catch (e: Exception) {
+                    log.error("Exception running flyway migration", e)
+                    throw e
+                }
+                log.info("Flyway migration has finished")
             }
-            log.info("Flyway migration has finished")
         }
     }
 

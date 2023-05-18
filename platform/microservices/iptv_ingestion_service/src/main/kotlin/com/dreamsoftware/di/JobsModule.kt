@@ -1,11 +1,13 @@
 package com.dreamsoftware.di
 
+import com.dreamsoftware.data.database.core.IDbMigrationConfig
 import com.dreamsoftware.tasks.core.manager.IJobSchedulerManager
 import com.dreamsoftware.tasks.core.manager.IJobSchedulerManagerImpl
 import com.dreamsoftware.model.DatabaseConfig
 import com.dreamsoftware.tasks.IngestLanguagesJob
 import com.dreamsoftware.tasks.core.JobFactoryImpl
 import org.koin.core.qualifier.named
+import org.koin.dsl.bind
 import org.koin.dsl.module
 import org.quartz.Scheduler
 import org.quartz.impl.StdSchedulerFactory
@@ -28,9 +30,18 @@ val jobsModule = module {
                 setProperty("org.quartz.jobStore.class", "org.quartz.impl.jdbcjobstore.JobStoreTX")
                 setProperty("org.quartz.jobStore.driverDelegateClass", "org.quartz.impl.jdbcjobstore.StdJDBCDelegate")
                 setProperty("org.quartz.jobStore.tablePrefix", "QRTZ_")
-                setProperty("org.quartz.plugin.triggHistory.class", "org.quartz.plugins.history.LoggingTriggerHistoryPlugin")
-                setProperty("org.quartz.plugin.triggHistory.triggerFiredMessage", """Trigger {1}.{0} fired job {6}.{5} at: {4, date, HH:mm:ss MM/dd/yyyy}""")
-                setProperty("org.quartz.plugin.triggHistory.triggerCompleteMessage", """Trigger {1}.{0} completed firing job {6}.{5} at {4, date, HH:mm:ss MM/dd/yyyy}""")
+                setProperty(
+                    "org.quartz.plugin.triggHistory.class",
+                    "org.quartz.plugins.history.LoggingTriggerHistoryPlugin"
+                )
+                setProperty(
+                    "org.quartz.plugin.triggHistory.triggerFiredMessage",
+                    """Trigger {1}.{0} fired job {6}.{5} at: {4, date, HH:mm:ss MM/dd/yyyy}"""
+                )
+                setProperty(
+                    "org.quartz.plugin.triggHistory.triggerCompleteMessage",
+                    """Trigger {1}.{0} completed firing job {6}.{5} at {4, date, HH:mm:ss MM/dd/yyyy}"""
+                )
             }
         }
     }
@@ -45,6 +56,13 @@ val jobsModule = module {
     single<IJobSchedulerManager> {
         IJobSchedulerManagerImpl(get())
     }
-
+    single {
+        object : IDbMigrationConfig {
+            override val schemaTableName: String
+                get() = "quartz_schema_history"
+            override val schemaLocation: String?
+                get() = null
+        }
+    } bind IDbMigrationConfig::class
     factory { IngestLanguagesJob(get(), get()) }
 }
