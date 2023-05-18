@@ -2,9 +2,11 @@ package com.dreamsoftware.data.database.di
 
 import com.dreamsoftware.data.database.core.DatabaseFactoryImpl
 import com.dreamsoftware.data.database.core.IDatabaseFactory
+import com.dreamsoftware.data.database.core.IDbMigrationConfig
 import com.dreamsoftware.model.DatabaseConfig
 import com.zaxxer.hikari.HikariConfig
 import com.zaxxer.hikari.HikariDataSource
+import org.koin.dsl.bind
 import org.koin.dsl.module
 import javax.sql.DataSource
 
@@ -23,7 +25,14 @@ val databaseModule = module {
             })
         }
     }
-    single<IDatabaseFactory>(createdAtStart = true) { DatabaseFactoryImpl(get()).also {
-        it.connectAndMigrate()
-    } }
+    single {
+        object : IDbMigrationConfig {
+            override val schemaTableName: String
+                get() = "iptv_schema_history"
+            override val schemaLocation: String
+                get() = "classpath:com/dreamsoftware/data/database/migrations"
+        }
+    } bind IDbMigrationConfig::class
+    single<IDatabaseFactory> { DatabaseFactoryImpl(get(), getAll()) }
+
 }
