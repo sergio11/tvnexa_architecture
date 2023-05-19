@@ -26,6 +26,12 @@ ktor {
     }
 }
 
+tasks.withType<com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar> {
+    mergeServiceFiles {
+        setPath("META-INF/services/org.flywaydb.core.extensibility.Plugin")
+    }
+}
+
 tasks.compileKotlin {
     kotlinOptions.jvmTarget = "11"
 }

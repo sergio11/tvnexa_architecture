@@ -1,14 +1,16 @@
 package com.dreamsoftware.data.database.datasource.core
 
-interface ISupportDatabaseDataSource<E, K : Comparable<K>> {
+import org.jetbrains.exposed.dao.Entity
 
-    suspend fun findAll(): List<E>
+interface ISupportDatabaseDataSource<E : Entity<K>, K : Comparable<K>, R> {
 
-    suspend fun findByKey(key: K): E
+    suspend fun findAll(): List<R>
 
-    suspend fun save(entity: E)
+    suspend fun findByKey(key: K): R
 
-    suspend fun save(entities: List<E>)
+    suspend fun save(entityToSave: R)
+
+    suspend fun save(entitiesToSave: List<R>)
 
     suspend fun deleteByKey(key: K)
 

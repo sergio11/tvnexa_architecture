@@ -1,20 +1,23 @@
 package com.dreamsoftware.data.database.di
 
 import com.dreamsoftware.core.IOneSideMapper
+import com.dreamsoftware.data.database.dao.CategoryEntityDAO
+import com.dreamsoftware.data.database.dao.CountryEntityDAO
+import com.dreamsoftware.data.database.dao.LanguageEntityDAO
+import com.dreamsoftware.data.database.dao.SubdivisionEntityDAO
 import com.dreamsoftware.data.database.entity.CategoryEntity
 import com.dreamsoftware.data.database.entity.CountryEntity
 import com.dreamsoftware.data.database.entity.LanguageEntity
 import com.dreamsoftware.data.database.entity.SubdivisionEntity
-import com.dreamsoftware.data.database.mapper.CategoryTableMapper
-import com.dreamsoftware.data.database.mapper.CountryTableMapper
-import com.dreamsoftware.data.database.mapper.LanguageTableMapper
-import com.dreamsoftware.data.database.mapper.SubdivisionTableMapper
-import org.jetbrains.exposed.sql.ResultRow
+import com.dreamsoftware.data.database.mapper.CategoryEntityDaoMapper
+import com.dreamsoftware.data.database.mapper.CountryEntityDaoMapper
+import com.dreamsoftware.data.database.mapper.LanguageEntityDaoMapper
+import com.dreamsoftware.data.database.mapper.SubdivisionEntityDaoMapper
 import org.koin.dsl.module
 
 val databaseMapperModule = module {
-    factory<IOneSideMapper<ResultRow, LanguageEntity>> { LanguageTableMapper() }
-    factory<IOneSideMapper<ResultRow, CountryEntity>> { CountryTableMapper() }
-    factory<IOneSideMapper<ResultRow, CategoryEntity>> { CategoryTableMapper() }
-    factory<IOneSideMapper<ResultRow, SubdivisionEntity>> { SubdivisionTableMapper() }
+    single<IOneSideMapper<LanguageEntityDAO, LanguageEntity>> { LanguageEntityDaoMapper() }
+    single<IOneSideMapper<CategoryEntityDAO, CategoryEntity>> { CategoryEntityDaoMapper() }
+    single<IOneSideMapper<CountryEntityDAO, CountryEntity>> { CountryEntityDaoMapper(get()) }
+    single<IOneSideMapper<SubdivisionEntityDAO, SubdivisionEntity>> { SubdivisionEntityDaoMapper(get()) }
 }

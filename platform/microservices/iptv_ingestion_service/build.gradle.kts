@@ -37,6 +37,12 @@ repositories {
     mavenCentral()
 }
 
+tasks.withType<com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar> {
+    mergeServiceFiles {
+        setPath("META-INF/services/org.flywaydb.core.extensibility.Plugin")
+    }
+}
+
 dependencies {
 
     implementation("io.ktor:ktor-server-core-jvm:$ktor_version")
