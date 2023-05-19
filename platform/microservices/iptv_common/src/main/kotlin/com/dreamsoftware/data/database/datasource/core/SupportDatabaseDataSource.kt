@@ -4,49 +4,59 @@ import com.dreamsoftware.core.IOneSideMapper
 import com.dreamsoftware.data.database.core.IDatabaseFactory
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
+import org.jetbrains.exposed.dao.Entity
+import org.jetbrains.exposed.dao.EntityClass
 import org.jetbrains.exposed.dao.id.IdTable
 import org.jetbrains.exposed.sql.*
 import org.jetbrains.exposed.sql.SqlExpressionBuilder.eq
 import org.jetbrains.exposed.sql.statements.UpdateBuilder
 import org.jetbrains.exposed.sql.transactions.TransactionManager
 
-internal abstract class SupportDatabaseDataSource<E, K : Comparable<K>>(
+internal abstract class SupportDatabaseDataSource<E : Entity<K>, K : Comparable<K>, R>(
     private val database: IDatabaseFactory,
-    private val mapper: IOneSideMapper<ResultRow, E>,
-    private val table: IdTable<K>
-): ISupportDatabaseDataSource<E, K> {
+    private val mapper: IOneSideMapper<E, R>,
+    private val entityDAO: EntityClass<K, E>
+) : ISupportDatabaseDataSource<E, K, R> {
 
-    override suspend fun findAll(): List<E> = dbExec { selectAll().map(mapper::map) }
-
-    override suspend fun findByKey(key: K): E = dbExec { select { id eq key }.map(mapper::map).first() }
-
-    override suspend fun save(entity: E) = dbExec {
-        insertOnDuplicateKeyUpdate(entity, listOf(id))
+    override suspend fun findAll(): List<R> = dbExec {
+        all().sortedByDescending{ it.id }.map(mapper::map)
     }
 
-    override suspend fun save(entities: List<E>) = dbExec {
-        batchInsertOnDuplicateKeyUpdate(entities, listOf(id))
+    override suspend fun findByKey(key: K): R = dbExec {
+        findById(key)?.let(mapper::map) ?: throw RuntimeException()
+    }
+
+    override suspend fun save(entityToSave: R) = dbExec {
+        with(table) {
+            insertOnDuplicateKeyUpdate(entityToSave, listOf(id))
+        }
+    }
+
+    override suspend fun save(entitiesToSave: List<R>) = dbExec {
+        with(table) {
+            batchInsertOnDuplicateKeyUpdate(entitiesToSave, listOf(id))
+        }
     }
 
     override suspend fun deleteByKey(key: K): Unit = dbExec {
-        deleteWhere { id eq key }
+        table.deleteWhere { id eq key }
     }
 
-    override suspend fun deleteAll(): Unit = dbExec { deleteAll() }
+    override suspend fun deleteAll(): Unit = dbExec { table.deleteAll() }
 
-    abstract fun UpdateBuilder<Int>.onMapEntityToSave(entity: E)
+    abstract fun UpdateBuilder<Int>.onMapEntityToSave(entityToSave: R)
 
-    protected suspend fun <R>dbExec(dbExecution: IdTable<K>.() -> R): R = withContext(Dispatchers.IO) {
-        database.dbExec { with(table) { dbExecution() } }
+    protected suspend fun <R> dbExec(dbExecution: EntityClass<K, E>.() -> R): R = withContext(Dispatchers.IO) {
+        database.dbExec { with(entityDAO) { dbExecution() } }
     }
 
-    private fun IdTable<K>.insertOnDuplicateKeyUpdate(entity: E, onDupUpdateColumns: List<Column<*>>) {
+    private fun IdTable<K>.insertOnDuplicateKeyUpdate(data: R, onDupUpdateColumns: List<Column<*>>) {
         TransactionManager.current().exec(InsertUpdateOnDuplicate<K>(this, onDupUpdateColumns).apply {
-            onMapEntityToSave(entity)
+            onMapEntityToSave(data)
         })
     }
 
-    private fun IdTable<K>.batchInsertOnDuplicateKeyUpdate(data: List<E>, onDupUpdateColumns: List<Column<*>>) {
+    private fun IdTable<K>.batchInsertOnDuplicateKeyUpdate(data: List<R>, onDupUpdateColumns: List<Column<*>>) {
         data.takeIf { it.isNotEmpty() }?.let {
             with(BatchInsertUpdateOnDuplicate(this, onDupUpdateColumns)) {
                 data.forEach {
