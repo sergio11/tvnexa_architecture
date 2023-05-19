@@ -1,6 +1,5 @@
 package com.dreamsoftware
 
-import com.dreamsoftware.data.database.core.IDatabaseFactory
 import com.dreamsoftware.di.appModule
 import com.dreamsoftware.plugins.configureRouting
 import com.dreamsoftware.tasks.IngestLanguagesJob
@@ -28,7 +27,6 @@ fun Application.module() {
 
 fun Application.doOnStartup() {
     with(getKoin()) {
-        get<IDatabaseFactory>().connectAndMigrate()
         with(get<IJobSchedulerManager>()) {
             start()
             scheduleJob(IngestLanguagesJob)

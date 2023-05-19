@@ -33,6 +33,9 @@ val databaseModule = module {
                 get() = "classpath:com/dreamsoftware/data/database/migrations"
         }
     } bind IDbMigrationConfig::class
-    single<IDatabaseFactory> { DatabaseFactoryImpl(get(), getAll()) }
-
+    single<IDatabaseFactory>(createdAtStart = true) {
+        DatabaseFactoryImpl(get(), getAll()).also {
+            it.connectAndMigrate()
+        }
+    }
 }

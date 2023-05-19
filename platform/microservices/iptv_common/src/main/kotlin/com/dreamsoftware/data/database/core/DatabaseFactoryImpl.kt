@@ -32,6 +32,12 @@ internal class DatabaseFactoryImpl(
         log.debug("DatabaseFactory - runFlyway migrations - size ${schemaConfigList.size}")
         schemaConfigList.map {
             Flyway.configure().apply {
+                sqlMigrationPrefix("v")
+                sqlMigrationSeparator("__")
+                sqlMigrationSuffixes(".sql")
+                validateMigrationNaming(true)
+                baselineOnMigrate(true)
+                baselineVersion("0")
                 if(!it.schemaTableName.isNullOrBlank()) {
                     table(it.schemaTableName)
                 }
