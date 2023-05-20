@@ -1,5 +1,16 @@
 https://github.com/prof18/ktor-chuck-norris-sample
 
+
+#!/usr/bin/env bash
+
+## Llavero Servidor: Par de claves del servidor (privada y pública) formato PEM
+keytool -genkeypair -alias serverKeyPair -keyalg RSA -keysize 4096 -validity 365 -storetype PKCS12 -keystore server_keystore.p12 -storepass 1234567
+
+## Llavero Cliente: Par de claves del cliente (privada y pública) formato JKS
+keytool -genkeypair -alias serverKeyPair -keyalg RSA -keysize 4096 -validity 365 -storetype JKS -keystore server_keystore.jks -storepass 1234567
+org.flywaydb.core.api.FlywayException: Unsupported Database: MySQL 5.5
+https://www.baeldung.com/kotlin/exposed-persistence
+https://github.com/joseluisgs/tenistas-rest-ktor-2022-2023/blob/main/src/main/kotlin/joseluisgs/es/serializers/LocalDateTimeSerializer.kt
 https://github.com/raharrison/kotlin-ktor-exposed-starter/blob/master/src/main/kotlin/model/Widget.kt
 https://github.com/prof18/ktor-chuck-norris-sample/blob/main/ktor-2.x/src/main/kotlin/com/prof18/ktor/chucknorris/sample/database/DatabaseFactoryImpl.kt
 https://github.com/sergio11/passwordless_authentication_architecture/blob/main/platform/microservice/src/main/kotlin/com/dreamsoftware/model/AppConfig.kt
