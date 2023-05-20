@@ -31,6 +31,8 @@ val databaseModule = module {
                 get() = "iptv_schema_history"
             override val schemaLocation: String
                 get() = "classpath:com/dreamsoftware/data/database/migrations"
+            override val genericSchema: Boolean
+                get() = true
         }
     } bind IDbMigrationConfig::class
     single<IDatabaseFactory>(createdAtStart = true) {

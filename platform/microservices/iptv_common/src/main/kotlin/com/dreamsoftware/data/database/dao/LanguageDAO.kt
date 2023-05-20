@@ -9,7 +9,7 @@ import org.jetbrains.exposed.sql.Column
 object LanguageTable: IdTable<String>(name = "languages") {
 
     val code = char(name = "code", length = 3)
-    val name = varchar(name = "name", length = 50).uniqueIndex()
+    val name = varchar(name = "name", length = 100).uniqueIndex()
 
     override val id: Column<EntityID<String>> = code.entityId()
     override val primaryKey: PrimaryKey = PrimaryKey(id)

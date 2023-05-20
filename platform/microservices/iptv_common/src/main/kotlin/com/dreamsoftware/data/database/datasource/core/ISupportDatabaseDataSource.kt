@@ -10,7 +10,7 @@ interface ISupportDatabaseDataSource<E : Entity<K>, K : Comparable<K>, R> {
 
     suspend fun save(entityToSave: R)
 
-    suspend fun save(entitiesToSave: List<R>)
+    suspend fun save(entitiesToSave: Iterable<R>)
 
     suspend fun deleteByKey(key: K)
 

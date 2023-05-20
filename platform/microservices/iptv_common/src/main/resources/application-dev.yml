@@ -1,6 +1,6 @@
 dbConfig: {
   driverClass: "org.h2.Driver",
-  databaseUrl: "jdbc:h2:mem:iptv;DB_CLOSE_DELAY=-1",
+  databaseUrl: "jdbc:h2:mem:iptv;DB_CLOSE_DELAY=-1;DATABASE_TO_UPPER=false;mode=MySQL",
   connUser: dev,
   connPassword: dev,
   maxPoolSize: 10
