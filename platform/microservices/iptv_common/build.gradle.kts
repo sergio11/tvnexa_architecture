@@ -8,6 +8,7 @@ val exposed_version: String by project
 val mysql_connector_version: String by project
 val hikaricp_version: String by project
 val flyway_version: String by project
+val h2_version: String by project
 
 plugins {
     kotlin("jvm") version "1.8.21"
@@ -49,6 +50,7 @@ dependencies {
     implementation("org.flywaydb:flyway-core:$flyway_version")
     implementation("org.flywaydb:flyway-mysql:$flyway_version")
 
+    implementation("com.h2database:h2:$h2_version")
 
     // https://mvnrepository.com/artifact/commons-net/commons-net
     implementation("commons-net:commons-net:$commons_net_version")

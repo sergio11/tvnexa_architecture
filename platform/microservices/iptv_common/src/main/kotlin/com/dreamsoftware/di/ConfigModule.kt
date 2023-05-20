@@ -13,7 +13,7 @@ val configModule = module {
     single<AppConfig> {
         runBlocking {
             ConfigLoaderBuilder.default()
-                .addResourceOrFileSource(get<IConfigFtpDataSource>().getConfig())
+                .addResourceOrFileSource("/application-dev.yml")
                 .strict()
                 .build()
                 .loadConfigOrThrow()

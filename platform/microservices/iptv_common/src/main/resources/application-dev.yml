@@ -1,0 +1,16 @@
+dbConfig: {
+  driverClass: "org.h2.Driver",
+  databaseUrl: "jdbc:h2:mem:iptv;DB_CLOSE_DELAY=-1",
+  connUser: dev,
+  connPassword: dev,
+  maxPoolSize: 10
+}
+iptvOrgConfig: {
+  countriesEndpoint: "https://iptv-org.github.io/api/countries.json",
+  subdivisionsEndpoint: "https://iptv-org.github.io/api/subdivisions.json",
+  languagesEndpoint: "https://iptv-org.github.io/api/languages.json",
+  categoriesEndpoint: "https://iptv-org.github.io/api/categories.json",
+  regionsEndpoint: "https://iptv-org.github.io/api/regions.json",
+  channelsEndpoint: "https://iptv-org.github.io/api/channels.json"
+}
+

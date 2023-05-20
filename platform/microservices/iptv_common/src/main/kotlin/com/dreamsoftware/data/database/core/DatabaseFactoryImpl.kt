@@ -1,5 +1,6 @@
 package com.dreamsoftware.data.database.core
 
+import io.ktor.server.application.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import org.flywaydb.core.Flyway
@@ -15,6 +16,14 @@ internal class DatabaseFactoryImpl(
 
     private val log = LoggerFactory.getLogger(this::class.java)
 
+    private val  folderMigrationSuffix by lazy {
+        if(System.getProperty("development.mode").toBoolean()) {
+            "/dev"
+        } else {
+            "/prod"
+        }
+    }
+
     override fun connectAndMigrate() {
         log.debug("DatabaseFactory - connectAndMigrate start")
         Database.connect(datasource)
@@ -29,7 +38,11 @@ internal class DatabaseFactoryImpl(
     }
 
     private fun runFlyway(datasource: DataSource) {
-        log.debug("DatabaseFactory - runFlyway migrations - size ${schemaConfigList.size}")
+        System.getProperties().propertyNames().asIterator().forEach {
+            log.debug("Property -> $it")
+        }
+        log.debug("development.mode -> ${System.getProperty("development.mode")}")
+        log.debug("DatabaseFactory - runFlyway migrations folder - $folderMigrationSuffix - size ${schemaConfigList.size}")
         schemaConfigList.map {
             Flyway.configure().apply {
                 sqlMigrationPrefix("v")
@@ -42,7 +55,11 @@ internal class DatabaseFactoryImpl(
                     table(it.schemaTableName)
                 }
                 if(!it.schemaLocation.isNullOrBlank()) {
-                    locations(it.schemaLocation)
+                    locations(it.schemaLocation.plus(folderMigrationSuffix))
+                } else {
+                    locations(*locations.map {
+                        it.path.plus(folderMigrationSuffix)
+                    }.toTypedArray())
                 }
             }.dataSource(datasource).load()
         }.forEach { flyway ->

@@ -1,6 +1,6 @@
 package com.dreamsoftware.data.database.datasource.language.impl
 
-import com.dreamsoftware.core.IOneSideMapper
+import com.dreamsoftware.core.IMapper
 import com.dreamsoftware.data.database.core.IDatabaseFactory
 import com.dreamsoftware.data.database.dao.LanguageEntityDAO
 import com.dreamsoftware.data.database.dao.LanguageTable
@@ -11,7 +11,7 @@ import org.jetbrains.exposed.sql.statements.UpdateBuilder
 
 internal class LanguageDatabaseDataSourceImpl(
     database: IDatabaseFactory,
-    mapper: IOneSideMapper<LanguageEntityDAO, LanguageEntity>
+    mapper: IMapper<LanguageEntityDAO, LanguageEntity>
 ): SupportDatabaseDataSource<LanguageEntityDAO, String, LanguageEntity>(database, mapper, LanguageEntityDAO), ILanguageDatabaseDataSource {
 
     override fun UpdateBuilder<Int>.onMapEntityToSave(entityToSave: LanguageEntity) = with(entityToSave){
