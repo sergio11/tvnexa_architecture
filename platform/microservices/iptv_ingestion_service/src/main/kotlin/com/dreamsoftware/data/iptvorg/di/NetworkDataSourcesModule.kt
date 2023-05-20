@@ -1,19 +1,20 @@
 package com.dreamsoftware.data.iptvorg.di
 
-import com.dreamsoftware.data.iptvorg.datasource.category.ICategoryNetworkDataSource
-import com.dreamsoftware.data.iptvorg.datasource.category.impl.CategoryNetworkDataSourceImpl
-import com.dreamsoftware.data.iptvorg.datasource.country.ICountryNetworkDataSource
-import com.dreamsoftware.data.iptvorg.datasource.country.impl.CountryNetworkDataSourceImpl
-import com.dreamsoftware.data.iptvorg.datasource.language.ILanguageNetworkDataSource
-import com.dreamsoftware.data.iptvorg.datasource.language.impl.LanguageNetworkDataSourceImpl
-import com.dreamsoftware.data.iptvorg.datasource.subdivision.ISubdivisionNetworkDataSource
-import com.dreamsoftware.data.iptvorg.datasource.subdivision.impl.SubdivisionNetworkDataSourceImpl
+import com.dreamsoftware.core.getMapper
+import com.dreamsoftware.data.iptvorg.datasource.IptvOrgNetworkDataSource
+import com.dreamsoftware.data.iptvorg.datasource.impl.IptvOrgNetworkDataSourceImpl
+import com.dreamsoftware.data.iptvorg.model.LanguageDTO
+import com.dreamsoftware.model.IptvOrgConfig
+import com.dreamsoftware.model.Language
+import io.ktor.util.reflect.*
+import org.koin.core.qualifier.named
 import org.koin.dsl.module
 
 val networkDataSources = module {
-    includes(networkModule)
-    factory<ICountryNetworkDataSource> { CountryNetworkDataSourceImpl(get(), get()) }
-    factory<ICategoryNetworkDataSource> { CategoryNetworkDataSourceImpl(get(), get()) }
-    factory<ILanguageNetworkDataSource> { LanguageNetworkDataSourceImpl(get(), get()) }
-    factory<ISubdivisionNetworkDataSource> { SubdivisionNetworkDataSourceImpl(get(), get()) }
+    includes(networkModule, networkMappers)
+
+    factory(named("languagesEndpoint")) { get<IptvOrgConfig>().languagesEndpoint }
+
+    factory<IptvOrgNetworkDataSource<Language>> { IptvOrgNetworkDataSourceImpl<LanguageDTO, Language>(get(), getMapper(), get(named("languagesEndpoint")), typeInfo<List<LanguageDTO>>()) }
+
 }
