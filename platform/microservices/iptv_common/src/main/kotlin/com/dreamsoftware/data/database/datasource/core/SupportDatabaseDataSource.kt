@@ -1,6 +1,6 @@
 package com.dreamsoftware.data.database.datasource.core
 
-import com.dreamsoftware.core.IOneSideMapper
+import com.dreamsoftware.core.IMapper
 import com.dreamsoftware.data.database.core.IDatabaseFactory
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
@@ -14,7 +14,7 @@ import org.jetbrains.exposed.sql.transactions.TransactionManager
 
 internal abstract class SupportDatabaseDataSource<E : Entity<K>, K : Comparable<K>, R>(
     private val database: IDatabaseFactory,
-    private val mapper: IOneSideMapper<E, R>,
+    private val mapper: IMapper<E, R>,
     private val entityDAO: EntityClass<K, E>
 ) : ISupportDatabaseDataSource<E, K, R> {
 

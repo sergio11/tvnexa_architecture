@@ -1,15 +1,15 @@
 package com.dreamsoftware.data.database.mapper
 
-import com.dreamsoftware.core.IOneSideMapper
+import com.dreamsoftware.core.IMapper
 import com.dreamsoftware.data.database.dao.*
 import com.dreamsoftware.data.database.entity.*
 
 class ChannelEntityDaoMapper(
-    private val countryMapper: IOneSideMapper<CountryEntityDAO, CountryEntity>,
-    private val subdivisionMapper: IOneSideMapper<SubdivisionEntityDAO, SubdivisionEntity>,
-    private val languageMapper: IOneSideMapper<LanguageEntityDAO, LanguageEntity>,
-    private val categoryMapper: IOneSideMapper<CategoryEntityDAO, CategoryEntity>
-): IOneSideMapper<ChannelEntityDAO, ChannelEntity> {
+    private val countryMapper: IMapper<CountryEntityDAO, CountryEntity>,
+    private val subdivisionMapper: IMapper<SubdivisionEntityDAO, SubdivisionEntity>,
+    private val languageMapper: IMapper<LanguageEntityDAO, LanguageEntity>,
+    private val categoryMapper: IMapper<CategoryEntityDAO, CategoryEntity>
+): IMapper<ChannelEntityDAO, ChannelEntity> {
 
     override fun map(input: ChannelEntityDAO): ChannelEntity = with(input) {
         ChannelEntity(

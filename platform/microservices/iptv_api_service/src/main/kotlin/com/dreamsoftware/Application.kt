@@ -7,6 +7,9 @@ import com.dreamsoftware.plugins.configureSecurity
 import io.ktor.server.application.*
 import io.ktor.server.engine.*
 import io.ktor.server.netty.*
+import org.slf4j.LoggerFactory
+
+private val log = LoggerFactory.getLogger(Application::class.java)
 
 fun main(args: Array<String>): Unit = EngineMain.main(args)
 

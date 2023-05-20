@@ -11,12 +11,11 @@ import org.koin.ktor.ext.getKoin
 import org.koin.ktor.plugin.Koin
 import org.koin.logger.slf4jLogger
 
-fun main() {
-    embeddedServer(Netty, port = 8080, host = "0.0.0.0", module = Application::module)
-        .start(wait = true)
-}
+fun main(args: Array<String>): Unit = EngineMain.main(args)
 
+@Suppress("unused") // application.conf references the main function. This annotation prevents the IDE from marking it as unused.
 fun Application.module() {
+    System.setProperty("development.mode", developmentMode.toString())
     install(Koin) {
         slf4jLogger()
         modules(appModule)
@@ -26,6 +25,8 @@ fun Application.module() {
 }
 
 fun Application.doOnStartup() {
+    log.debug("io.ktor.development -> ${System.getProperty("development.mode")}")
+    developmentMode
     with(getKoin()) {
         with(get<IJobSchedulerManager>()) {
             start()
