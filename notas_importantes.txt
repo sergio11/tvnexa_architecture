@@ -10,6 +10,7 @@ keytool -genkeypair -alias serverKeyPair -keyalg RSA -keysize 4096 -validity 365
 keytool -genkeypair -alias serverKeyPair -keyalg RSA -keysize 4096 -validity 365 -storetype JKS -keystore server_keystore.jks -storepass 1234567
 org.flywaydb.core.api.FlywayException: Unsupported Database: MySQL 5.5
 https://www.baeldung.com/kotlin/exposed-persistence
+https://dzone.com/articles/clustered-quartz-scheduler-with-spring-boot-and-mo
 https://github.com/joseluisgs/tenistas-rest-ktor-2022-2023/blob/main/src/main/kotlin/joseluisgs/es/serializers/LocalDateTimeSerializer.kt
 https://github.com/raharrison/kotlin-ktor-exposed-starter/blob/master/src/main/kotlin/model/Widget.kt
 https://github.com/prof18/ktor-chuck-norris-sample/blob/main/ktor-2.x/src/main/kotlin/com/prof18/ktor/chucknorris/sample/database/DatabaseFactoryImpl.kt

@@ -1,6 +1,6 @@
 package com.dreamsoftware.data.database.core
 
-import io.ktor.server.application.*
+import com.dreamsoftware.core.isDevelopmentMode
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import org.flywaydb.core.Flyway
@@ -12,15 +12,20 @@ import javax.sql.DataSource
 internal class DatabaseFactoryImpl(
     private val datasource: DataSource,
     private val schemaConfigList: List<IDbMigrationConfig>
-): IDatabaseFactory {
+) : IDatabaseFactory {
+
+    private companion object {
+        const val DEV_MIGRATION_FOLDER = "/dev"
+        const val PROD_MIGRATION_FOLDER = "/prod"
+    }
 
     private val log = LoggerFactory.getLogger(this::class.java)
 
-    private val  folderMigrationSuffix by lazy {
-        if(System.getProperty("development.mode").toBoolean()) {
-            "/dev"
+    private val envMigrationFolder by lazy {
+        if (isDevelopmentMode) {
+            DEV_MIGRATION_FOLDER
         } else {
-            "/prod"
+            PROD_MIGRATION_FOLDER
         }
     }
 
@@ -31,41 +36,51 @@ internal class DatabaseFactoryImpl(
     }
 
     override suspend fun <T> dbExec(block: () -> T): T = withContext(Dispatchers.IO) {
-        if(!isConnected()) {
+        if (!isConnected()) {
             Database.connect(datasource)
         }
         transaction { block() }
     }
 
     private fun runFlyway(datasource: DataSource) {
-        System.getProperties().propertyNames().asIterator().forEach {
-            log.debug("Property -> $it")
-        }
-        log.debug("development.mode -> ${System.getProperty("development.mode")}")
-        log.debug("DatabaseFactory - runFlyway migrations folder - $folderMigrationSuffix - size ${schemaConfigList.size}")
-        schemaConfigList.map {
-            Flyway.configure().apply {
-                sqlMigrationPrefix("v")
-                sqlMigrationSeparator("__")
-                sqlMigrationSuffixes(".sql")
-                validateMigrationNaming(true)
-                baselineOnMigrate(true)
-                baselineVersion("0")
-                if(!it.schemaTableName.isNullOrBlank()) {
-                    table(it.schemaTableName)
-                }
-                if(!it.schemaLocation.isNullOrBlank()) {
-                    locations(it.schemaLocation.plus(folderMigrationSuffix))
-                } else {
-                    locations(*locations.map {
-                        it.path.plus(folderMigrationSuffix)
-                    }.toTypedArray())
-                }
-            }.dataSource(datasource).load()
+        log.debug("DatabaseFactory - runFlyway migrations folder - $envMigrationFolder - size ${schemaConfigList.size}")
+        schemaConfigList.map { config ->
+            with(config) {
+                Flyway.configure().apply {
+                    sqlMigrationPrefix("v")
+                    sqlMigrationSeparator("__")
+                    sqlMigrationSuffixes(".sql")
+                    validateMigrationNaming(true)
+                    baselineOnMigrate(true)
+                    baselineVersion("0")
+                    if (!schemaTableName.isNullOrBlank()) {
+                        table(schemaTableName)
+                    }
+                    if(genericSchema) {
+                        if (!schemaLocation.isNullOrBlank()) {
+                            locations(schemaLocation)
+                        }
+                    } else {
+                        if (!schemaLocation.isNullOrBlank()) {
+                            locations(schemaLocation.plus(envMigrationFolder))
+                        } else {
+                            locations(*locations.map {
+                                it.path.plus(envMigrationFolder)
+                            }.toTypedArray())
+                        }
+                    }
+                }.dataSource(datasource).load()
+            }
         }.forEach { flyway ->
             with(flyway) {
                 try {
-                    log.info("Flyway migration ${configuration.table} starting, check migrations at ${configuration.locations.joinToString(",")}")
+                    log.info(
+                        "Flyway migration ${configuration.table} starting, check migrations at ${
+                            configuration.locations.joinToString(
+                                ","
+                            )
+                        }"
+                    )
                     info()
                     migrate()
                 } catch (e: Exception) {

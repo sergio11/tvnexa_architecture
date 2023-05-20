@@ -32,7 +32,7 @@ internal abstract class SupportDatabaseDataSource<E : Entity<K>, K : Comparable<
         }
     }
 
-    override suspend fun save(entitiesToSave: List<R>) = dbExec {
+    override suspend fun save(entitiesToSave: Iterable<R>) = dbExec {
         with(table) {
             batchInsertOnDuplicateKeyUpdate(entitiesToSave, listOf(id))
         }
@@ -56,8 +56,8 @@ internal abstract class SupportDatabaseDataSource<E : Entity<K>, K : Comparable<
         })
     }
 
-    private fun IdTable<K>.batchInsertOnDuplicateKeyUpdate(data: List<R>, onDupUpdateColumns: List<Column<*>>) {
-        data.takeIf { it.isNotEmpty() }?.let {
+    private fun IdTable<K>.batchInsertOnDuplicateKeyUpdate(data: Iterable<R>, onDupUpdateColumns: List<Column<*>>) {
+        data.takeIf { it.toList().isNotEmpty() }?.let {
             with(BatchInsertUpdateOnDuplicate(this, onDupUpdateColumns)) {
                 data.forEach {
                     addBatch()

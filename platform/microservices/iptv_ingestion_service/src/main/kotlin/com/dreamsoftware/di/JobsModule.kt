@@ -1,5 +1,6 @@
 package com.dreamsoftware.di
 
+import com.dreamsoftware.core.getMapper
 import com.dreamsoftware.data.database.core.IDbMigrationConfig
 import com.dreamsoftware.tasks.core.manager.IJobSchedulerManager
 import com.dreamsoftware.tasks.core.manager.IJobSchedulerManagerImpl
@@ -62,7 +63,9 @@ val jobsModule = module {
                 get() = "quartz_schema_history"
             override val schemaLocation: String?
                 get() = null
+            override val genericSchema: Boolean
+                get() = false
         }
     } bind IDbMigrationConfig::class
-    factory { IngestLanguagesJob(get(), get()) }
+    factory { IngestLanguagesJob(get(), getMapper(), get()) }
 }

@@ -1,8 +1,10 @@
 package com.dreamsoftware.tasks
 
+import com.dreamsoftware.core.IMapper
 import com.dreamsoftware.data.database.datasource.language.ILanguageDatabaseDataSource
+import com.dreamsoftware.data.database.entity.LanguageEntity
 import com.dreamsoftware.data.iptvorg.datasource.IptvOrgNetworkDataSource
-import com.dreamsoftware.model.Language
+import com.dreamsoftware.data.iptvorg.model.LanguageDTO
 import com.dreamsoftware.tasks.core.IJobBuilder
 import com.dreamsoftware.tasks.core.IJobBuilder.Companion.JOB_MAP_NAME_ID_KEY
 import com.dreamsoftware.tasks.core.IJobBuilder.Companion.WATCH_JOB_GROUP
@@ -15,7 +17,8 @@ import org.slf4j.LoggerFactory
 import kotlin.coroutines.CoroutineContext
 
 class IngestLanguagesJob(
-    private val languageNetworkDataSource: IptvOrgNetworkDataSource<Language>,
+    private val languageNetworkDataSource: IptvOrgNetworkDataSource<LanguageDTO>,
+    private val languageMapper: IMapper<LanguageDTO, LanguageEntity>,
     private val languageDatabaseDataSource: ILanguageDatabaseDataSource
 ): Job, CoroutineScope {
 
@@ -28,6 +31,7 @@ class IngestLanguagesJob(
         log.debug("IngestLanguagesJob execute")
         launch {
             val languages = languageNetworkDataSource.fetchContent()
+            languageDatabaseDataSource.save(languageMapper.mapList(languages))
         }
         log.debug("IngestLanguagesJob finish")
     }
