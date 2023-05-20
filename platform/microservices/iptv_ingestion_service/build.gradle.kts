@@ -7,6 +7,7 @@ val hoplite_core_version: String by project
 plugins {
     kotlin("jvm") version "1.8.21"
     id("io.ktor.plugin") version "2.3.0"
+    kotlin("plugin.serialization") version "1.4.21"
 }
 
 java {
@@ -35,6 +36,7 @@ tasks.compileKotlin {
 
 repositories {
     mavenCentral()
+    maven("https://jitpack.io")
 }
 
 tasks.withType<com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar> {
