@@ -14,6 +14,14 @@ class V1__initial_migration: BaseJavaMigration() {
             SchemaUtils.create(CountryLanguageTable)
             SchemaUtils.create(CategoryTable)
             SchemaUtils.create(SubdivisionTable)
+            SchemaUtils.create(RegionTable)
+            SchemaUtils.create(ChannelTable)
+            SchemaUtils.create(ChannelNameTable)
+            SchemaUtils.create(ChannelOwnerTable)
+            SchemaUtils.create(ChannelBroadcastAreaTable)
+            SchemaUtils.create(ChannelLanguageTable)
+            SchemaUtils.create(ChannelCategoryTable)
+            SchemaUtils.create(StreamTable)
         }
     }
 }
