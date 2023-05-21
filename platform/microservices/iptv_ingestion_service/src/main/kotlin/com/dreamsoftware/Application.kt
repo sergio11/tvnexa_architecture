@@ -1,8 +1,8 @@
 package com.dreamsoftware
 
 import com.dreamsoftware.di.appModule
+import com.dreamsoftware.jobs.*
 import com.dreamsoftware.plugins.configureRouting
-import com.dreamsoftware.jobs.IngestLanguagesJob
 import com.dreamsoftware.jobs.core.manager.IJobSchedulerManager
 import io.ktor.server.application.*
 import io.ktor.server.engine.*
@@ -25,12 +25,17 @@ fun Application.module() {
 }
 
 fun Application.doOnStartup() {
-    log.debug("io.ktor.development -> ${System.getProperty("development.mode")}")
-    developmentMode
     with(getKoin()) {
         with(get<IJobSchedulerManager>()) {
+            scheduleJob(listOf(
+                LanguagesIngestionJob,
+                CategoriesIngestionJob,
+                CountriesIngestionJob,
+                SubdivisionsIngestionJob,
+                RegionsIngestionJob,
+                ChannelsIngestionJob
+            ))
             start()
-            scheduleJob(IngestLanguagesJob)
         }
     }
 }
