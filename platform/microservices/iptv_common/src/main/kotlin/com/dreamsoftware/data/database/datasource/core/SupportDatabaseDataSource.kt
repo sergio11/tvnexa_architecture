@@ -65,7 +65,7 @@ internal abstract class SupportDatabaseDataSource<KEY : Comparable<KEY>, DAO : E
     ): Unit = dbExec {
         if (itemsCount > 0) {
             with(BatchInsertUpdateOnDuplicate(table, listOf(table.id))) {
-                for (i in 0..itemsCount) {
+                for (i in 0 until itemsCount) {
                     addBatch()
                     onSaveData(i)
                 }

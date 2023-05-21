@@ -1,5 +1,6 @@
 package com.dreamsoftware.di
 
+import com.dreamsoftware.core.isDevelopmentMode
 import com.dreamsoftware.data.ftp.datasource.IConfigFtpDataSource
 import com.dreamsoftware.data.ftp.di.ftpModule
 import com.dreamsoftware.model.AppConfig
@@ -13,7 +14,11 @@ val configModule = module {
     single<AppConfig> {
         runBlocking {
             ConfigLoaderBuilder.default()
-                .addResourceOrFileSource("/application-dev.yml")
+                .addResourceOrFileSource(if(isDevelopmentMode) {
+                    "/application-dev.yml"
+                } else {
+                    get<IConfigFtpDataSource>().getConfig()
+                })
                 .strict()
                 .build()
                 .loadConfigOrThrow()

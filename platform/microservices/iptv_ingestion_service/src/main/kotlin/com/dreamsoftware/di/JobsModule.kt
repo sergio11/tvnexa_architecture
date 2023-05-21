@@ -2,10 +2,11 @@ package com.dreamsoftware.di
 
 import com.dreamsoftware.core.getMapper
 import com.dreamsoftware.data.database.core.IDbMigrationConfig
+import com.dreamsoftware.data.iptvorg.di.*
+import com.dreamsoftware.jobs.*
 import com.dreamsoftware.jobs.core.manager.IJobSchedulerManager
-import com.dreamsoftware.jobs.core.manager.IJobSchedulerManagerImpl
+import com.dreamsoftware.jobs.core.manager.impl.JobSchedulerManagerImpl
 import com.dreamsoftware.model.DatabaseConfig
-import com.dreamsoftware.jobs.IngestLanguagesJob
 import com.dreamsoftware.jobs.core.JobFactoryImpl
 import org.koin.core.qualifier.named
 import org.koin.dsl.bind
@@ -55,7 +56,7 @@ val jobsModule = module {
         }
     }
     single<IJobSchedulerManager> {
-        IJobSchedulerManagerImpl(get())
+        JobSchedulerManagerImpl(get())
     }
     single {
         object : IDbMigrationConfig {
@@ -67,5 +68,11 @@ val jobsModule = module {
                 get() = false
         }
     } bind IDbMigrationConfig::class
-    factory { IngestLanguagesJob(get(), getMapper(), get()) }
+
+    factory { LanguagesIngestionJob(get(named(LANGUAGES_NETWORK_DATA_SOURCE)), getMapper(), get()) }
+    factory { CategoriesIngestionJob(get(named(CATEGORIES_NETWORK_DATA_SOURCE)), getMapper(), get()) }
+    factory { CountriesIngestionJob(get(named(COUNTRIES_NETWORK_DATA_SOURCE)), getMapper(), get()) }
+    factory { RegionsIngestionJob(get(named(REGIONS_NETWORK_DATA_SOURCE)), getMapper(), get()) }
+    factory { SubdivisionsIngestionJob(get(named(SUBDIVISIONS_NETWORK_DATA_SOURCE)), getMapper(), get()) }
+    factory { ChannelsIngestionJob(get(named(CHANNELS_NETWORK_DATA_SOURCE)), getMapper(), get()) }
 }
