@@ -6,18 +6,18 @@ import com.dreamsoftware.data.database.dao.SubdivisionEntityDAO
 import com.dreamsoftware.data.database.dao.SubdivisionTable
 import com.dreamsoftware.data.database.datasource.core.SupportDatabaseDataSource
 import com.dreamsoftware.data.database.datasource.subdivision.ISubdivisionDatabaseDataSource
+import com.dreamsoftware.data.database.entity.SaveSubdivisionEntity
 import com.dreamsoftware.data.database.entity.SubdivisionEntity
 import org.jetbrains.exposed.sql.statements.UpdateBuilder
 
 internal class SubdivisionDatabaseDataSourceImpl(
     database: IDatabaseFactory,
     mapper: IMapper<SubdivisionEntityDAO, SubdivisionEntity>
-): SupportDatabaseDataSource<SubdivisionEntityDAO, String, SubdivisionEntity>(database, mapper, SubdivisionEntityDAO), ISubdivisionDatabaseDataSource {
+): SupportDatabaseDataSource<String, SubdivisionEntityDAO, SaveSubdivisionEntity , SubdivisionEntity>(database, mapper, SubdivisionEntityDAO), ISubdivisionDatabaseDataSource {
 
-    override fun UpdateBuilder<Int>.onMapEntityToSave(entityToSave: SubdivisionEntity) = with(entityToSave) {
+    override fun UpdateBuilder<Int>.onMapEntityToSave(entityToSave: SaveSubdivisionEntity) = with(entityToSave) {
         this@onMapEntityToSave[SubdivisionTable.code] = code
         this@onMapEntityToSave[SubdivisionTable.name] = name
-        this@onMapEntityToSave[SubdivisionTable.country] = country.code
+        this@onMapEntityToSave[SubdivisionTable.country] = country
     }
-
 }

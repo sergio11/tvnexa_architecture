@@ -2,11 +2,11 @@ package com.dreamsoftware.di
 
 import com.dreamsoftware.core.getMapper
 import com.dreamsoftware.data.database.core.IDbMigrationConfig
-import com.dreamsoftware.tasks.core.manager.IJobSchedulerManager
-import com.dreamsoftware.tasks.core.manager.IJobSchedulerManagerImpl
+import com.dreamsoftware.jobs.core.manager.IJobSchedulerManager
+import com.dreamsoftware.jobs.core.manager.IJobSchedulerManagerImpl
 import com.dreamsoftware.model.DatabaseConfig
-import com.dreamsoftware.tasks.IngestLanguagesJob
-import com.dreamsoftware.tasks.core.JobFactoryImpl
+import com.dreamsoftware.jobs.IngestLanguagesJob
+import com.dreamsoftware.jobs.core.JobFactoryImpl
 import org.koin.core.qualifier.named
 import org.koin.dsl.bind
 import org.koin.dsl.module

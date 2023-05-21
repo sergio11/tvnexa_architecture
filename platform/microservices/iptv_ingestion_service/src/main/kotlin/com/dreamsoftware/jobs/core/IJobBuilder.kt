@@ -1,4 +1,4 @@
-package com.dreamsoftware.tasks.core
+package com.dreamsoftware.jobs.core
 
 import org.quartz.JobDetail
 import org.quartz.JobKey

@@ -1,6 +1,6 @@
-package com.dreamsoftware.tasks.core.manager
+package com.dreamsoftware.jobs.core.manager
 
-import com.dreamsoftware.tasks.core.IJobBuilder
+import com.dreamsoftware.jobs.core.IJobBuilder
 import org.quartz.Scheduler
 import org.slf4j.LoggerFactory
 

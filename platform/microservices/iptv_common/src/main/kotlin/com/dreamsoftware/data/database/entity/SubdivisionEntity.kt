@@ -5,3 +5,9 @@ data class SubdivisionEntity(
     val country: CountryEntity,
     val name: String
 )
+
+data class SaveSubdivisionEntity(
+    val code: String,
+    val country: String,
+    val name: String
+)

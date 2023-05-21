@@ -1,4 +1,4 @@
-package com.dreamsoftware.tasks.core
+package com.dreamsoftware.jobs.core
 
 import org.koin.core.component.KoinComponent
 import org.koin.java.KoinJavaComponent.get
