@@ -1,7 +1,7 @@
 package com.dreamsoftware.data.database.datasource.channel
 
-import com.dreamsoftware.data.database.dao.ChannelEntityDAO
 import com.dreamsoftware.data.database.datasource.core.ISupportDatabaseDataSource
 import com.dreamsoftware.data.database.entity.ChannelEntity
+import com.dreamsoftware.data.database.entity.SaveChannelEntity
 
-interface IChannelDatabaseDataSource: ISupportDatabaseDataSource<ChannelEntityDAO, String, ChannelEntity>
+interface IChannelDatabaseDataSource: ISupportDatabaseDataSource<String, SaveChannelEntity, ChannelEntity>

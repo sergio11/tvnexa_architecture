@@ -1,7 +1,7 @@
 package com.dreamsoftware.data.database.datasource.category
 
 import com.dreamsoftware.data.database.datasource.core.ISupportDatabaseDataSource
-import com.dreamsoftware.data.database.dao.CategoryEntityDAO
 import com.dreamsoftware.data.database.entity.CategoryEntity
+import com.dreamsoftware.data.database.entity.SaveCategoryEntity
 
-interface ICategoryDatabaseDataSource: ISupportDatabaseDataSource<CategoryEntityDAO, String, CategoryEntity>
+interface ICategoryDatabaseDataSource: ISupportDatabaseDataSource<String, SaveCategoryEntity, CategoryEntity>

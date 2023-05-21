@@ -7,16 +7,16 @@ import com.dreamsoftware.data.database.dao.CategoryTable
 import com.dreamsoftware.data.database.datasource.category.ICategoryDatabaseDataSource
 import com.dreamsoftware.data.database.datasource.core.SupportDatabaseDataSource
 import com.dreamsoftware.data.database.entity.CategoryEntity
+import com.dreamsoftware.data.database.entity.SaveCategoryEntity
 import org.jetbrains.exposed.sql.statements.UpdateBuilder
 
 internal class CategoryDatabaseDataSourceImpl(
     database: IDatabaseFactory,
     mapper: IMapper<CategoryEntityDAO, CategoryEntity>
-): SupportDatabaseDataSource<CategoryEntityDAO, String, CategoryEntity>(database, mapper, CategoryEntityDAO), ICategoryDatabaseDataSource {
+): SupportDatabaseDataSource<String, CategoryEntityDAO, SaveCategoryEntity, CategoryEntity>(database, mapper, CategoryEntityDAO), ICategoryDatabaseDataSource {
 
-    override fun UpdateBuilder<Int>.onMapEntityToSave(entityToSave: CategoryEntity) = with(entityToSave) {
+    override fun UpdateBuilder<Int>.onMapEntityToSave(entityToSave: SaveCategoryEntity) = with(entityToSave) {
         this@onMapEntityToSave[CategoryTable.name] = name
         this@onMapEntityToSave[CategoryTable.categoryId] = id
     }
-
 }

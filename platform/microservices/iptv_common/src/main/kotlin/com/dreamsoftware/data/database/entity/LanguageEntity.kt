@@ -4,3 +4,8 @@ data class LanguageEntity(
     val code: String,
     val name: String
 )
+
+data class SaveLanguageEntity(
+    val code: String,
+    val name: String
+)

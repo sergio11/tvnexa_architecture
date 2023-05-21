@@ -2,8 +2,8 @@ package com.dreamsoftware
 
 import com.dreamsoftware.di.appModule
 import com.dreamsoftware.plugins.configureRouting
-import com.dreamsoftware.tasks.IngestLanguagesJob
-import com.dreamsoftware.tasks.core.manager.IJobSchedulerManager
+import com.dreamsoftware.jobs.IngestLanguagesJob
+import com.dreamsoftware.jobs.core.manager.IJobSchedulerManager
 import io.ktor.server.application.*
 import io.ktor.server.engine.*
 import io.ktor.server.netty.*

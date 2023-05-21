@@ -1,39 +1,25 @@
-package com.dreamsoftware.tasks
+package com.dreamsoftware.jobs
 
 import com.dreamsoftware.core.IMapper
 import com.dreamsoftware.data.database.datasource.language.ILanguageDatabaseDataSource
-import com.dreamsoftware.data.database.entity.LanguageEntity
+import com.dreamsoftware.data.database.entity.SaveLanguageEntity
 import com.dreamsoftware.data.iptvorg.datasource.IptvOrgNetworkDataSource
 import com.dreamsoftware.data.iptvorg.model.LanguageDTO
-import com.dreamsoftware.tasks.core.IJobBuilder
-import com.dreamsoftware.tasks.core.IJobBuilder.Companion.JOB_MAP_NAME_ID_KEY
-import com.dreamsoftware.tasks.core.IJobBuilder.Companion.WATCH_JOB_GROUP
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.SupervisorJob
-import kotlinx.coroutines.launch
+import com.dreamsoftware.jobs.core.IJobBuilder
+import com.dreamsoftware.jobs.core.IJobBuilder.Companion.JOB_MAP_NAME_ID_KEY
+import com.dreamsoftware.jobs.core.IJobBuilder.Companion.WATCH_JOB_GROUP
+import com.dreamsoftware.jobs.core.SupportJob
 import org.quartz.*
-import org.slf4j.LoggerFactory
-import kotlin.coroutines.CoroutineContext
 
 class IngestLanguagesJob(
     private val languageNetworkDataSource: IptvOrgNetworkDataSource<LanguageDTO>,
-    private val languageMapper: IMapper<LanguageDTO, LanguageEntity>,
+    private val languageMapper: IMapper<LanguageDTO, SaveLanguageEntity>,
     private val languageDatabaseDataSource: ILanguageDatabaseDataSource
-): Job, CoroutineScope {
+): SupportJob() {
 
-    private val log = LoggerFactory.getLogger(this::class.java)
-
-    override val coroutineContext: CoroutineContext
-        get() = Dispatchers.IO + SupervisorJob()
-
-    override fun execute(context: JobExecutionContext?) {
-        log.debug("IngestLanguagesJob execute")
-        launch {
-            val languages = languageNetworkDataSource.fetchContent()
-            languageDatabaseDataSource.save(languageMapper.mapList(languages))
-        }
-        log.debug("IngestLanguagesJob finish")
+    override suspend fun onStartExecution() {
+        val languages = languageNetworkDataSource.fetchContent()
+        languageDatabaseDataSource.save(languageMapper.mapList(languages))
     }
 
     companion object: IJobBuilder {
@@ -57,6 +43,5 @@ class IngestLanguagesJob(
             .build()
 
         override fun getJobKey(): JobKey = JobKey.jobKey(JOB_ID, WATCH_JOB_GROUP)
-
     }
 }
