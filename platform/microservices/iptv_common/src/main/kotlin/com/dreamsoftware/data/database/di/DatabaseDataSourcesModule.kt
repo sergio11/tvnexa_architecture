@@ -11,6 +11,8 @@ import com.dreamsoftware.data.database.datasource.language.ILanguageDatabaseData
 import com.dreamsoftware.data.database.datasource.language.impl.LanguageDatabaseDataSourceImpl
 import com.dreamsoftware.data.database.datasource.region.IRegionDatabaseDataSource
 import com.dreamsoftware.data.database.datasource.region.impl.RegionDatabaseDataSourceImpl
+import com.dreamsoftware.data.database.datasource.stream.IStreamDatabaseDataSource
+import com.dreamsoftware.data.database.datasource.stream.impl.StreamDatabaseDataSourceImpl
 import com.dreamsoftware.data.database.datasource.subdivision.ISubdivisionDatabaseDataSource
 import com.dreamsoftware.data.database.datasource.subdivision.impl.SubdivisionDatabaseDataSourceImpl
 import org.koin.dsl.module
@@ -23,4 +25,5 @@ val databaseDataSourcesModule = module {
     single<ISubdivisionDatabaseDataSource> { SubdivisionDatabaseDataSourceImpl(get(), getMapper()) }
     single<IRegionDatabaseDataSource> { RegionDatabaseDataSourceImpl(get(), getMapper()) }
     single<IChannelDatabaseDataSource> { ChannelDatabaseDataSourceImpl(get(), getMapper())  }
+    single<IStreamDatabaseDataSource> { StreamDatabaseDataSourceImpl(get(), getMapper())  }
 }

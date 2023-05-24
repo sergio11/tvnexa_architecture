@@ -14,6 +14,7 @@ const val COUNTRIES_NETWORK_DATA_SOURCE = "countriesNetworkDataSource"
 const val SUBDIVISIONS_NETWORK_DATA_SOURCE = "subdivisionsNetworkDataSource"
 const val REGIONS_NETWORK_DATA_SOURCE = "regionsNetworkDataSource"
 const val CHANNELS_NETWORK_DATA_SOURCE = "channelsNetworkDataSource"
+const val STREAMS_NETWORK_DATA_SOURCE = "channelsNetworkDataSource"
 
 val networkDataSources = module {
     includes(networkModule)
@@ -24,6 +25,7 @@ val networkDataSources = module {
     factory(named("subdivisionsEndpoint")) { get<IptvOrgConfig>().subdivisionsEndpoint }
     factory(named("regionsEndpoint")) { get<IptvOrgConfig>().regionsEndpoint }
     factory(named("channelsEndpoint")) { get<IptvOrgConfig>().channelsEndpoint }
+    factory(named("streamsEndpoint")) { get<IptvOrgConfig>().streamsEndpoint }
 
     factory<IptvOrgNetworkDataSource<LanguageDTO>>(named(LANGUAGES_NETWORK_DATA_SOURCE)) { IptvOrgNetworkDataSourceImpl(get(), get(named("languagesEndpoint")), typeInfo<List<LanguageDTO>>()) }
     factory<IptvOrgNetworkDataSource<CategoryDTO>>(named(CATEGORIES_NETWORK_DATA_SOURCE)) { IptvOrgNetworkDataSourceImpl(get(), get(named("categoriesEndpoint")), typeInfo<List<CategoryDTO>>()) }
@@ -31,4 +33,5 @@ val networkDataSources = module {
     factory<IptvOrgNetworkDataSource<SubdivisionDTO>>(named(SUBDIVISIONS_NETWORK_DATA_SOURCE)) { IptvOrgNetworkDataSourceImpl(get(), get(named("subdivisionsEndpoint")), typeInfo<List<SubdivisionDTO>>()) }
     factory<IptvOrgNetworkDataSource<RegionDTO>>(named(REGIONS_NETWORK_DATA_SOURCE)) { IptvOrgNetworkDataSourceImpl(get(), get(named("regionsEndpoint")), typeInfo<List<RegionDTO>>()) }
     factory<IptvOrgNetworkDataSource<ChannelDTO>>(named(CHANNELS_NETWORK_DATA_SOURCE)) { IptvOrgNetworkDataSourceImpl(get(), get(named("channelsEndpoint")), typeInfo<List<ChannelDTO>>()) }
+    factory<IptvOrgNetworkDataSource<StreamDTO>>(named(STREAMS_NETWORK_DATA_SOURCE)) { IptvOrgNetworkDataSourceImpl(get(), get(named("streamsEndpoint")), typeInfo<List<StreamDTO>>()) }
 }

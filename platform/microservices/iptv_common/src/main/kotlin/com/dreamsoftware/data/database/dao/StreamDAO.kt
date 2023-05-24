@@ -8,7 +8,7 @@ import org.jetbrains.exposed.dao.id.LongIdTable
 object StreamTable: LongIdTable(name = "streams") {
 
     val channelId = varchar(name = "channel", length = 20).references(ChannelTable.channelId)
-    val url = varchar(name = "url", length = 300)
+    val url = varchar(name = "url", length = 500)
     val httpReferrer = varchar(name = "http_referrer", length = 300).nullable()
     val userAgent = varchar(name = "user_agent", length = 100).nullable()
 

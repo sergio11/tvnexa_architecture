@@ -33,7 +33,8 @@ fun Application.doOnStartup() {
                 CountriesIngestionJob,
                 SubdivisionsIngestionJob,
                 RegionsIngestionJob,
-                ChannelsIngestionJob
+                ChannelsIngestionJob,
+                StreamsIngestionJob
             ))
             start()
         }
