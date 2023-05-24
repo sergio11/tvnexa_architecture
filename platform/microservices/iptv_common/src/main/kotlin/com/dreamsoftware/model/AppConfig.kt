@@ -19,7 +19,6 @@ data class IptvOrgConfig(
     val languagesEndpoint: String,
     val categoriesEndpoint: String,
     val regionsEndpoint: String,
-    val channelsEndpoint: String
+    val channelsEndpoint: String,
+    val streamsEndpoint: String
 )
-
-

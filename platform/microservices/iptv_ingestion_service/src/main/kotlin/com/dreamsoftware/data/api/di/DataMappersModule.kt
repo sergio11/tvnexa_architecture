@@ -11,4 +11,5 @@ val dataMappersModule = module {
     mapper { SaveSubdivisionDTOMapper() }
     mapper { SaveRegionDTOMapper() }
     mapper { SaveChannelDTOMapper() }
+    mapper { SaveStreamDTOMapper() }
 }
