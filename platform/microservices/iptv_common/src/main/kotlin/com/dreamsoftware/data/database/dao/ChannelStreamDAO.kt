@@ -1,0 +1,28 @@
+package com.dreamsoftware.data.database.dao
+
+import org.jetbrains.exposed.dao.Entity
+import org.jetbrains.exposed.dao.EntityClass
+import org.jetbrains.exposed.dao.id.EntityID
+import org.jetbrains.exposed.dao.id.LongIdTable
+
+object ChannelStreamTable: LongIdTable(name = "channel_streams") {
+
+    // Channel ID
+    val channelId = varchar(name = "channel", length = 20).references(ChannelTable.channelId)
+    // Stream URL
+    val url = varchar(name = "url", length = 500)
+    // The Referer request header for the stream
+    val httpReferrer = varchar(name = "http_referrer", length = 300).nullable()
+    // The User-Agent request header for the stream
+    val userAgent = varchar(name = "user_agent", length = 100).nullable()
+
+}
+
+class ChannelStreamEntityDAO(id: EntityID<Long>) : Entity<Long>(id) {
+    companion object : EntityClass<Long, ChannelStreamEntityDAO>(ChannelStreamTable)
+
+    var channel by ChannelEntityDAO referencedOn ChannelStreamTable.channelId
+    var url by ChannelStreamTable.url
+    var httpReferrer by ChannelStreamTable.httpReferrer
+    var userAgent by ChannelStreamTable.userAgent
+}

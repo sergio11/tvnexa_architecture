@@ -4,7 +4,7 @@ import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
 @Serializable
-data class StreamDTO(
+data class ChannelStreamDTO(
     @SerialName("channel")
     val channel: String,
     @SerialName("url")

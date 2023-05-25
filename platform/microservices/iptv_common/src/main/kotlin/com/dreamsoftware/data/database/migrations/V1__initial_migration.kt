@@ -21,7 +21,8 @@ class V1__initial_migration: BaseJavaMigration() {
             SchemaUtils.create(ChannelBroadcastAreaTable)
             SchemaUtils.create(ChannelLanguageTable)
             SchemaUtils.create(ChannelCategoryTable)
-            SchemaUtils.create(StreamTable)
+            SchemaUtils.create(ChannelStreamTable)
+            SchemaUtils.create(ChannelGuideTable)
         }
     }
 }

@@ -1,7 +1,7 @@
 package com.dreamsoftware.data.database.datasource.stream
 
 import com.dreamsoftware.data.database.datasource.core.ISupportDatabaseDataSource
-import com.dreamsoftware.data.database.entity.SaveStreamEntity
-import com.dreamsoftware.data.database.entity.StreamEntity
+import com.dreamsoftware.data.database.entity.SaveChannelStreamEntity
+import com.dreamsoftware.data.database.entity.ChannelStreamEntity
 
-interface IStreamDatabaseDataSource: ISupportDatabaseDataSource<Long, SaveStreamEntity, StreamEntity>
+interface IStreamDatabaseDataSource: ISupportDatabaseDataSource<Long, SaveChannelStreamEntity, ChannelStreamEntity>
