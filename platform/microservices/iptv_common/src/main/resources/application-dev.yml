@@ -12,6 +12,7 @@ iptvOrgConfig: {
   categoriesEndpoint: "https://iptv-org.github.io/api/categories.json",
   regionsEndpoint: "https://iptv-org.github.io/api/regions.json",
   channelsEndpoint: "https://iptv-org.github.io/api/channels.json",
-  streamsEndpoint: "https://iptv-org.github.io/api/streams.json"
+  channelStreamsEndpoint: "https://iptv-org.github.io/api/streams.json",
+  channelGuidesEndpoint: "https://iptv-org.github.io/api/guides.json"
 }
 

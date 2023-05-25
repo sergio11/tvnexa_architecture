@@ -75,5 +75,5 @@ val jobsModule = module {
     factory { RegionsIngestionJob(get(named(REGIONS_NETWORK_DATA_SOURCE)), getMapper(), get()) }
     factory { SubdivisionsIngestionJob(get(named(SUBDIVISIONS_NETWORK_DATA_SOURCE)), getMapper(), get()) }
     factory { ChannelsIngestionJob(get(named(CHANNELS_NETWORK_DATA_SOURCE)), getMapper(), get()) }
-    factory { StreamsIngestionJob(get(named(STREAMS_NETWORK_DATA_SOURCE)), getMapper(), get()) }
+    factory { ChannelStreamsIngestionJob(get(named(CHANNEL_STREAMS_NETWORK_DATA_SOURCE)), getMapper(), get()) }
 }
