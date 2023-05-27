@@ -7,7 +7,7 @@ import org.koin.dsl.module
 val dataMappersModule = module {
     mapper { SaveLanguageDTOMapper() }
     mapper { SaveCategoryDTOMapper() }
-    mapper { SaveCountryDTOMapper(get()) }
+    mapper { SaveCountryDTOMapper() }
     mapper { SaveSubdivisionDTOMapper() }
     mapper { SaveRegionDTOMapper() }
     mapper { SaveChannelDTOMapper() }

@@ -16,7 +16,7 @@ class ChannelEntityDaoMapper(
             channelId = channelId,
             name = name,
             network = network,
-            country = countryMapper.map(country),
+            country = country.let(countryMapper::map),
             subdivision = subdivision?.let(subdivisionMapper::map),
             city = city,
             isNsfw = isNsfw,

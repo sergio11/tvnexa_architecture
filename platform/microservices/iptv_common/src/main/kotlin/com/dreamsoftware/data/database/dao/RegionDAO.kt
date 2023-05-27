@@ -4,24 +4,26 @@ import org.jetbrains.exposed.dao.Entity
 import org.jetbrains.exposed.dao.EntityClass
 import org.jetbrains.exposed.dao.id.EntityID
 import org.jetbrains.exposed.dao.id.IdTable
+import org.jetbrains.exposed.dao.id.LongIdTable
 import org.jetbrains.exposed.sql.Column
-import org.jetbrains.exposed.sql.Table
 
 object RegionTable: IdTable<String>(name = "regions") {
 
     val code = varchar(name = "code", length = 10)
-    val name = varchar(name = "name", length = 20).uniqueIndex()
+    val name = varchar(name = "name", length = 100).uniqueIndex()
 
     override val id: Column<EntityID<String>> = code.entityId()
     override val primaryKey: PrimaryKey = PrimaryKey(id)
 }
 
-object RegionCountryTable: Table(name = "regions_countries") {
+object RegionCountryTable: LongIdTable(name = "regions_countries") {
 
     val region = reference("region", RegionTable)
     val country = reference("country", CountryTable)
 
-    override val primaryKey = PrimaryKey(region, country, name = "PK_RegionCountry")
+    init {
+        uniqueIndex("UNIQUE_RegionCountry", region, country)
+    }
 }
 
 class RegionEntityDAO(id: EntityID<String>) : Entity<String>(id) {

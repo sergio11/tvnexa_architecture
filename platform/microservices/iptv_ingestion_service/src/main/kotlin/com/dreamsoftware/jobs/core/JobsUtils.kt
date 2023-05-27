@@ -8,12 +8,17 @@ inline fun <reified T: Job> createNewJob(jobId: String) = JobBuilder.newJob(T::c
     .build()
 
 
-fun createNewTrigger(triggerId: String, intervalInMinutes: Int) = TriggerBuilder.newTrigger()
+fun createNewTrigger(triggerId: String, intervalInMinutes: Int, repeatForever: Boolean = true) = TriggerBuilder.newTrigger()
     .withIdentity(triggerId, IJobBuilder.WATCH_JOB_GROUP)
     .withSchedule(
         SimpleScheduleBuilder.simpleSchedule()
-            .withIntervalInMinutes(intervalInMinutes)
-            .repeatForever()
+            .withIntervalInMinutes(intervalInMinutes).let {
+                if(repeatForever) {
+                    it.repeatForever()
+                } else {
+                    it
+                }
+            }
     )
     .build()
 

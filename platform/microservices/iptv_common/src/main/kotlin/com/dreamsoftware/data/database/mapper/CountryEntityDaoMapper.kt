@@ -13,7 +13,7 @@ class CountryEntityDaoMapper(
     override fun map(input: CountryEntityDAO): CountryEntity = with(input) {
         CountryEntity(
             code = code,
-            name = name,
+            name = name.orEmpty(),
             flag = flag,
             languages = languageMapper.mapList(languages)
         )

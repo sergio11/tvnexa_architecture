@@ -1,87 +1,99 @@
 package com.dreamsoftware.data.database.dao
 
 
+import com.dreamsoftware.data.database.dao.ChannelTable.entityId
 import org.jetbrains.exposed.dao.Entity
 import org.jetbrains.exposed.dao.EntityClass
 import org.jetbrains.exposed.dao.id.EntityID
 import org.jetbrains.exposed.dao.id.IdTable
+import org.jetbrains.exposed.dao.id.LongIdTable
 import org.jetbrains.exposed.sql.Column
-import org.jetbrains.exposed.sql.Table
 
 object ChannelTable: IdTable<String>(name = "channels") {
 
     // Unique channel ID
-    val channelId = varchar(name = "id", length = 20)
+    val channelId = varchar(name = "id", length = 50)
     // Full name of the channel
-    val name = varchar(name = "name", length = 50).uniqueIndex()
+    val name = varchar(name = "name", length = 50).uniqueIndex().nullable()
     // Name of the network operating the channel
-    val network = varchar(name = "network", length = 30).nullable()
+    val network = varchar(name = "network", length = 50).nullable()
     // Country code from which the broadcast is transmitted (ISO 3166-1 alpha-2)
     val country = char(name = "country", length = 2).references(CountryTable.code)
     // Code of the subdivision (e.g., provinces or states) from which the broadcast is transmitted (ISO 3166-2)
     val subdivision = varchar(name = "subdivision", length = 10).references(SubdivisionTable.code).nullable()
     // Name of the city from which the broadcast is transmitted
-    val city = varchar(name = "city", length = 30).nullable()
+    val city = varchar(name = "city", length = 50).nullable()
     // Indicates whether the channel broadcasts adult content
-    val isNsfw = bool(name = "is_nsfw")
+    val isNsfw = bool(name = "is_nsfw").nullable()
     // Launch date of the channel (YYYY-MM-DD)
     val launched = char(name = "launched", length = 10).nullable()
     // Date on which the channel closed (YYYY-MM-DD)
     val closed = char(name = "closed", length = 10).nullable()
     // The ID of the channel that this channel was replaced by
-    val replacedBy = varchar(name = "replacedBy", length = 20).references(channelId).nullable()
+    val replacedBy = varchar(name = "replacedBy", length = 50).references(channelId).nullable()
     // Official website URL
-    val website = varchar(name = "website", length = 50).nullable()
+    val website = varchar(name = "website", length = 1000).nullable()
     // Logo URL
-    val logo = varchar(name = "logo", length = 50)
+    val logo = varchar(name = "logo", length = 1000).nullable()
 
     override val id: Column<EntityID<String>> = channelId.entityId()
     override val primaryKey: PrimaryKey = PrimaryKey(id)
 }
 
 // List of alternative channel names
-object ChannelNameTable: Table(name = "channels_alt_names") {
+object ChannelNameTable: LongIdTable(name = "channels_alt_names") {
 
     val channel = reference("channel", ChannelTable)
     val altName = varchar(name = "name", length = 50)
 
-    override val primaryKey = PrimaryKey(channel, altName, name = "PK_ChannelName")
+
+    init {
+        uniqueIndex("UNIQUE_ChannelName", channel, altName)
+    }
 }
 
 // List of channel owners
-object ChannelOwnerTable: Table(name = "channels_owners") {
+object ChannelOwnerTable: LongIdTable(name = "channels_owners") {
 
-    val channel = reference("channel", ChannelTable)
+    val channel = reference(name = "channel", ChannelTable)
     val owner = varchar(name = "owner", length = 50)
 
-    override val primaryKey = PrimaryKey(channel, owner, name = "PK_ChannelOwner")
+    init {
+        uniqueIndex("UNIQUE_ChannelOwner", channel, owner)
+    }
 }
 
 // List of codes describing the broadcasting area (r/<region_code>, c/<country_code>, s/<subdivision_code>)
-object ChannelBroadcastAreaTable: Table(name = "channels_broadcast_areas") {
+object ChannelBroadcastAreaTable: LongIdTable(name = "channels_broadcast_areas") {
 
     val channel = reference("channel", ChannelTable)
     val broadcastArea = varchar(name = "broadcast_area", length = 50)
 
-    override val primaryKey = PrimaryKey(channel, broadcastArea, name = "PK_ChannelBroadcastArea")
+    init {
+        uniqueIndex("UNIQUE_ChannelBroadcastArea", channel, broadcastArea)
+    }
 }
 
 // List of languages broadcast
-object ChannelLanguageTable: Table(name = "channels_languages") {
+object ChannelLanguageTable: LongIdTable(name = "channels_languages") {
 
-    val channel = reference("channel", ChannelTable)
-    val language = reference("language", LanguageTable)
+    val channel = reference(name = "channel", ChannelTable)
+    val language = reference(name = "language", LanguageTable)
 
-    override val primaryKey = PrimaryKey(channel, language, name = "PK_ChannelLanguage")
+    init {
+        uniqueIndex("UNIQUE_ChannelLanguage", channel, language)
+    }
 }
 
 // List of categories to which this channel belongs
-object ChannelCategoryTable: Table(name = "channels_categories") {
+object ChannelCategoryTable: LongIdTable(name = "channels_categories") {
 
     val channel = reference("channel", ChannelTable)
     val category = reference("category", CategoryTable)
 
-    override val primaryKey = PrimaryKey(channel, category, name = "PK_ChannelCategory")
+    init {
+        uniqueIndex("UNIQUE_ChannelCategory", channel, category)
+    }
 }
 
 

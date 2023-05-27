@@ -26,9 +26,11 @@ class ChannelStreamsIngestionJob(
     companion object: IJobBuilder {
 
         private const val JOB_ID = "ingest_streams_job"
+        private const val INTERVAL_IN_MINUTES = 1
 
         override fun buildJob(): JobDetail = createNewJob<ChannelStreamsIngestionJob>(JOB_ID)
         override fun getJobKey(): JobKey = createJobKey(JOB_ID)
+        override fun getIntervalInMinutes(): Int = INTERVAL_IN_MINUTES
         override fun getParentJobKey(): JobKey = ChannelsIngestionJob.getJobKey()
     }
 }

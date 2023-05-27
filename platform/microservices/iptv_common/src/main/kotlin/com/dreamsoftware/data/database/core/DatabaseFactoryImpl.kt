@@ -5,6 +5,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import org.flywaydb.core.Flyway
 import org.jetbrains.exposed.sql.Database
+import org.jetbrains.exposed.sql.Transaction
 import org.jetbrains.exposed.sql.transactions.transaction
 import org.slf4j.LoggerFactory
 import javax.sql.DataSource
@@ -35,7 +36,7 @@ internal class DatabaseFactoryImpl(
         runFlyway(datasource)
     }
 
-    override suspend fun <T> dbExec(block: () -> T): T = withContext(Dispatchers.IO) {
+    override suspend fun <T> dbExec(block: Transaction.() -> T): T = withContext(Dispatchers.IO) {
         if (!isConnected()) {
             Database.connect(datasource)
         }

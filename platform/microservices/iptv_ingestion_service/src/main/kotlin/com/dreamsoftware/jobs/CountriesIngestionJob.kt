@@ -19,16 +19,18 @@ class CountriesIngestionJob(
 ): SupportJob() {
 
     override suspend fun onStartExecution() {
-        val categories = countriesNetworkDataSource.fetchContent()
-        countriesDatabaseDataSource.save(countriesMapper.mapList(categories))
+        val countries = countriesNetworkDataSource.fetchContent()
+        countriesDatabaseDataSource.save(countriesMapper.mapList(countries))
     }
 
     companion object: IJobBuilder {
 
         private const val JOB_ID = "ingest_countries_job"
+        private const val INTERVAL_IN_MINUTES = 1
 
         override fun buildJob(): JobDetail = createNewJob<CountriesIngestionJob>(JOB_ID)
         override fun getJobKey(): JobKey = createJobKey(JOB_ID)
+        override fun getIntervalInMinutes(): Int = INTERVAL_IN_MINUTES
         override fun getParentJobKey(): JobKey = LanguagesIngestionJob.getJobKey()
     }
 }

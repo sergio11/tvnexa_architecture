@@ -26,12 +26,15 @@ class ChannelsIngestionJob(
     companion object: IJobBuilder {
 
         private const val JOB_ID = "ingest_channels_job"
+        private const val INTERVAL_IN_MINUTES = 1
 
         override fun buildJob(): JobDetail = createNewJob<ChannelsIngestionJob>(JOB_ID)
         override fun getJobKey(): JobKey = createJobKey(JOB_ID)
+        override fun getIntervalInMinutes(): Int = INTERVAL_IN_MINUTES
         override fun getParentJobKeys(): Iterable<JobKey> = listOf(
             LanguagesIngestionJob.getJobKey(),
-            CategoriesIngestionJob.getJobKey()
+            CategoriesIngestionJob.getJobKey(),
+            SubdivisionsIngestionJob.getJobKey()
         )
     }
 }
