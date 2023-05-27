@@ -8,7 +8,7 @@ import org.jetbrains.exposed.dao.id.LongIdTable
 object ChannelGuideTable: LongIdTable(name = "channel_guides") {
 
     // Channel ID
-    val channelId = varchar(name = "channel", length = 20).references(ChannelTable.channelId)
+    val channelId = varchar(name = "channel", length = 50).references(ChannelTable.channelId)
     // Program source domain name
     val site = varchar(name = "site", length = 100)
     // Language of the guide (ISO_639-1 code)

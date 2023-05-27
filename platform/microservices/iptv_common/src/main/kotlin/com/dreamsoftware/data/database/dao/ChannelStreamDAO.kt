@@ -8,7 +8,7 @@ import org.jetbrains.exposed.dao.id.LongIdTable
 object ChannelStreamTable: LongIdTable(name = "channel_streams") {
 
     // Channel ID
-    val channelId = varchar(name = "channel", length = 20).references(ChannelTable.channelId)
+    val channelId = varchar(name = "channel", length = 50).references(ChannelTable.channelId)
     // Stream URL
     val url = varchar(name = "url", length = 500)
     // The Referer request header for the stream

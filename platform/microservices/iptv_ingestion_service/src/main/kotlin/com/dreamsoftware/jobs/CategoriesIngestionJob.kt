@@ -25,10 +25,11 @@ class CategoriesIngestionJob(
 
         private const val JOB_ID = "ingest_categories_job"
         private const val TRIGGER_ID = "ingest_categories_job_trigger"
-        private const val INTERVAL_IN_MINUTES = 2
+        private const val INTERVAL_IN_MINUTES = 10
 
         override fun buildJob(): JobDetail = createNewJob<CategoriesIngestionJob>(JOB_ID)
         override fun buildTrigger(): Trigger = createNewTrigger(TRIGGER_ID, INTERVAL_IN_MINUTES)
         override fun getJobKey(): JobKey = createJobKey(JOB_ID)
+        override fun getIntervalInMinutes(): Int = INTERVAL_IN_MINUTES
     }
 }

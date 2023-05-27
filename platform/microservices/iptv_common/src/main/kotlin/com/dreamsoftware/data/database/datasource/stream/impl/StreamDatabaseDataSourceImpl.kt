@@ -15,6 +15,16 @@ internal class StreamDatabaseDataSourceImpl(
     mapper: IMapper<ChannelStreamEntityDAO, ChannelStreamEntity>
 ): SupportDatabaseDataSource<Long, ChannelStreamEntityDAO, SaveChannelStreamEntity, ChannelStreamEntity>(database, mapper, ChannelStreamEntityDAO), IStreamDatabaseDataSource {
 
+    override suspend fun save(data: SaveChannelStreamEntity) {
+        if(data.channelId.isNotBlank()) {
+            super.save(data)
+        }
+    }
+
+    override suspend fun save(data: Iterable<SaveChannelStreamEntity>) {
+        super.save(data.filter { it.channelId.isNotBlank() })
+    }
+
     override fun UpdateBuilder<Int>.onMapEntityToSave(entityToSave: SaveChannelStreamEntity) = with(entityToSave) {
         this@onMapEntityToSave[ChannelStreamTable.url] = url
         this@onMapEntityToSave[ChannelStreamTable.userAgent] = userAgent

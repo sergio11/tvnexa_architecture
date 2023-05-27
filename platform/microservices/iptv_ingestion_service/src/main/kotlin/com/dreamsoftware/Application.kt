@@ -27,7 +27,7 @@ fun Application.module() {
 fun Application.doOnStartup() {
     with(getKoin()) {
         with(get<IJobSchedulerManager>()) {
-            scheduleJob(listOf(
+            scheduleJobsAndStart(listOf(
                 LanguagesIngestionJob,
                 CategoriesIngestionJob,
                 CountriesIngestionJob,
@@ -35,9 +35,9 @@ fun Application.doOnStartup() {
                 RegionsIngestionJob,
                 ChannelsIngestionJob,
                 ChannelStreamsIngestionJob,
-                ChannelGuidesIngestionJob
+                ChannelGuidesIngestionJob,
+                ChannelEpgGrabbingJob
             ))
-            start()
         }
     }
 }

@@ -10,6 +10,7 @@ import org.jetbrains.exposed.sql.*
 import org.jetbrains.exposed.sql.SqlExpressionBuilder.eq
 import org.jetbrains.exposed.sql.statements.UpdateBuilder
 import org.jetbrains.exposed.sql.transactions.TransactionManager
+import org.slf4j.LoggerFactory
 
 internal abstract class SupportDatabaseDataSource<KEY : Comparable<KEY>, DAO : Entity<KEY>, INPUT, OUTPUT>(
     private val database: IDatabaseFactory,
@@ -17,60 +18,91 @@ internal abstract class SupportDatabaseDataSource<KEY : Comparable<KEY>, DAO : E
     private val entityDAO: EntityClass<KEY, DAO>
 ) : ISupportDatabaseDataSource<KEY, INPUT, OUTPUT> {
 
+    protected val log = LoggerFactory.getLogger(this::class.java)
+
     override suspend fun findAll(): Iterable<OUTPUT> = dbExec {
-        all().sortedByDescending { it.id }.map(mapper::map)
+        entityDAO.all().sortedByDescending { it.id }.map(mapper::map)
     }
 
     override suspend fun findByKey(key: KEY): OUTPUT = dbExec {
-        findById(key)?.let(mapper::map) ?: throw RuntimeException()
+        entityDAO.findById(key)?.let(mapper::map) ?: throw RuntimeException()
     }
 
     override suspend fun save(data: INPUT) {
-        insertOnDuplicateKeyUpdate { onMapEntityToSave(data) }
+        dbExec {
+            entityDAO.table.insertOnDuplicateKeyUpdate(
+                onDupUpdateColumns = listOf(entityDAO.table.id),
+                data = data
+            ) { onMapEntityToSave(it) }
+            commit()
+            onSaveTransactionFinished(data)
+        }
     }
 
     override suspend fun save(data: Iterable<INPUT>) = with(data) {
-        batchInsertOnDuplicateKeyUpdate(itemsCount = count()) { idx -> onMapEntityToSave(elementAt(idx)) }
+        dbExec {
+            entityDAO.table.batchInsertOnDuplicateKeyUpdate(
+                onDupUpdateColumns = listOf(entityDAO.table.id),
+                itemsCount = count()
+            ) { idx -> onMapEntityToSave(elementAt(idx)) }
+            commit()
+            onSaveTransactionFinished(data)
+        }
     }
 
     override suspend fun deleteByKey(key: KEY): Unit = dbExec {
-        table.deleteWhere { id eq key }
+        entityDAO.table.deleteWhere { id eq key }
     }
 
-    override suspend fun deleteAll(): Unit = dbExec { table.deleteAll() }
+    override suspend fun deleteAll(): Unit = dbExec { entityDAO.table.deleteAll() }
 
-    abstract fun UpdateBuilder<Int>.onMapEntityToSave(entityToSave: INPUT): Unit
+    abstract fun UpdateBuilder<Int>.onMapEntityToSave(entityToSave: INPUT)
 
-    protected suspend fun <OUTPUT> dbExec(dbExecution: EntityClass<KEY, DAO>.() -> OUTPUT): OUTPUT = withContext(Dispatchers.IO) {
-        database.dbExec { with(entityDAO) { dbExecution() } }
+    open fun Transaction.onSaveTransactionFinished(data: Iterable<INPUT>) {}
+
+    open fun Transaction.onSaveTransactionFinished(data: INPUT) {}
+
+    protected suspend fun <OUTPUT> dbExec(dbExecution: Transaction.() -> OUTPUT): OUTPUT = withContext(Dispatchers.IO) {
+        database.dbExec { dbExecution() }
     }
 
-    protected suspend fun insertOnDuplicateKeyUpdate(onSaveData: UpdateBuilder<Int>.() -> Unit = {}): Unit = dbExec {
-        TransactionManager.current().exec(InsertUpdateOnDuplicate<KEY>(table, listOf(table.id)).apply {
-            onSaveData()
+    protected  fun <T : Table, E> T.insertOnDuplicateKeyUpdate(
+        data: E,
+        onDupUpdateColumns: List<Column<*>>,
+        onSaveData: UpdateBuilder<Int>.(data: E) -> Unit = {}
+    ) {
+        TransactionManager.current().exec(InsertUpdateOnDuplicate<KEY>(this@insertOnDuplicateKeyUpdate, onDupUpdateColumns).apply {
+            onSaveData(data)
         })
     }
 
-    protected suspend fun <T> batchInsertOnDuplicateKeyUpdate(data: Iterable<T>, onSaveData: UpdateBuilder<Int>.(item: T) -> Unit = {}) {
+    protected fun <T : Table, E> T.batchInsertOnDuplicateKeyUpdate(
+        onDupUpdateColumns: List<Column<*>>,
+        data: Iterable<E>,
+        onSaveData: UpdateBuilder<Int>.(item: E) -> Unit = {}
+    ) {
         with(data) {
-            batchInsertOnDuplicateKeyUpdate(count()) { idx ->
-                onSaveData(elementAt(idx))
+            batchInsertOnDuplicateKeyUpdate(
+                itemsCount = count(),
+                onDupUpdateColumns = onDupUpdateColumns
+            ) {
+                onSaveData(elementAt(it))
             }
         }
     }
 
-    private suspend fun batchInsertOnDuplicateKeyUpdate(
+    private fun <T : Table> T.batchInsertOnDuplicateKeyUpdate(
         itemsCount: Int,
+        onDupUpdateColumns: List<Column<*>>,
         onSaveData: UpdateBuilder<Int>.(idx: Int) -> Unit = {}
-    ): Unit = dbExec {
+    ) {
         if (itemsCount > 0) {
-            with(BatchInsertUpdateOnDuplicate(table, listOf(table.id))) {
+            TransactionManager.current().exec(BatchInsertUpdateOnDuplicate(this, onDupUpdateColumns).apply {
                 for (i in 0 until itemsCount) {
                     addBatch()
                     onSaveData(i)
                 }
-                TransactionManager.current().exec(this)
-            }
+            })
         }
     }
 }

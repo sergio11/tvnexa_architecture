@@ -9,4 +9,8 @@
     </root>
     <logger name="org.eclipse.jetty" level="INFO"/>
     <logger name="io.netty" level="INFO"/>
+    <logger name="com.dreamsoftware" level="DEBUG"/>
+    <logger name="Exposed" level="warn" additivity="false">
+        <appender-ref ref="STDOUT"/>
+    </logger>
 </configuration>

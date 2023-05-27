@@ -9,6 +9,7 @@ import com.dreamsoftware.data.database.datasource.core.SupportDatabaseDataSource
 import com.dreamsoftware.data.database.datasource.region.IRegionDatabaseDataSource
 import com.dreamsoftware.data.database.entity.RegionEntity
 import com.dreamsoftware.data.database.entity.SaveRegionEntity
+import org.jetbrains.exposed.sql.Transaction
 import org.jetbrains.exposed.sql.statements.UpdateBuilder
 
 internal class RegionDatabaseDataSourceImpl(
@@ -20,27 +21,30 @@ internal class RegionDatabaseDataSourceImpl(
     RegionEntityDAO
 ), IRegionDatabaseDataSource {
 
-    override suspend fun save(data: SaveRegionEntity) {
-        super.save(data)
-        saveRegionCountries(data.toCountriesByRegion())
-    }
-
-    override suspend fun save(data: Iterable<SaveRegionEntity>) {
-        super.save(data)
-        saveRegionCountries(data.fold(listOf()) { items, region ->
-            items + region.toCountriesByRegion()
-        })
-    }
-
     override fun UpdateBuilder<Int>.onMapEntityToSave(entityToSave: SaveRegionEntity) = with(entityToSave) {
         this@onMapEntityToSave[RegionTable.code] = code
         this@onMapEntityToSave[RegionTable.name] = name
     }
 
-    private suspend fun saveRegionCountries(data: Iterable<Pair<String, String>>) {
-        batchInsertOnDuplicateKeyUpdate(data) {
+    override fun Transaction.onSaveTransactionFinished(data: Iterable<SaveRegionEntity>) {
+        saveRegionCountries(data.fold(listOf()) { items, region ->
+            items + region.toCountriesByRegion()
+        })
+    }
+
+    override fun Transaction.onSaveTransactionFinished(data: SaveRegionEntity) {
+        saveRegionCountries(data.toCountriesByRegion())
+    }
+
+    private fun saveRegionCountries(data: Iterable<Pair<String, String>>) {
+        RegionCountryTable.batchInsertOnDuplicateKeyUpdate(
+            onDupUpdateColumns = listOf(
+                RegionCountryTable.region,
+                RegionCountryTable.country
+            ), data = data
+        ) {
             this[RegionCountryTable.region] = it.first
-            this[RegionCountryTable.region] = it.second
+            this[RegionCountryTable.country] = it.second
         }
     }
 }

@@ -8,7 +8,7 @@ class SaveChannelStreamDTOMapper: IMapper<ChannelStreamDTO, SaveChannelStreamEnt
     override fun map(input: ChannelStreamDTO): SaveChannelStreamEntity = with(input) {
         SaveChannelStreamEntity(
             url = url,
-            channelId = channel,
+            channelId = channel.orEmpty(),
             httpReferrer = httpReferrer,
             userAgent = userAgent
         )

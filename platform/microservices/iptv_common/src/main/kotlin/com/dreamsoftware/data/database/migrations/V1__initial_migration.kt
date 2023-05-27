@@ -15,6 +15,7 @@ class V1__initial_migration: BaseJavaMigration() {
             SchemaUtils.create(CategoryTable)
             SchemaUtils.create(SubdivisionTable)
             SchemaUtils.create(RegionTable)
+            SchemaUtils.create(RegionCountryTable)
             SchemaUtils.create(ChannelTable)
             SchemaUtils.create(ChannelNameTable)
             SchemaUtils.create(ChannelOwnerTable)

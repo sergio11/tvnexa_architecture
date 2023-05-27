@@ -6,7 +6,7 @@ import kotlinx.serialization.Serializable
 @Serializable
 data class ChannelStreamDTO(
     @SerialName("channel")
-    val channel: String,
+    val channel: String? = null,
     @SerialName("url")
     val url: String,
     @SerialName("http_referrer")

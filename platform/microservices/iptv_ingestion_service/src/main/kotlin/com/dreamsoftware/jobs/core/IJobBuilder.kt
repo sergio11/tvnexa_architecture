@@ -14,6 +14,7 @@ interface IJobBuilder {
     fun buildJob(): JobDetail
     fun buildTrigger(): Trigger? = null
     fun getJobKey(): JobKey
+    fun getIntervalInMinutes(): Int
     fun getParentJobKey(): JobKey? = null
     fun getParentJobKeys(): Iterable<JobKey>? = null
 }

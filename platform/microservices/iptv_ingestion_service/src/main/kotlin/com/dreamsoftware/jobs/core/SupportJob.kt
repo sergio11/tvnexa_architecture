@@ -1,9 +1,6 @@
 package com.dreamsoftware.jobs.core
 
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.SupervisorJob
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.*
 import org.quartz.Job
 import org.quartz.JobExecutionContext
 import org.slf4j.LoggerFactory
@@ -17,9 +14,9 @@ abstract class SupportJob : Job, CoroutineScope {
         get() = Dispatchers.IO + SupervisorJob()
 
     override fun execute(context: JobExecutionContext?) {
-        log.debug("${context?.jobDetail?.key?.name} execute")
-        launch { onStartExecution() }
-        log.debug("${context?.jobDetail?.key?.name} finish")
+        log.debug("${context?.jobDetail?.key?.name} executed CALLED!")
+        runBlocking { onStartExecution() }
+        log.debug("${context?.jobDetail?.key?.name} finished CALLED!")
     }
 
     protected abstract suspend fun onStartExecution()
