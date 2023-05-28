@@ -6,10 +6,7 @@ import com.dreamsoftware.data.database.entity.SaveLanguageEntity
 import com.dreamsoftware.data.iptvorg.datasource.IptvOrgNetworkDataSource
 import com.dreamsoftware.data.iptvorg.model.LanguageDTO
 import com.dreamsoftware.jobs.core.*
-import org.quartz.DisallowConcurrentExecution
-import org.quartz.JobDetail
-import org.quartz.JobKey
-import org.quartz.Trigger
+import org.quartz.*
 
 @DisallowConcurrentExecution
 class LanguagesIngestionJob(
@@ -18,7 +15,7 @@ class LanguagesIngestionJob(
     private val languageDatabaseDataSource: ILanguageDatabaseDataSource
 ): SupportJob() {
 
-    override suspend fun onStartExecution() {
+    override suspend fun onStartExecution(jobData: JobDataMap?) {
         val languages = languageNetworkDataSource.fetchContent()
         log.debug("${languages.count()} languages will be processed")
         languageDatabaseDataSource.save(languageMapper.mapList(languages))

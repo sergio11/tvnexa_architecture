@@ -4,4 +4,8 @@ import com.dreamsoftware.data.database.datasource.core.ISupportDatabaseDataSourc
 import com.dreamsoftware.data.database.entity.ChannelGuideEntity
 import com.dreamsoftware.data.database.entity.SaveChannelGuideEntity
 
-interface IChannelGuideDatabaseDataSource: ISupportDatabaseDataSource<Long, SaveChannelGuideEntity, ChannelGuideEntity>
+interface IChannelGuideDatabaseDataSource: ISupportDatabaseDataSource<Long, SaveChannelGuideEntity, ChannelGuideEntity> {
+
+    suspend fun findByChannelId(channelId: String): Iterable<ChannelGuideEntity>
+
+}
