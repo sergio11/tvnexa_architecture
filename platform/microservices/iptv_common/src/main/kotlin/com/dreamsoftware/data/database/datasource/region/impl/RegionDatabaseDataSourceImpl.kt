@@ -41,10 +41,12 @@ internal class RegionDatabaseDataSourceImpl(
             onDupUpdateColumns = listOf(
                 RegionCountryTable.region,
                 RegionCountryTable.country
-            ), data = data
-        ) {
-            this[RegionCountryTable.region] = it.first
-            this[RegionCountryTable.country] = it.second
-        }
+            ),
+            data = data,
+            onSaveData = {
+                this[RegionCountryTable.region] = it.first
+                this[RegionCountryTable.country] = it.second
+            }
+        )
     }
 }

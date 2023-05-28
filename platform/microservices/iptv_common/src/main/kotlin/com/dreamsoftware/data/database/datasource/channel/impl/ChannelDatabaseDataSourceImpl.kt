@@ -19,8 +19,12 @@ internal class ChannelDatabaseDataSourceImpl(
     ChannelEntityDAO
 ), IChannelDatabaseDataSource {
 
+    private companion object {
+        const val BATCH_SIZE = 50
+    }
+
     override suspend fun save(data: Iterable<SaveChannelEntity>) {
-        super.save(data.filter { it.replacedBy == null })
+        data.chunked(BATCH_SIZE).forEach { super.save(it) }
     }
 
     override fun UpdateBuilder<Int>.onMapEntityToSave(entityToSave: SaveChannelEntity) = with(entityToSave) {
@@ -40,15 +44,21 @@ internal class ChannelDatabaseDataSourceImpl(
 
     override fun Transaction.onSaveTransactionFinished(data: Iterable<SaveChannelEntity>) {
         with(data) {
-            ChannelTable.batchInsertOnDuplicateKeyUpdate(onDupUpdateColumns = listOf(ChannelTable.id), data = data.filter { it.replacedBy != null }) {
-                onMapEntityToSave(it)
-            }
-            /*saveCategories(fold(listOf()) { items, channel ->
+            saveCategories(fold(listOf()) { items, channel ->
                 items + channel.toCategoriesByChannel()
-            })*/
-            /*saveLanguages(fold(listOf()) { items, channel ->
+            })
+            saveLanguages(fold(listOf()) { items, channel ->
                 items + channel.toLanguagesByChannel()
-            })*/
+            })
+            saveChannelAltNames(fold(listOf()) { items, channel ->
+                items + channel.toAltNamesByChannel()
+            })
+            saveChannelOwners(fold(listOf()) { items, channel ->
+                items + channel.toOwnersByChannel()
+            })
+            saveChannelBroadcastAreas(fold(listOf()) { items, channel ->
+                items + channel.toBroadcastAreaByChannel()
+            })
         }
     }
 
@@ -56,6 +66,9 @@ internal class ChannelDatabaseDataSourceImpl(
         with(data) {
             saveCategories(toCategoriesByChannel())
             saveLanguages(toLanguagesByChannel())
+            saveChannelAltNames(toAltNamesByChannel())
+            saveChannelOwners(toOwnersByChannel())
+            saveChannelBroadcastAreas(toBroadcastAreaByChannel())
         }
     }
 
@@ -64,11 +77,13 @@ internal class ChannelDatabaseDataSourceImpl(
             onDupUpdateColumns = listOf(
                 ChannelCategoryTable.category,
                 ChannelCategoryTable.channel
-            ), data = data
-        ) {
-            this[ChannelCategoryTable.channel] = it.first
-            this[ChannelCategoryTable.category] = it.second
-        }
+            ),
+            data = data,
+            onSaveData = {
+                this[ChannelCategoryTable.channel] = it.first
+                this[ChannelCategoryTable.category] = it.second
+            }
+        )
     }
 
     private fun saveLanguages(data: Iterable<Pair<String, String>>) {
@@ -76,10 +91,54 @@ internal class ChannelDatabaseDataSourceImpl(
             onDupUpdateColumns = listOf(
                 ChannelLanguageTable.channel,
                 ChannelLanguageTable.language
-            ), data = data
-        ) {
-            this[ChannelLanguageTable.channel] = it.first
-            this[ChannelLanguageTable.language] = it.second
-        }
+            ),
+            data = data,
+            onSaveData = {
+                this[ChannelLanguageTable.channel] = it.first
+                this[ChannelLanguageTable.language] = it.second
+            }
+        )
+    }
+
+    private fun saveChannelAltNames(data: Iterable<Pair<String, String>>) {
+        ChannelNameTable.batchInsertOnDuplicateKeyUpdate(
+            onDupUpdateColumns = listOf(
+                ChannelNameTable.channel,
+                ChannelNameTable.altName
+            ),
+            data = data,
+            onSaveData = {
+                this[ChannelNameTable.channel] = it.first
+                this[ChannelNameTable.altName] = it.second
+            }
+        )
+    }
+
+    private fun saveChannelOwners(data: Iterable<Pair<String, String>>) {
+        ChannelOwnerTable.batchInsertOnDuplicateKeyUpdate(
+            onDupUpdateColumns = listOf(
+                ChannelOwnerTable.channel,
+                ChannelOwnerTable.owner
+            ),
+            data = data,
+            onSaveData = {
+                this[ChannelOwnerTable.channel] = it.first
+                this[ChannelOwnerTable.owner] = it.second
+            }
+        )
+    }
+
+    private fun saveChannelBroadcastAreas(data: Iterable<Pair<String, String>>) {
+        ChannelBroadcastAreaTable.batchInsertOnDuplicateKeyUpdate(
+            onDupUpdateColumns = listOf(
+                ChannelBroadcastAreaTable.channel,
+                ChannelBroadcastAreaTable.broadcastArea
+            ),
+            data = data,
+            onSaveData = {
+                this[ChannelBroadcastAreaTable.channel] = it.first
+                this[ChannelBroadcastAreaTable.broadcastArea] = it.second
+            }
+        )
     }
 }

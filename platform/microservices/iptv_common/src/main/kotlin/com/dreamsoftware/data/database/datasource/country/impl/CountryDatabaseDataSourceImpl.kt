@@ -40,10 +40,11 @@ internal class CountryDatabaseDataSourceImpl(
     private fun saveCountriesLanguages(data: Iterable<Pair<String, String>>) {
         CountryLanguageTable.batchInsertOnDuplicateKeyUpdate(
             onDupUpdateColumns = listOf(CountryLanguageTable.language, CountryLanguageTable.country),
-            data = data
-        ) {
-            this[CountryLanguageTable.country] = it.first
-            this[CountryLanguageTable.language] = it.second
-        }
+            data = data,
+            onSaveData = {
+                this[CountryLanguageTable.country] = it.first
+                this[CountryLanguageTable.language] = it.second
+            }
+        )
     }
 }
