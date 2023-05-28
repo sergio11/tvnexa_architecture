@@ -6,10 +6,7 @@ import com.dreamsoftware.data.database.entity.SaveCategoryEntity
 import com.dreamsoftware.data.iptvorg.datasource.IptvOrgNetworkDataSource
 import com.dreamsoftware.data.iptvorg.model.CategoryDTO
 import com.dreamsoftware.jobs.core.*
-import org.quartz.DisallowConcurrentExecution
-import org.quartz.JobDetail
-import org.quartz.JobKey
-import org.quartz.Trigger
+import org.quartz.*
 
 @DisallowConcurrentExecution
 class CategoriesIngestionJob(
@@ -18,7 +15,7 @@ class CategoriesIngestionJob(
     private val categoriesDatabaseDataSource: ICategoryDatabaseDataSource
 ): SupportJob() {
 
-    override suspend fun onStartExecution() {
+    override suspend fun onStartExecution(jobData: JobDataMap?) {
         val categories = categoriesNetworkDataSource.fetchContent()
         categoriesDatabaseDataSource.save(categoriesMapper.mapList(categories))
     }

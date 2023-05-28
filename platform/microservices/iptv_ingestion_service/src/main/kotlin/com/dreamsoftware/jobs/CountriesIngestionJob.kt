@@ -10,6 +10,7 @@ import com.dreamsoftware.jobs.core.SupportJob
 import com.dreamsoftware.jobs.core.createJobKey
 import com.dreamsoftware.jobs.core.createNewJob
 import org.quartz.DisallowConcurrentExecution
+import org.quartz.JobDataMap
 import org.quartz.JobDetail
 import org.quartz.JobKey
 
@@ -20,7 +21,7 @@ class CountriesIngestionJob(
     private val countriesDatabaseDataSource: ICountryDatabaseDataSource
 ): SupportJob() {
 
-    override suspend fun onStartExecution() {
+    override suspend fun onStartExecution(jobData: JobDataMap?) {
         val countries = countriesNetworkDataSource.fetchContent()
         log.debug("${countries.count()} countries will be processed")
         countriesDatabaseDataSource.save(countriesMapper.mapList(countries))

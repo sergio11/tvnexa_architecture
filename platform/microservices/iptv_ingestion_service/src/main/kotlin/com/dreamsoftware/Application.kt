@@ -2,14 +2,15 @@ package com.dreamsoftware
 
 import com.dreamsoftware.di.appModule
 import com.dreamsoftware.jobs.*
-import com.dreamsoftware.plugins.configureRouting
 import com.dreamsoftware.jobs.core.manager.IJobSchedulerManager
+import com.dreamsoftware.plugins.configureRouting
 import io.ktor.server.application.*
 import io.ktor.server.engine.*
 import io.ktor.server.netty.*
 import org.koin.ktor.ext.getKoin
 import org.koin.ktor.plugin.Koin
 import org.koin.logger.slf4jLogger
+import java.util.*
 
 fun main(args: Array<String>): Unit = EngineMain.main(args)
 
@@ -35,8 +36,7 @@ fun Application.doOnStartup() {
                 RegionsIngestionJob,
                 ChannelsIngestionJob,
                 ChannelStreamsIngestionJob,
-                ChannelGuidesIngestionJob,
-                ChannelEpgGrabbingJob
+                ChannelGuidesIngestionJob
             ))
         }
     }

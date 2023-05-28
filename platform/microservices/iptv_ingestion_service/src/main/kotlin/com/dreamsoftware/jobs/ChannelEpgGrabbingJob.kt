@@ -1,35 +1,62 @@
 package com.dreamsoftware.jobs
 
+import com.dreamsoftware.data.database.datasource.guide.IChannelGuideDatabaseDataSource
 import com.dreamsoftware.jobs.core.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
-import org.quartz.DisallowConcurrentExecution
-import org.quartz.JobDetail
-import org.quartz.JobKey
-import org.quartz.Trigger
+import kotlinx.coroutines.awaitAll
+import org.quartz.*
+import java.io.File
+import java.util.*
 
 @DisallowConcurrentExecution
-class ChannelEpgGrabbingJob(): SupportJob() {
+class ChannelEpgGrabbingJob(
+    private val channelGuideDatabaseDataSource: IChannelGuideDatabaseDataSource
+) : SupportJob() {
 
+    private val npmCmd = if (isWindows()) "npx.cmd" else "npx"
+    private val baseFolder = "C:\\Users\\ssanchez\\Downloads\\epg-master\\epg-master"
 
+    override suspend fun onStartExecution(jobData: JobDataMap?) {
+        val channelId = jobData?.getString(CHANNEL_ID_ARG).orEmpty()
+        if (channelId.isEmpty())
+            throw IllegalStateException("You must provide channel id")
 
-    override suspend fun onStartExecution() {
+        val channelGuides = channelGuideDatabaseDataSource.findByChannelId(channelId)
+        val results = channelGuides.map {
+            runEpgGrabberAsync(it.site)
+        }.awaitAll()
 
-        val javaVersionCmd = async(Dispatchers.IO) {
-            ProcessBuilder("java", "-version")
-                .redirectOutput(ProcessBuilder.Redirect.INHERIT)
-                .redirectError(ProcessBuilder.Redirect.INHERIT)
-                .start()
-                .waitFor()
+        if (results.contains(1)) {
+            log.debug("EPG Grabber for channel $channelId failed!")
+            throw RuntimeException("EPG Grabber for channel $channelId failed!")
         }
-
-
-        val result = javaVersionCmd.await()
-
-        log.debug("Java Version - EPG Grabbing -> $result")
     }
 
-    companion object: IJobBuilder {
+    private fun runEpgGrabberAsync(site: String) = async(Dispatchers.IO) {
+        ProcessBuilder(
+            npmCmd,
+            "epg-grabber",
+            "--config=sites\\$site\\$site.config.js",
+            "--channels=sites\\$site\\$site.channels.xml",
+            "--output=guides\\{lang}\\{site}.xml"
+        )
+            .directory(File(baseFolder))
+            .redirectOutput(ProcessBuilder.Redirect.INHERIT)
+            .redirectError(ProcessBuilder.Redirect.INHERIT)
+            .start()
+            .waitFor()
+    }
+
+
+    private fun isWindows(): Boolean =
+        System.getProperty("os.name")
+            .lowercase(Locale.getDefault())
+            .contains("win")
+
+    companion object : IJobBuilder {
+
+        const val CHANNEL_ID_ARG = "CHANNEL_ID_ARG"
 
         private const val JOB_ID = "channel_epg_grabbing_job"
         private const val TRIGGER_ID = "channel_epg_grabbing_job_trigger"

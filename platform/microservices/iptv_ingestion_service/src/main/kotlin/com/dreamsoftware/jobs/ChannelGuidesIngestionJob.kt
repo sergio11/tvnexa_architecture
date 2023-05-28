@@ -10,6 +10,7 @@ import com.dreamsoftware.jobs.core.SupportJob
 import com.dreamsoftware.jobs.core.createJobKey
 import com.dreamsoftware.jobs.core.createNewJob
 import org.quartz.DisallowConcurrentExecution
+import org.quartz.JobDataMap
 import org.quartz.JobDetail
 import org.quartz.JobKey
 
@@ -20,7 +21,7 @@ class ChannelGuidesIngestionJob(
     private val guidesDatabaseDataSource: IChannelGuideDatabaseDataSource
 ): SupportJob() {
 
-    override suspend fun onStartExecution() {
+    override suspend fun onStartExecution(jobData: JobDataMap?) {
         val guides = guidesNetworkDataSource.fetchContent()
         guidesDatabaseDataSource.save(guidesMapper.mapList(guides))
     }
