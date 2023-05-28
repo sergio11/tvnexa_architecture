@@ -70,7 +70,6 @@ class JobChainingOffsetDelayJobListener: JobListenerSupport() {
                 rescheduleJob(it.key, buildTrigger(jobDetail.key, intervalOffsetInMinutes))
             } ?: run {
                 log.info("scheduleJob ${jobDetail.key.name}")
-                deleteJob(jobDetail.key)
                 scheduleJob(jobDetail, buildTrigger(jobDetail.key, intervalOffsetInMinutes))
             }
         }

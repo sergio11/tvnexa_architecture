@@ -1,7 +1,6 @@
 package com.dreamsoftware.data.database.dao
 
 
-import com.dreamsoftware.data.database.dao.ChannelTable.entityId
 import org.jetbrains.exposed.dao.Entity
 import org.jetbrains.exposed.dao.EntityClass
 import org.jetbrains.exposed.dao.id.EntityID
@@ -44,7 +43,7 @@ object ChannelTable: IdTable<String>(name = "channels") {
 object ChannelNameTable: LongIdTable(name = "channels_alt_names") {
 
     val channel = reference("channel", ChannelTable)
-    val altName = varchar(name = "name", length = 50)
+    val altName = varchar(name = "name", length = 100)
 
 
     init {
@@ -56,7 +55,7 @@ object ChannelNameTable: LongIdTable(name = "channels_alt_names") {
 object ChannelOwnerTable: LongIdTable(name = "channels_owners") {
 
     val channel = reference(name = "channel", ChannelTable)
-    val owner = varchar(name = "owner", length = 50)
+    val owner = varchar(name = "owner", length = 500)
 
     init {
         uniqueIndex("UNIQUE_ChannelOwner", channel, owner)

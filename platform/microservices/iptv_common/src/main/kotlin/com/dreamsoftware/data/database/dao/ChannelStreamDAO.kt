@@ -10,11 +10,11 @@ object ChannelStreamTable: LongIdTable(name = "channel_streams") {
     // Channel ID
     val channelId = varchar(name = "channel", length = 50).references(ChannelTable.channelId)
     // Stream URL
-    val url = varchar(name = "url", length = 500)
+    val url = varchar(name = "url", length = 1000)
     // The Referer request header for the stream
-    val httpReferrer = varchar(name = "http_referrer", length = 300).nullable()
+    val httpReferrer = varchar(name = "http_referrer", length = 500).nullable()
     // The User-Agent request header for the stream
-    val userAgent = varchar(name = "user_agent", length = 100).nullable()
+    val userAgent = varchar(name = "user_agent", length = 500).nullable()
 
 }
 

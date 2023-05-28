@@ -34,19 +34,19 @@ internal abstract class SupportDatabaseDataSource<KEY : Comparable<KEY>, DAO : E
                 onDupUpdateColumns = listOf(entityDAO.table.id),
                 data = data
             ) { onMapEntityToSave(it) }
-            commit()
             onSaveTransactionFinished(data)
         }
     }
 
     override suspend fun save(data: Iterable<INPUT>) = with(data) {
-        dbExec {
+        dbExec(disableFkValidations = true) {
             entityDAO.table.batchInsertOnDuplicateKeyUpdate(
                 onDupUpdateColumns = listOf(entityDAO.table.id),
-                itemsCount = count()
+                itemsCount = count(),
+                onSuccess = {
+                    onSaveTransactionFinished(data)
+                }
             ) { idx -> onMapEntityToSave(elementAt(idx)) }
-            commit()
-            onSaveTransactionFinished(data)
         }
     }
 
@@ -62,11 +62,13 @@ internal abstract class SupportDatabaseDataSource<KEY : Comparable<KEY>, DAO : E
 
     open fun Transaction.onSaveTransactionFinished(data: INPUT) {}
 
-    protected suspend fun <OUTPUT> dbExec(dbExecution: Transaction.() -> OUTPUT): OUTPUT = withContext(Dispatchers.IO) {
-        database.dbExec { dbExecution() }
+    protected suspend fun <OUTPUT> dbExec(disableFkValidations: Boolean = false, dbExecution: Transaction.() -> OUTPUT): OUTPUT = withContext(Dispatchers.IO) {
+        database.dbExec(disableFkValidations) {
+            dbExecution()
+        }
     }
 
-    protected  fun <T : Table, E> T.insertOnDuplicateKeyUpdate(
+    protected fun <T : Table, E> T.insertOnDuplicateKeyUpdate(
         data: E,
         onDupUpdateColumns: List<Column<*>>,
         onSaveData: UpdateBuilder<Int>.(data: E) -> Unit = {}
@@ -79,12 +81,14 @@ internal abstract class SupportDatabaseDataSource<KEY : Comparable<KEY>, DAO : E
     protected fun <T : Table, E> T.batchInsertOnDuplicateKeyUpdate(
         onDupUpdateColumns: List<Column<*>>,
         data: Iterable<E>,
-        onSaveData: UpdateBuilder<Int>.(item: E) -> Unit = {}
+        onSaveData: UpdateBuilder<Int>.(item: E) -> Unit = {},
+        onSuccess: (insertedCount: Int) -> Unit = {}
     ) {
         with(data) {
             batchInsertOnDuplicateKeyUpdate(
                 itemsCount = count(),
-                onDupUpdateColumns = onDupUpdateColumns
+                onDupUpdateColumns = onDupUpdateColumns,
+                onSuccess = onSuccess
             ) {
                 onSaveData(elementAt(it))
             }
@@ -94,15 +98,21 @@ internal abstract class SupportDatabaseDataSource<KEY : Comparable<KEY>, DAO : E
     private fun <T : Table> T.batchInsertOnDuplicateKeyUpdate(
         itemsCount: Int,
         onDupUpdateColumns: List<Column<*>>,
+        onSuccess: (insertedCount: Int) -> Unit = {},
         onSaveData: UpdateBuilder<Int>.(idx: Int) -> Unit = {}
     ) {
         if (itemsCount > 0) {
-            TransactionManager.current().exec(BatchInsertUpdateOnDuplicate(this, onDupUpdateColumns).apply {
-                for (i in 0 until itemsCount) {
-                    addBatch()
-                    onSaveData(i)
+            TransactionManager.current().apply {
+                val batchInsert = BatchInsertUpdateOnDuplicate(this@batchInsertOnDuplicateKeyUpdate, onDupUpdateColumns).apply {
+                    for (i in 0 until itemsCount) {
+                        addBatch()
+                        onSaveData(i)
+                    }
                 }
-            })
+                exec(batchInsert)
+                commit()
+                onSuccess(batchInsert.insertedCount)
+            }
         }
     }
 }

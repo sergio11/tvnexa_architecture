@@ -20,7 +20,10 @@ class SaveChannelDTOMapper: IMapper<ChannelDTO, SaveChannelEntity> {
             closed = closed,
             replacedBy = replacedBy,
             languages = languages,
-            categories = categories
+            categories = categories,
+            owners = owners,
+            altNames = altNames,
+            broadcastArea = broadcastArea
         )
     }
     override fun mapList(input: Iterable<ChannelDTO>): Iterable<SaveChannelEntity> =

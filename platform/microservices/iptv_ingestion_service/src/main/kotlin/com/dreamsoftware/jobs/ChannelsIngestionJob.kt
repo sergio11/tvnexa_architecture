@@ -20,6 +20,7 @@ class ChannelsIngestionJob(
 
     override suspend fun onStartExecution() {
         val channels = channelsNetworkDataSource.fetchContent()
+        log.debug("${channels.count()} channels will be processed")
         channelsDatabaseDataSource.save(channelsMapper.mapList(channels))
     }
 

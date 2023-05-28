@@ -21,8 +21,6 @@ internal class JobSchedulerManagerImpl(
                 jobBuilderList.forEach { jobBuilder ->
                     with(jobBuilder) {
                         log.debug("JobSchedulerManager - scheduleJob - job ${getJobKey().name}")
-                        // If a job exists, delete it!
-                        deleteJob(getJobKey())
                         (getParentJobKeys() ?: getParentJobKey()?.let { listOf(it) })?.takeIf {
                             it.toList().isNotEmpty()
                         }?.let { parentJobKeys ->

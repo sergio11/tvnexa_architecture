@@ -36,11 +36,20 @@ internal class DatabaseFactoryImpl(
         runFlyway(datasource)
     }
 
-    override suspend fun <T> dbExec(block: Transaction.() -> T): T = withContext(Dispatchers.IO) {
+    override suspend fun <T> dbExec(disableFkValidations: Boolean, block: Transaction.() -> T): T = withContext(Dispatchers.IO) {
         if (!isConnected()) {
             Database.connect(datasource)
         }
-        transaction { block() }
+        transaction {
+            if(disableFkValidations) {
+                exec("SET foreign_key_checks = 0")
+            }
+            block().also {
+                if(disableFkValidations) {
+                    exec("SET foreign_key_checks = 1")
+                }
+            }
+        }
     }
 
     private fun runFlyway(datasource: DataSource) {
