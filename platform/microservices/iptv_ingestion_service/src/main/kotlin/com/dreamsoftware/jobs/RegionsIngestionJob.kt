@@ -9,9 +9,11 @@ import com.dreamsoftware.jobs.core.IJobBuilder
 import com.dreamsoftware.jobs.core.SupportJob
 import com.dreamsoftware.jobs.core.createJobKey
 import com.dreamsoftware.jobs.core.createNewJob
+import org.quartz.DisallowConcurrentExecution
 import org.quartz.JobDetail
 import org.quartz.JobKey
 
+@DisallowConcurrentExecution
 class RegionsIngestionJob(
     private val regionsNetworkDataSource: IptvOrgNetworkDataSource<RegionDTO>,
     private val regionMapper: IMapper<RegionDTO, SaveRegionEntity>,
