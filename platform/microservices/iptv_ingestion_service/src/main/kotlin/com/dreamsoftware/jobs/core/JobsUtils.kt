@@ -4,6 +4,7 @@ import org.quartz.*
 
 inline fun <reified T: Job> createNewJob(jobId: String) = JobBuilder.newJob(T::class.java)
     .withIdentity(jobId, IJobBuilder.WATCH_JOB_GROUP)
+    .storeDurably(true)
     .usingJobData(IJobBuilder.JOB_MAP_NAME_ID_KEY, jobId)
     .build()
 

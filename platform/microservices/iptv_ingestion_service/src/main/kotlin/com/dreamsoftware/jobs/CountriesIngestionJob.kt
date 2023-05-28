@@ -20,12 +20,13 @@ class CountriesIngestionJob(
 
     override suspend fun onStartExecution() {
         val countries = countriesNetworkDataSource.fetchContent()
+        log.debug("${countries.count()} countries will be processed")
         countriesDatabaseDataSource.save(countriesMapper.mapList(countries))
     }
 
     companion object: IJobBuilder {
 
-        private const val JOB_ID = "ingest_countries_job"
+        private const val JOB_ID = "countries_ingestion_job"
         private const val INTERVAL_IN_MINUTES = 1
 
         override fun buildJob(): JobDetail = createNewJob<CountriesIngestionJob>(JOB_ID)
