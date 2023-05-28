@@ -18,12 +18,13 @@ class LanguagesIngestionJob(
 
     override suspend fun onStartExecution() {
         val languages = languageNetworkDataSource.fetchContent()
+        log.debug("${languages.count()} languages will be processed")
         languageDatabaseDataSource.save(languageMapper.mapList(languages))
     }
 
     companion object: IJobBuilder {
 
-        private const val JOB_ID = "ingest_languages_job"
+        private const val JOB_ID = "languages_ingestion_job"
         private const val TRIGGER_ID = "ingest_languages_job_trigger"
         private const val INTERVAL_IN_MINUTES = 10
 

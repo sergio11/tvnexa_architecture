@@ -9,9 +9,11 @@ import com.dreamsoftware.jobs.core.IJobBuilder
 import com.dreamsoftware.jobs.core.SupportJob
 import com.dreamsoftware.jobs.core.createJobKey
 import com.dreamsoftware.jobs.core.createNewJob
+import org.quartz.DisallowConcurrentExecution
 import org.quartz.JobDetail
 import org.quartz.JobKey
 
+@DisallowConcurrentExecution
 class ChannelStreamsIngestionJob(
     private val streamsNetworkDataSource: IptvOrgNetworkDataSource<ChannelStreamDTO>,
     private val streamsMapper: IMapper<ChannelStreamDTO, SaveChannelStreamEntity>,
@@ -20,13 +22,14 @@ class ChannelStreamsIngestionJob(
 
     override suspend fun onStartExecution() {
         val streams = streamsNetworkDataSource.fetchContent()
+        log.debug("${streams.count()} channels streams will be processed")
         streamsDatabaseDataSource.save(streamsMapper.mapList(streams))
     }
 
     companion object: IJobBuilder {
 
-        private const val JOB_ID = "ingest_streams_job"
-        private const val INTERVAL_IN_MINUTES = 1
+        private const val JOB_ID = "channels_streams_ingestion_job"
+        private const val INTERVAL_IN_MINUTES = 2
 
         override fun buildJob(): JobDetail = createNewJob<ChannelStreamsIngestionJob>(JOB_ID)
         override fun getJobKey(): JobKey = createJobKey(JOB_ID)

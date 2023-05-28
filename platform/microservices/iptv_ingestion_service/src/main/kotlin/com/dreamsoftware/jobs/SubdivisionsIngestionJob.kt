@@ -20,12 +20,13 @@ class SubdivisionsIngestionJob(
 
     override suspend fun onStartExecution() {
         val subdivisions = subdivisionsNetworkDataSource.fetchContent()
+        log.debug("${subdivisions.count()} subdivisions will be processed")
         subdivisionsDatabaseDataSource.save(subdivisionsMapper.mapList(subdivisions))
     }
 
     companion object: IJobBuilder {
 
-        private const val JOB_ID = "ingest_subdivisions_job"
+        private const val JOB_ID = "subdivisions_ingestion_job"
         private const val INTERVAL_IN_MINUTES = 1
 
         override fun buildJob(): JobDetail = createNewJob<SubdivisionsIngestionJob>(JOB_ID)

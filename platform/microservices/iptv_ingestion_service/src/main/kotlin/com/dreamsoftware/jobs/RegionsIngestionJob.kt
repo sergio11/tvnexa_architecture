@@ -20,12 +20,13 @@ class RegionsIngestionJob(
 
     override suspend fun onStartExecution() {
         val regions = regionsNetworkDataSource.fetchContent()
+        log.debug("${regions.count()} regions will be processed")
         regionsDatabaseDataSource.save(regionMapper.mapList(regions))
     }
 
     companion object: IJobBuilder {
 
-        private const val JOB_ID = "ingest_regions_job"
+        private const val JOB_ID = "regions_ingestion_job"
         private const val INTERVAL_IN_MINUTES = 1
 
         override fun buildJob(): JobDetail = createNewJob<RegionsIngestionJob>(JOB_ID)

@@ -20,7 +20,7 @@ internal class ChannelDatabaseDataSourceImpl(
 ), IChannelDatabaseDataSource {
 
     private companion object {
-        const val BATCH_SIZE = 50
+        const val BATCH_SIZE = 500
     }
 
     override suspend fun save(data: Iterable<SaveChannelEntity>) {
