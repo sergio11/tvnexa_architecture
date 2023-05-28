@@ -3,10 +3,12 @@ package com.dreamsoftware.jobs
 import com.dreamsoftware.jobs.core.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
+import org.quartz.DisallowConcurrentExecution
 import org.quartz.JobDetail
 import org.quartz.JobKey
 import org.quartz.Trigger
 
+@DisallowConcurrentExecution
 class ChannelEpgGrabbingJob(): SupportJob() {
 
 

@@ -6,10 +6,12 @@ import com.dreamsoftware.data.database.entity.SaveLanguageEntity
 import com.dreamsoftware.data.iptvorg.datasource.IptvOrgNetworkDataSource
 import com.dreamsoftware.data.iptvorg.model.LanguageDTO
 import com.dreamsoftware.jobs.core.*
+import org.quartz.DisallowConcurrentExecution
 import org.quartz.JobDetail
 import org.quartz.JobKey
 import org.quartz.Trigger
 
+@DisallowConcurrentExecution
 class LanguagesIngestionJob(
     private val languageNetworkDataSource: IptvOrgNetworkDataSource<LanguageDTO>,
     private val languageMapper: IMapper<LanguageDTO, SaveLanguageEntity>,
