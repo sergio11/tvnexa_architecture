@@ -24,6 +24,7 @@ class V1__initial_migration: BaseJavaMigration() {
             SchemaUtils.create(ChannelCategoryTable)
             SchemaUtils.create(ChannelStreamTable)
             SchemaUtils.create(ChannelGuideTable)
+            SchemaUtils.create(EpgChannelProgrammeTable)
         }
     }
 }
