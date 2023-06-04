@@ -4,6 +4,7 @@ import kotlinx.coroutines.*
 import org.quartz.Job
 import org.quartz.JobDataMap
 import org.quartz.JobExecutionContext
+import org.quartz.Scheduler
 import org.slf4j.LoggerFactory
 import kotlin.coroutines.CoroutineContext
 
@@ -16,10 +17,10 @@ abstract class SupportJob : Job, CoroutineScope {
 
     override fun execute(context: JobExecutionContext?) {
         log.debug("${context?.jobDetail?.key?.name} executed CALLED!")
-        runBlocking { onStartExecution(context?.jobDetail?.jobDataMap) }
+        runBlocking { onStartExecution(context?.jobDetail?.jobDataMap, context?.scheduler) }
         log.debug("${context?.jobDetail?.key?.name} finished CALLED!")
     }
 
-    protected abstract suspend fun onStartExecution(jobData: JobDataMap?)
+    protected abstract suspend fun onStartExecution(jobData: JobDataMap?, scheduler: Scheduler?)
 
 }

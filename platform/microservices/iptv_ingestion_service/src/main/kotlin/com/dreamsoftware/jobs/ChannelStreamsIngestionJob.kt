@@ -9,10 +9,7 @@ import com.dreamsoftware.jobs.core.IJobBuilder
 import com.dreamsoftware.jobs.core.SupportJob
 import com.dreamsoftware.jobs.core.createJobKey
 import com.dreamsoftware.jobs.core.createNewJob
-import org.quartz.DisallowConcurrentExecution
-import org.quartz.JobDataMap
-import org.quartz.JobDetail
-import org.quartz.JobKey
+import org.quartz.*
 
 @DisallowConcurrentExecution
 class ChannelStreamsIngestionJob(
@@ -21,7 +18,7 @@ class ChannelStreamsIngestionJob(
     private val streamsDatabaseDataSource: IStreamDatabaseDataSource
 ): SupportJob() {
 
-    override suspend fun onStartExecution(jobData: JobDataMap?) {
+    override suspend fun onStartExecution(jobData: JobDataMap?, scheduler: Scheduler?) {
         val streams = streamsNetworkDataSource.fetchContent()
         log.debug("${streams.count()} channels streams will be processed")
         streamsDatabaseDataSource.save(streamsMapper.mapList(streams))
@@ -29,11 +26,11 @@ class ChannelStreamsIngestionJob(
 
     companion object: IJobBuilder {
 
-        private const val JOB_ID = "channels_streams_ingestion_job"
+        private const val DEFAULT_JOB_ID = "channels_streams_ingestion_job"
         private const val INTERVAL_IN_MINUTES = 2
 
-        override fun buildJob(): JobDetail = createNewJob<ChannelStreamsIngestionJob>(JOB_ID)
-        override fun getJobKey(): JobKey = createJobKey(JOB_ID)
+        override fun buildJob(jobId: String?, data: Map<String, String>?): JobDetail = createNewJob<ChannelStreamsIngestionJob>(jobId ?: DEFAULT_JOB_ID, data)
+        override fun getJobKey(jobId: String?): JobKey = createJobKey(jobId ?: DEFAULT_JOB_ID)
         override fun getIntervalInMinutes(): Int = INTERVAL_IN_MINUTES
         override fun getParentJobKey(): JobKey = ChannelsIngestionJob.getJobKey()
     }

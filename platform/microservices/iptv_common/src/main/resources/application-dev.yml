@@ -15,4 +15,9 @@ iptvOrgConfig: {
   channelStreamsEndpoint: "https://iptv-org.github.io/api/streams.json",
   channelGuidesEndpoint: "https://iptv-org.github.io/api/guides.json"
 }
-
+epgGrabbingConfig: {
+  sitesBaseFolder: "C:\\Users\\ssanchez\\Downloads\\epg-master\\epg-master",
+  jsConfigPath: "sites\\{site}\\{site}.config.js",
+  channelsPath: "sites\\{site}\\{site}.channels.xml",
+  outputGuidesPath: "guides\\{lang}\\{site}.xml"
+}

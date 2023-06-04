@@ -25,4 +25,8 @@ internal class ChannelGuideDatabaseDataSourceImpl(
     override suspend fun findByChannelId(channelId: String): Iterable<ChannelGuideEntity> = dbExec {
         entityDAO.find { ChannelGuideTable.channelId eq channelId }.map(mapper::map)
     }
+
+    override suspend fun findByLanguageId(languageId: String): Iterable<ChannelGuideEntity> = dbExec {
+        entityDAO.find { ChannelGuideTable.lang eq languageId }.distinctBy { ChannelGuideTable.site }.map(mapper::map)
+    }
 }

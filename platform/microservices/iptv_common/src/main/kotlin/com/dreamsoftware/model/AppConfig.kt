@@ -23,3 +23,10 @@ data class IptvOrgConfig(
     val channelStreamsEndpoint: String,
     val channelGuidesEndpoint: String
 )
+
+data class EpgGrabbingConfig(
+    val sitesBaseFolder: String,
+    val jsConfigPath: String,
+    val channelsPath: String,
+    val outputGuidesPath: String
+)

@@ -8,4 +8,6 @@ interface IChannelGuideDatabaseDataSource: ISupportDatabaseDataSource<Long, Save
 
     suspend fun findByChannelId(channelId: String): Iterable<ChannelGuideEntity>
 
+    suspend fun findByLanguageId(languageId: String): Iterable<ChannelGuideEntity>
+
 }

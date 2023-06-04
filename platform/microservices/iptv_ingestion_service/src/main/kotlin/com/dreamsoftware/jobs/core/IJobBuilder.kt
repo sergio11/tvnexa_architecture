@@ -11,9 +11,9 @@ interface IJobBuilder {
         const val WATCH_JOB_GROUP = "WatchJob"
     }
 
-    fun buildJob(): JobDetail
-    fun buildTrigger(): Trigger? = null
-    fun getJobKey(): JobKey
+    fun buildJob(jobId: String? = null, data: Map<String, String>? = null): JobDetail
+    fun buildTrigger(triggerId: String? = null): Trigger? = null
+    fun getJobKey(jobId: String? = null): JobKey
     fun getIntervalInMinutes(): Int
     fun getParentJobKey(): JobKey? = null
     fun getParentJobKeys(): Iterable<JobKey>? = null
