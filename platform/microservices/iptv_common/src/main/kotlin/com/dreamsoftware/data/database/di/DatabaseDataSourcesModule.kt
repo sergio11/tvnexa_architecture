@@ -7,6 +7,8 @@ import com.dreamsoftware.data.database.datasource.channel.IChannelDatabaseDataSo
 import com.dreamsoftware.data.database.datasource.channel.impl.ChannelDatabaseDataSourceImpl
 import com.dreamsoftware.data.database.datasource.country.ICountryDatabaseDataSource
 import com.dreamsoftware.data.database.datasource.country.impl.CountryDatabaseDataSourceImpl
+import com.dreamsoftware.data.database.datasource.epg.IEpgChannelProgrammeDatabaseDataSource
+import com.dreamsoftware.data.database.datasource.epg.impl.EpgChannelProgrammeDatabaseDataSourceImpl
 import com.dreamsoftware.data.database.datasource.guide.IChannelGuideDatabaseDataSource
 import com.dreamsoftware.data.database.datasource.guide.impl.ChannelGuideDatabaseDataSourceImpl
 import com.dreamsoftware.data.database.datasource.language.ILanguageDatabaseDataSource
@@ -29,4 +31,5 @@ val databaseDataSourcesModule = module {
     single<IChannelDatabaseDataSource> { ChannelDatabaseDataSourceImpl(get(), getMapper())  }
     single<IStreamDatabaseDataSource> { StreamDatabaseDataSourceImpl(get(), getMapper())  }
     single<IChannelGuideDatabaseDataSource> { ChannelGuideDatabaseDataSourceImpl(get(), getMapper())  }
+    single<IEpgChannelProgrammeDatabaseDataSource> { EpgChannelProgrammeDatabaseDataSourceImpl(get(), getMapper())  }
 }
