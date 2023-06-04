@@ -4,5 +4,5 @@ import com.dreamsoftware.data.api.di.dataModule
 import org.koin.dsl.module
 
 val appModule = module {
-    includes(dataModule, jobsModule)
+    includes(dataModule, jobsModule, parserModule)
 }

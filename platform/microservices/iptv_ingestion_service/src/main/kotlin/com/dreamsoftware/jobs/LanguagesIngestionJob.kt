@@ -15,7 +15,7 @@ class LanguagesIngestionJob(
     private val languageDatabaseDataSource: ILanguageDatabaseDataSource
 ): SupportJob() {
 
-    override suspend fun onStartExecution(jobData: JobDataMap?) {
+    override suspend fun onStartExecution(jobData: JobDataMap?, scheduler: Scheduler?) {
         val languages = languageNetworkDataSource.fetchContent()
         log.debug("${languages.count()} languages will be processed")
         languageDatabaseDataSource.save(languageMapper.mapList(languages))
@@ -23,13 +23,13 @@ class LanguagesIngestionJob(
 
     companion object: IJobBuilder {
 
-        private const val JOB_ID = "languages_ingestion_job"
-        private const val TRIGGER_ID = "ingest_languages_job_trigger"
+        private const val DEFAULT_JOB_ID = "languages_ingestion_job"
+        private const val DEFAULT_TRIGGER_ID = "ingest_languages_job_trigger"
         private const val INTERVAL_IN_MINUTES = 10
 
-        override fun buildJob(): JobDetail = createNewJob<LanguagesIngestionJob>(JOB_ID)
-        override fun buildTrigger(): Trigger = createNewTrigger(TRIGGER_ID, INTERVAL_IN_MINUTES)
-        override fun getJobKey(): JobKey = createJobKey(JOB_ID)
+        override fun buildJob(jobId: String?, data: Map<String, String>?): JobDetail = createNewJob<LanguagesIngestionJob>(jobId ?: DEFAULT_JOB_ID, data)
+        override fun buildTrigger(triggerId: String?): Trigger = createNewTrigger(triggerId ?: DEFAULT_TRIGGER_ID, INTERVAL_IN_MINUTES)
+        override fun getJobKey(jobId: String?): JobKey = createJobKey(jobId ?: DEFAULT_JOB_ID)
         override fun getIntervalInMinutes(): Int = INTERVAL_IN_MINUTES
     }
 }

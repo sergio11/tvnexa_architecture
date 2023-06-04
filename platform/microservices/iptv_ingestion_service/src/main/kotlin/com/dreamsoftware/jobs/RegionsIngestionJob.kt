@@ -9,10 +9,7 @@ import com.dreamsoftware.jobs.core.IJobBuilder
 import com.dreamsoftware.jobs.core.SupportJob
 import com.dreamsoftware.jobs.core.createJobKey
 import com.dreamsoftware.jobs.core.createNewJob
-import org.quartz.DisallowConcurrentExecution
-import org.quartz.JobDataMap
-import org.quartz.JobDetail
-import org.quartz.JobKey
+import org.quartz.*
 
 @DisallowConcurrentExecution
 class RegionsIngestionJob(
@@ -21,7 +18,7 @@ class RegionsIngestionJob(
     private val regionsDatabaseDataSource: IRegionDatabaseDataSource
 ): SupportJob() {
 
-    override suspend fun onStartExecution(jobData: JobDataMap?) {
+    override suspend fun onStartExecution(jobData: JobDataMap?, scheduler: Scheduler?) {
         val regions = regionsNetworkDataSource.fetchContent()
         log.debug("${regions.count()} regions will be processed")
         regionsDatabaseDataSource.save(regionMapper.mapList(regions))
@@ -29,11 +26,11 @@ class RegionsIngestionJob(
 
     companion object: IJobBuilder {
 
-        private const val JOB_ID = "regions_ingestion_job"
+        private const val DEFAULT_JOB_ID = "regions_ingestion_job"
         private const val INTERVAL_IN_MINUTES = 1
 
-        override fun buildJob(): JobDetail = createNewJob<RegionsIngestionJob>(JOB_ID)
-        override fun getJobKey(): JobKey = createJobKey(JOB_ID)
+        override fun buildJob(jobId: String?, data: Map<String, String>?): JobDetail = createNewJob<RegionsIngestionJob>(jobId ?: DEFAULT_JOB_ID, data)
+        override fun getJobKey(jobId: String?): JobKey = createJobKey(jobId ?: DEFAULT_JOB_ID)
         override fun getIntervalInMinutes(): Int = INTERVAL_IN_MINUTES
         override fun getParentJobKey(): JobKey = CountriesIngestionJob.getJobKey()
     }
