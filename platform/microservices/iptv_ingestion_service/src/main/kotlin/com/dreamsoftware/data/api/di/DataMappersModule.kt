@@ -13,4 +13,5 @@ val dataMappersModule = module {
     mapper { SaveChannelDTOMapper() }
     mapper { SaveChannelStreamDTOMapper() }
     mapper { SaveChannelGuideDTOMapper() }
+    mapper { SaveEpgDataDTOMapper() }
 }

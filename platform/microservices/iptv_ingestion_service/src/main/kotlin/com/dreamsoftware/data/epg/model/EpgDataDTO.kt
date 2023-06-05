@@ -1,10 +1,12 @@
 package com.dreamsoftware.data.epg.model
 
-data class TestEpgDTO(
+import java.util.*
+
+data class EpgDataDTO(
     val channelId: String,
     val title: String,
-    val start: String,
-    val stop: String,
-    val date: String,
+    val start: Date,
+    val stop: Date,
+    val date: Date,
     val category: String? = null
 )

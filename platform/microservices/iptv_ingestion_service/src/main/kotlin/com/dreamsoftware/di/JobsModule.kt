@@ -77,5 +77,5 @@ val jobsModule = module {
     factory { ChannelsIngestionJob(get(named(CHANNELS_NETWORK_DATA_SOURCE)), getMapper(), get()) }
     factory { ChannelGuidesIngestionJob(get(named(CHANNEL_GUIDES_NETWORK_DATA_SOURCE)), getMapper(), get()) }
     factory { ChannelStreamsIngestionJob(get(named(CHANNEL_STREAMS_NETWORK_DATA_SOURCE)), getMapper(), get()) }
-    factory { EpgGrabbingJob(get(), get()) }
+    factory { EpgGrabbingJob(get(), get(), get(), get()) }
 }

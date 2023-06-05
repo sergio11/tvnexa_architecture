@@ -11,6 +11,7 @@ import org.koin.ktor.ext.getKoin
 import org.koin.ktor.plugin.Koin
 import org.koin.logger.slf4jLogger
 import java.util.*
+import kotlin.jvm.optionals.getOrNull
 
 fun main(args: Array<String>): Unit = EngineMain.main(args)
 
@@ -28,17 +29,24 @@ fun Application.module() {
 fun Application.doOnStartup() {
     with(getKoin()) {
         with(get<IJobSchedulerManager>()) {
-            scheduleJobsAndStart(listOf(
-                LanguagesIngestionJob,
-                CategoriesIngestionJob,
-                CountriesIngestionJob,
-                SubdivisionsIngestionJob,
-                RegionsIngestionJob,
-                ChannelsIngestionJob,
-                ChannelStreamsIngestionJob,
-                ChannelGuidesIngestionJob,
-                EpgGrabbingJob
-            ))
+            scheduleJobsAndStart(
+                listOf(
+                    LanguagesIngestionJob,
+                    CategoriesIngestionJob,
+                    CountriesIngestionJob,
+                    SubdivisionsIngestionJob,
+                    RegionsIngestionJob,
+                    ChannelsIngestionJob,
+                    ChannelStreamsIngestionJob,
+                    ChannelGuidesIngestionJob
+                )
+            )
         }
     }
+    Runtime.getRuntime().addShutdownHook(Thread {
+        ProcessHandle
+            .allProcesses()
+            .filter { it.parent().getOrNull()?.pid() == ProcessHandle.current().pid() }
+            .forEach(ProcessHandle::destroy)
+    })
 }
