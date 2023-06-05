@@ -26,4 +26,5 @@ val configModule = module {
     }
     single { get<AppConfig>().dbConfig }
     single { get<AppConfig>().iptvOrgConfig }
+    single { get<AppConfig>().epgGrabbingConfig }
 }

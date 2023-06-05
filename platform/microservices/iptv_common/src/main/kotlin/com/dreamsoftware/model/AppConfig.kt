@@ -2,7 +2,8 @@ package com.dreamsoftware.model
 
 data class AppConfig(
     val dbConfig: DatabaseConfig,
-    val iptvOrgConfig: IptvOrgConfig
+    val iptvOrgConfig: IptvOrgConfig,
+    val epgGrabbingConfig: EpgGrabbingConfig
 )
 
 data class DatabaseConfig(

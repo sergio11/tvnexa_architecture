@@ -4,7 +4,7 @@ import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlRootElement
 
 @JacksonXmlRootElement(localName = "channel")
-data class EpgChannelDTO(
+internal data class EpgChannelDTO(
     @field:JacksonXmlProperty(localName = "id", isAttribute = true)
     val channelId: String,
     @field:JacksonXmlProperty(localName = "display-name")
