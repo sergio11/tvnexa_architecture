@@ -12,6 +12,7 @@ RUN chmod +x resources/wait-for-it.sh
 RUN gradle buildFatJar --no-daemon
 # ---- Release ----
 FROM openjdk:17-jdk-slim-buster AS release
+RUN apt-get install -y netcat && which nc
 EXPOSE 6969:6969
 EXPOSE 6963:6963
 RUN mkdir -p /opt/app
