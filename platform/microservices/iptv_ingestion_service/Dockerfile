@@ -15,13 +15,15 @@ RUN gradle buildFatJar --no-daemon
 # ---- Release ----
 FROM openjdk:17-jdk-slim-buster AS release
 RUN mkdir -p /opt/app
+RUN mkdir -p /opt/app/iptv_org
+RUN mkdir -p /opt/app/iptv_org/guides
 RUN apt-get update && apt-get install -y curl
 RUN apt-get install -y netcat && which nc
 RUN curl -sL https://deb.nodesource.com/setup_18.x | bash -
 RUN apt-get install -y nodejs
 RUN npm install -g epg-grabber
 COPY --from=build /home/gradle/iptv_ingestion_service/build/libs/iptv_ingestion_service.jar /opt/app/iptv_ingestion_service.jar
-COPY --from=build /home/gradle/iptv_ingestion_service/epg-master/sites /opt/app/sites
+COPY --from=build /home/gradle/iptv_ingestion_service/epg-master/sites /opt/app/iptv_org/sites
 COPY --from=build /home/gradle/iptv_ingestion_service/resources/wait-for-it.sh /opt/app/wait-for-it.sh
 WORKDIR /opt/app
 EXPOSE 8080
