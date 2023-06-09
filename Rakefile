@@ -47,6 +47,24 @@ namespace :iptv do
 	end
 
 
+    ## Deploy MariaDB Galera Cluster with ProxySQL
+	namespace :galera do
+
+	        desc "Check Platform Deployment File"
+    		task :check_deployment_file do
+    			puts "Check Platform Deployment File ..."
+    			raise "Deployment file not found, please check availability" unless File.file?("./galera/docker-compose.yml")
+    			puts "Platform Deployment File OK!"
+    		end
+
+    		desc "Start MariaDB Galera Cluster and ProxySQL containers"
+            task :start => [ :check_docker_task, :login, :check_deployment_file ] do
+                puts "Start MariaDB Galera Cluster and ProxySQL containers"
+            	puts `docker-compose -f ./galera/docker-compose.yml up -d`
+            end
+
+	end
+
 	## Deploy Platform
 	namespace :platform do
 

@@ -1,0 +1,119 @@
+version: "3.6"
+
+## MariaDB Galera Cluster, a type of MySQL cluster, with ProxySQL
+## multi-primary MySQL Cluster, in the form of MariaDB Galera Cluster, to make it more reliable to load balance databases.
+services:
+
+  mariadb1:
+    image: mariadb:10.10
+    container_name: mariadb1
+    ports:
+      - "3306:3306"
+    env_file:
+      - .env
+    environment:
+      - MARIADB_USER=${MARIADB_USER_1}
+      - MARIADB_PASSWORD=${MARIADB_PASSWORD_1}
+      - MARIADB_DATABASE=${MARIADB_DATABASE_1}
+      - MARIADB_ROOT_PASSWORD=${MARIADB_ROOT_PASSWORD}
+    volumes:
+      - ./mariadb1/galera.cnf:/etc/mysql/mariadb.conf.d/galera.cnf
+      - ./mariadb1/entrypoint-initdb.d:/docker-entrypoint-initdb.d
+    cap_add:
+      - all
+    networks:
+      - galera_cluster_network
+
+  mariadb2:
+    image: mariadb:10.10
+    container_name: mariadb2
+    ports:
+      - "3307:3306"
+    env_file:
+      - .env
+    environment:
+      - MARIADB_USER=${MARIADB_USER_2}
+      - MARIADB_PASSWORD=${MARIADB_PASSWORD_2}
+      - MARIADB_DATABASE=${MARIADB_DATABASE_2}
+      - MARIADB_ROOT_PASSWORD=${MARIADB_ROOT_PASSWORD}
+    volumes:
+      - ./mariadb2/galera.cnf:/etc/mysql/mariadb.conf.d/galera.cnf
+    cap_add:
+      - all
+    networks:
+      - galera_cluster_network
+
+  mariadb3:
+    image: mariadb:10.10
+    container_name: mariadb3
+    ports:
+      - "3308:3306"
+    env_file:
+      - .env
+    volumes:
+      - ./mariadb3/galera.cnf:/etc/mysql/mariadb.conf.d/galera.cnf
+    environment:
+      - MARIADB_USER=${MARIADB_USER_3}
+      - MARIADB_PASSWORD=${MARIADB_PASSWORD_3}
+      - MARIADB_DATABASE=${MARIADB_DATABASE_3}
+      - MARIADB_ROOT_PASSWORD=${MARIADB_ROOT_PASSWORD}
+    cap_add:
+      - all
+    networks:
+      - galera_cluster_network
+
+  mariadb4:
+    image: mariadb:10.10
+    container_name: mariadb4
+    ports:
+      - "3309:3306"
+    env_file:
+      - .env
+    volumes:
+      - ./mariadb4/galera.cnf:/etc/mysql/mariadb.conf.d/galera.cnf
+    environment:
+      - MARIADB_USER=${MARIADB_USER_4}
+      - MARIADB_PASSWORD=${MARIADB_PASSWORD_4}
+      - MARIADB_DATABASE=${MARIADB_DATABASE_4}
+      - MARIADB_ROOT_PASSWORD=${MARIADB_ROOT_PASSWORD}
+    cap_add:
+      - all
+    networks:
+      - galera_cluster_network
+
+  # ProxySQL is built with an advanced multi-core architecture to support hundreds of thousands of concurrent connections,
+  # multiplexed to thousands of servers
+  proxysql:
+    image: proxysql/proxysql:latest
+    container_name: proxysql
+    volumes:
+      - "./proxysql/proxysql.cnf:/etc/proxysql.cnf"
+    ports:
+      - "6032:6032"
+      - "6070:6070"
+      - "6080:6080"
+    cap_add:
+      - all
+    networks:
+      - galera_cluster_network
+
+  # php My Admin
+  phpMyAdmin:
+    image: phpmyadmin/phpmyadmin
+    container_name: phpmyadmin
+    restart: always
+    depends_on:
+      - proxysql
+    environment:
+      PMA_HOST: ${PMA_HOST}
+      PMA_PORT: ${PMA_PORT}
+      PMA_USER: ${PMA_USER}
+      PMA_PASSWORD: ${PMA_PASSWORD}
+    ports:
+      - "8081:80"
+    networks:
+      - galera_cluster_network
+
+networks:
+  galera_cluster_network:
+    driver: bridge
