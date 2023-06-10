@@ -58,3 +58,24 @@ mysql_users:
 (
 	{ username="iptv",password="iptv00",active=1,default_hostgroup=1 }
 )
+
+#defines MySQL Query Rules - basic read/write split
+mysql_query_rules:
+(
+	{
+		rule_id=150
+		active=1
+		match_digest="^SELECT"
+		destination_hostgroup=2
+		apply=1
+		comment="Redirect all the SELECT queries to the READ hostgroup"
+	},
+	{
+		rule_id=151
+		active=1
+		match_digest=".*"
+		destination_hostgroup=1
+		apply=1
+		comment="redirect all other queries to the WRITE hostgroup"
+	}
+)

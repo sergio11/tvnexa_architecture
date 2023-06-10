@@ -1,8 +1,8 @@
 dbConfig: {
   driverClass: "com.mysql.cj.jdbc.Driver",
-  databaseUrl: "jdbc:mysql://mariadb:3306/iptv?useUnicode=true&characterEncoding=UTF-8",
-  connUser: dev,
-  connPassword: dev,
+  databaseUrl: "jdbc:mysql://192.168.1.39:6033/iptv?useUnicode=true&characterEncoding=UTF-8",
+  connUser: iptv,
+  connPassword: iptv00,
   maxPoolSize: 10
 }
 iptvOrgConfig: {
