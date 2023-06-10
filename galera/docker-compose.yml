@@ -4,6 +4,8 @@ version: "3.6"
 ## multi-primary MySQL Cluster, in the form of MariaDB Galera Cluster, to make it more reliable to load balance databases.
 services:
 
+  # MariaDB Image
+  # MariaDB is a community-developed fork of MySQL intended to remain free under the GNU GPL.
   mariadb1:
     image: mariadb:10.10
     container_name: mariadb1
@@ -19,11 +21,11 @@ services:
     volumes:
       - ./mariadb1/galera.cnf:/etc/mysql/mariadb.conf.d/galera.cnf
       - ./mariadb1/entrypoint-initdb.d:/docker-entrypoint-initdb.d
-    cap_add:
-      - all
     networks:
       - galera_cluster_network
 
+  # MariaDB Image
+  # MariaDB is a community-developed fork of MySQL intended to remain free under the GNU GPL.
   mariadb2:
     image: mariadb:10.10
     container_name: mariadb2
@@ -38,11 +40,11 @@ services:
       - MARIADB_ROOT_PASSWORD=${MARIADB_ROOT_PASSWORD}
     volumes:
       - ./mariadb2/galera.cnf:/etc/mysql/mariadb.conf.d/galera.cnf
-    cap_add:
-      - all
     networks:
       - galera_cluster_network
 
+  # MariaDB Image
+  # MariaDB is a community-developed fork of MySQL intended to remain free under the GNU GPL.
   mariadb3:
     image: mariadb:10.10
     container_name: mariadb3
@@ -57,11 +59,11 @@ services:
       - MARIADB_PASSWORD=${MARIADB_PASSWORD_3}
       - MARIADB_DATABASE=${MARIADB_DATABASE_3}
       - MARIADB_ROOT_PASSWORD=${MARIADB_ROOT_PASSWORD}
-    cap_add:
-      - all
     networks:
       - galera_cluster_network
 
+  # MariaDB Image
+  # MariaDB is a community-developed fork of MySQL intended to remain free under the GNU GPL.
   mariadb4:
     image: mariadb:10.10
     container_name: mariadb4
@@ -76,24 +78,20 @@ services:
       - MARIADB_PASSWORD=${MARIADB_PASSWORD_4}
       - MARIADB_DATABASE=${MARIADB_DATABASE_4}
       - MARIADB_ROOT_PASSWORD=${MARIADB_ROOT_PASSWORD}
-    cap_add:
-      - all
     networks:
       - galera_cluster_network
 
   # ProxySQL is built with an advanced multi-core architecture to support hundreds of thousands of concurrent connections,
   # multiplexed to thousands of servers
   proxysql:
-    image: proxysql/proxysql:latest
+    image: proxysql/proxysql:2.5.2
     container_name: proxysql
     volumes:
-      - "./proxysql/proxysql.cnf:/etc/proxysql.cnf"
+      - ./proxysql/proxysql.cnf:/etc/proxysql.cnf
     ports:
       - "6032:6032"
       - "6070:6070"
       - "6080:6080"
-    cap_add:
-      - all
     networks:
       - galera_cluster_network
 

@@ -3,7 +3,7 @@ datadir="/var/lib/proxysql"
 admin_variables=
 {
     admin_credentials="admin:admin;radmin:radmin"
-    mysql_ifaces="0.0.0.0:6032"
+    mysql_ifaces="0.0.0.0:6032;0.0.0.0:6033"
     refresh_interval=2000
 }
 
@@ -54,5 +54,5 @@ mysql_replication_hostgroups=
 # defines all the MySQL users
 mysql_users:
 (
-	{ username="root",password="root",active=1,default_hostgroup=1 }
+	{ username="iptv",password="iptv00",active=1,default_hostgroup=1 }
 )

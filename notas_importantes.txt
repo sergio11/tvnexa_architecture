@@ -2,7 +2,7 @@ https://github.com/prof18/ktor-chuck-norris-sample
 
 https://stackoverflow.com/questions/24515470/jobs-not-chaining-using-jobchainingjoblistener
 #!/usr/bin/env bash
-
+mysql -u iptv -p -h 127.0.0.1 -P 6033 --prompt='ProxySQLClient> '
 ## Llavero Servidor: Par de claves del servidor (privada y pública) formato PEM
 keytool -genkeypair -alias serverKeyPair -keyalg RSA -keysize 4096 -validity 365 -storetype PKCS12 -keystore server_keystore.p12 -storepass 1234567
 https://sesamedisk.com/mysql-cluster-deploy-galera-with-mariadb-proxysql/
