@@ -11,6 +11,35 @@ https://proxysql.com/documentation/proxysql-configuration/
 keytool -genkeypair -alias serverKeyPair -keyalg RSA -keysize 4096 -validity 365 -storetype JKS -keystore server_keystore.jks -storepass 1234567
 org.flywaydb.core.api.FlywayException: Unsupported Database: MySQL 5.5
 https://www.baeldung.com/kotlin/exposed-persistence
+
+mysql -u replicant -preplicant00 -h mariadb_master_1 -e "SHOW MASTER STATUS\G" | grep File: | awk '{print $2}'
+
+
+mysql -u admin -padmin -h 127.0.0.1 -P6032 --prompt 'ProxySQL Root> '
+
+select * from global_variables where variable_name like '%hash_passwords%';
+
+select username, password, default_hostgroup, active from runtime_mysql_users;
+
+select username, password, default_hostgroup, active from runtime_mysql_users where username='itpv';
+
+ select username, password, default_hostgroup, active from mysql_users; where username='root';
+
+select user, host, plugin from mysql_user where user='root'
+
+INSERT INTO mysql_users(username, password, default_hostgroup) VALUES ('iptv', 'iptv00', 2);
+LOAD MYSQL USERS TO RUNTIME;
+SAVE MYSQL USERS TO DISK;
+
+
+SELECT hostgroup_id, hostname, status FROM runtime_mysql_servers;
+
+mysql -u iptv -p -h 127.0.0.1 -P 6033 --prompt='ProxySQLClient> '
+
+UPDATE global_variables set variable_value='false' where variable_name='admin-hash_passwords';
+LOAD ADMIN VARIABLES TO RUNTIME;
+LOAD MYSQL USERS TO RUNTIME;
+SAVE MYSQL USERS TO DISK;
 https://dzone.com/articles/clustered-quartz-scheduler-with-spring-boot-and-mo
 https://github.com/joseluisgs/tenistas-rest-ktor-2022-2023/blob/main/src/main/kotlin/joseluisgs/es/serializers/LocalDateTimeSerializer.kt
 https://github.com/raharrison/kotlin-ktor-exposed-starter/blob/master/src/main/kotlin/model/Widget.kt

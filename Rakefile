@@ -63,6 +63,12 @@ namespace :iptv do
             	puts `docker-compose -f ./galera/docker-compose.yml up -d`
             end
 
+            desc "Stop MariaDB Galera Cluster and ProxySQL containers"
+            task :stop => [ :check_docker_task, :login, :check_deployment_file  ] do
+            	puts "Stop Platform Containers"
+            	puts `docker-compose -f ./galera/docker-compose.yml stop 2>&1`
+            end
+
 	end
 
 	## Deploy Platform

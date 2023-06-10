@@ -34,10 +34,12 @@ mysql_variables=
 # defines all the MySQL servers
 mysql_servers =
 (
-	{ address="mariadb1" , port=3306 , hostgroup=1, max_replication_lag=5 },
-	{ address="mariadb2" , port=3306 , hostgroup=1, max_replication_lag=5 },
-	{ address="mariadb3" , port=3306 , hostgroup=1, max_replication_lag=5 },
-	{ address="mariadb4" , port=3306 , hostgroup=1, max_replication_lag=5 }
+	{ address="mariadb_master_1" , port=3306 , hostgroup=1, max_replication_lag=5 },
+	{ address="mariadb_master_2" , port=3306 , hostgroup=1, max_replication_lag=5 },
+	{ address="mariadb_master_3" , port=3306 , hostgroup=1, max_replication_lag=5 },
+	{ address="mariadb_slave_1" , port=3306 , hostgroup=2, max_replication_lag=5 },
+	{ address="mariadb_slave_2" , port=3306 , hostgroup=2, max_replication_lag=5 },
+	{ address="mariadb_slave_3" , port=3306 , hostgroup=2, max_replication_lag=5 }
 )
 
 # defines replication hostgroups
