@@ -6,78 +6,105 @@ services:
 
   # MariaDB Image
   # MariaDB is a community-developed fork of MySQL intended to remain free under the GNU GPL.
-  mariadb1:
+  mariadb_master_1:
     image: mariadb:10.10
-    container_name: mariadb1
-    ports:
-      - "3306:3306"
+    container_name: mariadb_master_1
     env_file:
       - .env
     environment:
-      - MARIADB_USER=${MARIADB_USER_1}
-      - MARIADB_PASSWORD=${MARIADB_PASSWORD_1}
-      - MARIADB_DATABASE=${MARIADB_DATABASE_1}
+      - MARIADB_USER=${MARIADB_USER}
+      - MARIADB_PASSWORD=${MARIADB_PASSWORD}
+      - MARIADB_DATABASE=${MARIADB_DATABASE}
       - MARIADB_ROOT_PASSWORD=${MARIADB_ROOT_PASSWORD}
     volumes:
-      - ./mariadb1/galera.cnf:/etc/mysql/mariadb.conf.d/galera.cnf
-      - ./mariadb1/entrypoint-initdb.d:/docker-entrypoint-initdb.d
+      - ./mariadb_master_1/db.cnf:/etc/mysql/mariadb.conf.d/db.cnf
+      - ./mariadb_master_1/entrypoint-initdb.d:/docker-entrypoint-initdb.d
     networks:
       - galera_cluster_network
 
   # MariaDB Image
   # MariaDB is a community-developed fork of MySQL intended to remain free under the GNU GPL.
-  mariadb2:
+  mariadb_master_2:
     image: mariadb:10.10
-    container_name: mariadb2
-    ports:
-      - "3307:3306"
+    container_name: mariadb_master_2
     env_file:
       - .env
     environment:
-      - MARIADB_USER=${MARIADB_USER_2}
-      - MARIADB_PASSWORD=${MARIADB_PASSWORD_2}
-      - MARIADB_DATABASE=${MARIADB_DATABASE_2}
+      - MARIADB_USER=${MARIADB_USER}
+      - MARIADB_PASSWORD=${MARIADB_PASSWORD}
+      - MARIADB_DATABASE=${MARIADB_DATABASE}
       - MARIADB_ROOT_PASSWORD=${MARIADB_ROOT_PASSWORD}
     volumes:
-      - ./mariadb2/galera.cnf:/etc/mysql/mariadb.conf.d/galera.cnf
+      - ./mariadb_master_2/db.cnf:/etc/mysql/mariadb.conf.d/db.cnf
     networks:
       - galera_cluster_network
 
   # MariaDB Image
   # MariaDB is a community-developed fork of MySQL intended to remain free under the GNU GPL.
-  mariadb3:
+  mariadb_master_3:
     image: mariadb:10.10
-    container_name: mariadb3
-    ports:
-      - "3308:3306"
+    container_name: mariadb_master_3
     env_file:
       - .env
     volumes:
-      - ./mariadb3/galera.cnf:/etc/mysql/mariadb.conf.d/galera.cnf
+      - ./mariadb_master_3/db.cnf:/etc/mysql/mariadb.conf.d/db.cnf
     environment:
-      - MARIADB_USER=${MARIADB_USER_3}
-      - MARIADB_PASSWORD=${MARIADB_PASSWORD_3}
-      - MARIADB_DATABASE=${MARIADB_DATABASE_3}
+      - MARIADB_USER=${MARIADB_USER}
+      - MARIADB_PASSWORD=${MARIADB_PASSWORD}
+      - MARIADB_DATABASE=${MARIADB_DATABASE}
       - MARIADB_ROOT_PASSWORD=${MARIADB_ROOT_PASSWORD}
     networks:
       - galera_cluster_network
 
   # MariaDB Image
   # MariaDB is a community-developed fork of MySQL intended to remain free under the GNU GPL.
-  mariadb4:
+  mariadb_slave_1:
     image: mariadb:10.10
-    container_name: mariadb4
-    ports:
-      - "3309:3306"
+    container_name: mariadb_slave_1
     env_file:
       - .env
     volumes:
-      - ./mariadb4/galera.cnf:/etc/mysql/mariadb.conf.d/galera.cnf
+      - ./mariadb_slave_1/db.cnf:/etc/mysql/mariadb.conf.d/db.cnf
+      - ./mariadb_slave_1/entrypoint-initdb.d/init.sql:/docker-entrypoint-initdb.d/init.sql
     environment:
-      - MARIADB_USER=${MARIADB_USER_4}
-      - MARIADB_PASSWORD=${MARIADB_PASSWORD_4}
-      - MARIADB_DATABASE=${MARIADB_DATABASE_4}
+      - MARIADB_USER=${MARIADB_USER}
+      - MARIADB_PASSWORD=${MARIADB_PASSWORD}
+      - MARIADB_DATABASE=${MARIADB_DATABASE}
       - MARIADB_ROOT_PASSWORD=${MARIADB_ROOT_PASSWORD}
+    networks:
+      - galera_cluster_network
+
+  # MariaDB Image
+  # MariaDB is a community-developed fork of MySQL intended to remain free under the GNU GPL.
+  mariadb_slave_2:
+    image: mariadb:10.10
+    container_name: mariadb_slave_2
+    env_file:
+      - .env
+    environment:
+      - MARIADB_USER=${MARIADB_USER}
+      - MARIADB_PASSWORD=${MARIADB_PASSWORD}
+      - MARIADB_DATABASE=${MARIADB_DATABASE}
+      - MARIADB_ROOT_PASSWORD=${MARIADB_ROOT_PASSWORD}
+    volumes:
+      - ./mariadb_slave_2/db.cnf:/etc/mysql/mariadb.conf.d/db.cnf
+    networks:
+      - galera_cluster_network
+
+  # MariaDB Image
+  # MariaDB is a community-developed fork of MySQL intended to remain free under the GNU GPL.
+  mariadb_slave_3:
+    image: mariadb:10.10
+    container_name: mariadb_slave_3
+    env_file:
+      - .env
+    environment:
+      - MARIADB_USER=${MARIADB_USER}
+      - MARIADB_PASSWORD=${MARIADB_PASSWORD}
+      - MARIADB_DATABASE=${MARIADB_DATABASE}
+      - MARIADB_ROOT_PASSWORD=${MARIADB_ROOT_PASSWORD}
+    volumes:
+      - ./mariadb_slave_3/db.cnf:/etc/mysql/mariadb.conf.d/db.cnf
     networks:
       - galera_cluster_network
 
