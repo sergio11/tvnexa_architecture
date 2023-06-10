@@ -53,20 +53,21 @@ namespace :iptv do
 	        desc "Check Platform Deployment File"
     		task :check_deployment_file do
     			puts "Check Platform Deployment File ..."
-    			raise "Deployment file not found, please check availability" unless File.file?("./galera/docker-compose.yml")
+    			raise "Deployment file not found, please check availability" unless File.file?("./mariadb_galera_cluster/docker-compose.yml")
     			puts "Platform Deployment File OK!"
     		end
 
     		desc "Start MariaDB Galera Cluster and ProxySQL containers"
             task :start => [ :check_docker_task, :login, :check_deployment_file ] do
                 puts "Start MariaDB Galera Cluster and ProxySQL containers"
-            	puts `docker-compose -f ./galera/docker-compose.yml up -d`
+            	puts `docker-compose -f ./mariadb_galera_cluster/docker-compose.yml up -d`
+            	puts `docker run -it --rm --network=mariadb_galera_cluster_galera_cluster_network --mount type=bind,source="%cd%"/mariadb_galera_cluster/configure_slaves.sh,target=/opt/resources/configure_slaves.sh,readonly mariadb:10.10 bash /opt/resources/configure_slaves.sh`
             end
 
             desc "Stop MariaDB Galera Cluster and ProxySQL containers"
             task :stop => [ :check_docker_task, :login, :check_deployment_file  ] do
             	puts "Stop Platform Containers"
-            	puts `docker-compose -f ./galera/docker-compose.yml stop 2>&1`
+            	puts `docker-compose -f ./mariadb_galera_cluster/docker-compose.yml stop 2>&1`
             end
 
 	end

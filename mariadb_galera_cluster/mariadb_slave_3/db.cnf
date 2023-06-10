@@ -1,8 +1,8 @@
 [mysqld]
-server-id=1
+server-id=2
+read_only=1
 character-set-server=utf8mb4
 collation_server=utf8mb4_unicode_ci
-log-bin=/var/log/mysql/bin-log
 general_log=1
 general_log_file=/var/log/mysql/general.log
 # Slow query settings:
@@ -13,11 +13,17 @@ long_query_time=0.5
 default-character-set=utf8mb4
 [galera]
 wsrep_on                 = ON
-wsrep_cluster_name       = "MariaDB Galera Cluster Master"
+wsrep_cluster_name       = "MariaDB Galera Cluster Slave"
 wsrep_provider           = /usr/lib/galera/libgalera_smm.so
-wsrep_cluster_address    = "gcomm://"
+wsrep_cluster_address    = "gcomm://mariadb_slave_1,mariadb_slave_2,mariadb_slave_3"
+wsrep_gtid_mode          = ON
+wsrep_gtid_domain_id     = 12
+log_slave_updates        = ON
+log-bin                  = /var/log/mysql/bin-log
+binlog_format            = row
+gtid_domain_id           = 95
 binlog_format            = row
 default_storage_engine   = InnoDB
 innodb_autoinc_lock_mode = 2
 bind-address = 0.0.0.0
-wsrep_node_address="mariadb_master_1"
+wsrep_node_address="mariadb_slave_3"
