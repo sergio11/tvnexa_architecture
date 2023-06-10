@@ -34,51 +34,11 @@ services:
     volumes:
       - ./platform/ftp/data:$FTP_HOME_USER_PATH
 
-  # MariaDB Image
-  # MariaDB is a community-developed fork of MySQL intended to remain free under the GNU GPL.
-  mariadb:
-    image: mariadb:10.10
-    container_name: mariadb
-    restart: always
-    env_file:
-      - .env
-    environment:
-      MYSQL_ALLOW_EMPTY_PASSWORD: "false"
-      # This variable is mandatory and specifies
-      # the password that will be set for the MariaDB root superuser account.
-      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
-      # This variable is optional and allows you to specify the name of a database to be created on image startup.
-      MYSQL_DATABASE: ${MYSQL_DATABASE}
-      MYSQL_USER: ${MYSQL_USER}
-      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
-    tty: true
-    ports:
-      - "3306:3306"
-    volumes:
-      - mariadb_data:/var/lib/mysql
-      - ./config/mysql:/etc/mysql/conf.d
-
-  # php My Admin
-  phpMyAdmin:
-    image: phpmyadmin/phpmyadmin
-    container_name: phpmyadmin
-    restart: always
-    depends_on:
-      - mariadb
-    environment:
-      PMA_HOST: ${PMA_HOST}
-      PMA_PORT: ${PMA_PORT}
-      PMA_USER: ${PMA_USER}
-      PMA_PASSWORD: ${PMA_PASSWORD}
-    ports:
-      - "8081:80"
-
   # IPTV Ingestion service
   iptv_ingestion_service_1:
     container_name: iptv_ingestion_service_1
     image: ssanchez11/iptv_ingestion_service:0.0.1
     links:
-      - mariadb
       - ftp_repository
 
   # IPTV API Service
@@ -86,7 +46,6 @@ services:
     container_name: iptv_api_service_1
     image: ssanchez11/iptv_api_service:0.0.1
     links:
-      - mariadb
       - ftp_repository
     ports:
       - "6969:6969"

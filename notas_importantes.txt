@@ -30,13 +30,40 @@ select user, host, plugin from mysql_user where user='root'
 INSERT INTO mysql_users(username, password, default_hostgroup) VALUES ('iptv', 'iptv00', 2);
 LOAD MYSQL USERS TO RUNTIME;
 SAVE MYSQL USERS TO DISK;
-
-
+MySQL_Session.cpp:5634:handler___status_CONNECTING_CLIENT___STATE_SERVER_HANDSHAKE(): [ERROR] ProxySQL Error: Access denied for user 'iptv'@'172.26.0.9' (using password: YES)
+[ERROR] Server mariadb_slave_2:3306 missed 3 read_only checks. Assuming read_only=1
+2023-06-10 21:16:37 2023-06-10 19:16:37 MySQL_Monitor.cpp:1580:monitor_read_only_thread(): [ERROR] Timeout on read_only check for mariadb_slave_2:3306 after 1001ms. Unable to create a connection. If the server is overload, increase mysql-monitor_connect_timeout. Error: timeout on creating new connection: Lost connection to MySQL server at 'handshake: reading initial communication packet', system error: 110
 SELECT hostgroup_id, hostname, status FROM runtime_mysql_servers;
 
 mysql -u iptv -p -h 127.0.0.1 -P 6033 --prompt='ProxySQLClient> '
 
 UPDATE global_variables set variable_value='false' where variable_name='admin-hash_passwords';
+
+2023-06-10 21:29:19 2023-06-10 19:29:19.577 [IptvJobsScheduler_Worker-2] ERROR org.quartz.core.ErrorLogger - Unable to notify JobListener(s) of Job that was executed: (error will be ignored). trigger= WatchJob.ingest_languages_job_trigger job= WatchJob.languages_ingestion_job
+2023-06-10 21:29:19 org.quartz.SchedulerException: JobListener 'JobChainingOffsetDelay' threw exception: Unable to store Job : 'WatchJob.countries_ingestion_job', because one already exists with this identification.
+2023-06-10 21:29:19     at org.quartz.core.QuartzScheduler.notifyJobListenersWasExecuted(QuartzScheduler.java:1969)
+2023-06-10 21:29:19     at org.quartz.core.JobRunShell.notifyJobListenersComplete(JobRunShell.java:340)
+2023-06-10 21:29:19     at org.quartz.core.JobRunShell.run(JobRunShell.java:224)
+2023-06-10 21:29:19     at org.quartz.simpl.SimpleThreadPool$WorkerThread.run(SimpleThreadPool.java:573)
+2023-06-10 21:29:19 Caused by: org.quartz.ObjectAlreadyExistsException: Unable to store Job : 'WatchJob.countries_ingestion_job', because one already exists with this identification.
+2023-06-10 21:29:19     at org.quartz.impl.jdbcjobstore.JobStoreSupport.storeJob(JobStoreSupport.java:1113)
+2023-06-10 21:29:19     at org.quartz.impl.jdbcjobstore.JobStoreSupport$2.executeVoid(JobStoreSupport.java:1067)
+2023-06-10 21:29:19     at org.quartz.impl.jdbcjobstore.JobStoreSupport$VoidTransactionCallback.execute(JobStoreSupport.java:3780)
+2023-06-10 21:29:19     at org.quartz.impl.jdbcjobstore.JobStoreSupport$VoidTransactionCallback.execute(JobStoreSupport.java:3778)
+2023-06-10 21:29:19     at org.quartz.impl.jdbcjobstore.JobStoreSupport.executeInNonManagedTXLock(JobStoreSupport.java:3864)
+2023-06-10 21:29:19     at org.quartz.impl.jdbcjobstore.JobStoreTX.executeInLock(JobStoreTX.java:93)
+2023-06-10 21:29:19     at org.quartz.impl.jdbcjobstore.JobStoreSupport.storeJobAndTrigger(JobStoreSupport.java:1063)
+2023-06-10 21:29:19     at org.quartz.core.QuartzScheduler.scheduleJob(QuartzScheduler.java:855)
+2023-06-10 21:29:19     at org.quartz.impl.StdScheduler.scheduleJob(StdScheduler.java:249)
+2023-06-10 21:29:19     at com.dreamsoftware.jobs.core.manager.JobChainingOffsetDelayJobListener.rescheduleJob(JobChainingOffsetDelayJobListener.kt:73)
+2023-06-10 21:29:19     at com.dreamsoftware.jobs.core.manager.JobChainingOffsetDelayJobListener.rescheduleJobs(JobChainingOffsetDelayJobListener.kt:55)
+2023-06-10 21:29:19     at com.dreamsoftware.jobs.core.manager.JobChainingOffsetDelayJobListener.jobWasExecuted(JobChainingOffsetDelayJobListener.kt:46)
+2023-06-10 21:29:19     at org.quartz.core.QuartzScheduler.notifyJobListenersWasExecuted(QuartzScheduler.java:1967)
+2023-06-10 21:29:19     ... 3 common frames omitted
+
+
+ChannelGuidesIngestionJob
+
 LOAD ADMIN VARIABLES TO RUNTIME;
 LOAD MYSQL USERS TO RUNTIME;
 SAVE MYSQL USERS TO DISK;
