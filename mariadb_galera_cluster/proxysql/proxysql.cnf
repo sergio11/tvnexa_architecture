@@ -56,7 +56,12 @@ mysql_replication_hostgroups=
 # defines all the MySQL users
 mysql_users:
 (
-	{ username="iptv",password="iptv00",active=1,default_hostgroup=1 }
+	{
+	    username="iptv",
+	    password="iptv00",
+	    active=1,
+	    default_hostgroup=1
+	}
 )
 
 #defines MySQL Query Rules - basic read/write split
