@@ -18,7 +18,8 @@ services:
       - MARIADB_ROOT_PASSWORD=${MARIADB_ROOT_PASSWORD}
     volumes:
       - ./mariadb_master_1/db.cnf:/etc/mysql/mariadb.conf.d/db.cnf
-      - ./mariadb_master_1/entrypoint-initdb.d:/docker-entrypoint-initdb.d
+      - ./mariadb_master_1/entrypoint-initdb.d/init.sql:/docker-entrypoint-initdb.d/init.sql
+      - ./safe_to_bootstrap.sh:/docker-entrypoint-initdb.d/safe_to_bootstrap.sh
     networks:
       - galera_cluster_network
 
@@ -36,6 +37,13 @@ services:
       - MARIADB_ROOT_PASSWORD=${MARIADB_ROOT_PASSWORD}
     volumes:
       - ./mariadb_master_2/db.cnf:/etc/mysql/mariadb.conf.d/db.cnf
+      - ./wait-for-it.sh:/wait-for-it.sh
+      - ./wait_for_cluster_1_bootstrap.sh:/wait_for_cluster_1_bootstrap.sh
+    depends_on:
+      - mariadb_master_1
+    links:
+      - mariadb_master_1
+    command: sh /wait_for_cluster_1_bootstrap.sh && mariadbd
     networks:
       - galera_cluster_network
 
@@ -48,11 +56,18 @@ services:
       - .env
     volumes:
       - ./mariadb_master_3/db.cnf:/etc/mysql/mariadb.conf.d/db.cnf
+      - ./wait-for-it.sh:/wait-for-it.sh
+      - ./wait_for_cluster_1_bootstrap.sh:/wait_for_cluster_1_bootstrap.sh
     environment:
       - MARIADB_USER=${MARIADB_USER}
       - MARIADB_PASSWORD=${MARIADB_PASSWORD}
       - MARIADB_DATABASE=${MARIADB_DATABASE}
       - MARIADB_ROOT_PASSWORD=${MARIADB_ROOT_PASSWORD}
+    depends_on:
+      - mariadb_master_2
+    links:
+      - mariadb_master_2
+    command: sh /wait_for_cluster_1_bootstrap.sh && mariadbd
     networks:
       - galera_cluster_network
 
@@ -66,11 +81,20 @@ services:
     volumes:
       - ./mariadb_slave_1/db.cnf:/etc/mysql/mariadb.conf.d/db.cnf
       - ./mariadb_slave_1/entrypoint-initdb.d/init.sql:/docker-entrypoint-initdb.d/init.sql
+      - ./safe_to_bootstrap.sh:/docker-entrypoint-initdb.d/safe_to_bootstrap.sh
     environment:
       - MARIADB_USER=${MARIADB_USER}
       - MARIADB_PASSWORD=${MARIADB_PASSWORD}
       - MARIADB_DATABASE=${MARIADB_DATABASE}
       - MARIADB_ROOT_PASSWORD=${MARIADB_ROOT_PASSWORD}
+    depends_on:
+      - mariadb_master_1
+      - mariadb_master_2
+      - mariadb_master_3
+    links:
+      - mariadb_master_1
+      - mariadb_master_2
+      - mariadb_master_3
     networks:
       - galera_cluster_network
 
@@ -88,6 +112,19 @@ services:
       - MARIADB_ROOT_PASSWORD=${MARIADB_ROOT_PASSWORD}
     volumes:
       - ./mariadb_slave_2/db.cnf:/etc/mysql/mariadb.conf.d/db.cnf
+      - ./wait-for-it.sh:/wait-for-it.sh
+      - ./wait_for_cluster_2_bootstrap.sh:/wait_for_cluster_2_bootstrap.sh
+    depends_on:
+      - mariadb_slave_1
+      - mariadb_master_1
+      - mariadb_master_2
+      - mariadb_master_3
+    links:
+      - mariadb_slave_1
+      - mariadb_master_1
+      - mariadb_master_2
+      - mariadb_master_3
+    command: sh /wait_for_cluster_2_bootstrap.sh && mariadbd
     networks:
       - galera_cluster_network
 
@@ -105,6 +142,21 @@ services:
       - MARIADB_ROOT_PASSWORD=${MARIADB_ROOT_PASSWORD}
     volumes:
       - ./mariadb_slave_3/db.cnf:/etc/mysql/mariadb.conf.d/db.cnf
+      - ./wait-for-it.sh:/wait-for-it.sh
+      - ./wait_for_cluster_2_bootstrap.sh:/wait_for_cluster_2_bootstrap.sh
+    depends_on:
+      - mariadb_slave_1
+      - mariadb_slave_2
+      - mariadb_master_1
+      - mariadb_master_2
+      - mariadb_master_3
+    links:
+      - mariadb_slave_1
+      - mariadb_slave_2
+      - mariadb_master_1
+      - mariadb_master_2
+      - mariadb_master_3
+    command: sh /wait_for_cluster_2_bootstrap.sh && mariadbd
     networks:
       - galera_cluster_network
 
@@ -120,6 +172,20 @@ services:
       - "6033:6033"
       - "6070:6070"
       - "6080:6080"
+    depends_on:
+      - mariadb_slave_1
+      - mariadb_slave_2
+      - mariadb_slave_3
+      - mariadb_master_1
+      - mariadb_master_2
+      - mariadb_master_3
+    links:
+      - mariadb_slave_1
+      - mariadb_slave_2
+      - mariadb_slave_3
+      - mariadb_master_1
+      - mariadb_master_2
+      - mariadb_master_3
     networks:
       - galera_cluster_network
 
@@ -135,6 +201,8 @@ services:
       PMA_PORT: ${PMA_PORT}
       PMA_USER: ${PMA_USER}
       PMA_PASSWORD: ${PMA_PASSWORD}
+    links:
+      - proxysql
     ports:
       - "8081:80"
     networks:
