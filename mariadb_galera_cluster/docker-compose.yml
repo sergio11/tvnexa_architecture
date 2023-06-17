@@ -19,7 +19,6 @@ services:
     volumes:
       - ./mariadb_master_1/db.cnf:/etc/mysql/mariadb.conf.d/db.cnf
       - ./mariadb_master_1/entrypoint-initdb.d/init.sql:/docker-entrypoint-initdb.d/init.sql
-      - ./safe_to_bootstrap.sh:/docker-entrypoint-initdb.d/safe_to_bootstrap.sh
     networks:
       - galera_cluster_network
 
@@ -37,13 +36,12 @@ services:
       - MARIADB_ROOT_PASSWORD=${MARIADB_ROOT_PASSWORD}
     volumes:
       - ./mariadb_master_2/db.cnf:/etc/mysql/mariadb.conf.d/db.cnf
-      - ./wait-for-it.sh:/wait-for-it.sh
-      - ./wait_for_cluster_1_bootstrap.sh:/wait_for_cluster_1_bootstrap.sh
+      - ./start_replicant_cluster_1.sh:/start_replicant_cluster_1.sh
     depends_on:
       - mariadb_master_1
     links:
       - mariadb_master_1
-    command: sh /wait_for_cluster_1_bootstrap.sh && mariadbd
+    command: sh /start_replicant_cluster_1.sh
     networks:
       - galera_cluster_network
 
@@ -56,8 +54,7 @@ services:
       - .env
     volumes:
       - ./mariadb_master_3/db.cnf:/etc/mysql/mariadb.conf.d/db.cnf
-      - ./wait-for-it.sh:/wait-for-it.sh
-      - ./wait_for_cluster_1_bootstrap.sh:/wait_for_cluster_1_bootstrap.sh
+      - ./start_replicant_cluster_1.sh:/start_replicant_cluster_1.sh
     environment:
       - MARIADB_USER=${MARIADB_USER}
       - MARIADB_PASSWORD=${MARIADB_PASSWORD}
@@ -67,7 +64,7 @@ services:
       - mariadb_master_2
     links:
       - mariadb_master_2
-    command: sh /wait_for_cluster_1_bootstrap.sh && mariadbd
+    command: sh /start_replicant_cluster_1.sh
     networks:
       - galera_cluster_network
 
@@ -81,7 +78,6 @@ services:
     volumes:
       - ./mariadb_slave_1/db.cnf:/etc/mysql/mariadb.conf.d/db.cnf
       - ./mariadb_slave_1/entrypoint-initdb.d/init.sql:/docker-entrypoint-initdb.d/init.sql
-      - ./safe_to_bootstrap.sh:/docker-entrypoint-initdb.d/safe_to_bootstrap.sh
     environment:
       - MARIADB_USER=${MARIADB_USER}
       - MARIADB_PASSWORD=${MARIADB_PASSWORD}
@@ -112,8 +108,8 @@ services:
       - MARIADB_ROOT_PASSWORD=${MARIADB_ROOT_PASSWORD}
     volumes:
       - ./mariadb_slave_2/db.cnf:/etc/mysql/mariadb.conf.d/db.cnf
-      - ./wait-for-it.sh:/wait-for-it.sh
-      - ./wait_for_cluster_2_bootstrap.sh:/wait_for_cluster_2_bootstrap.sh
+      - ./apply_master_slave_configuration.sh:/apply_master_slave_configuration.sh
+      - ./start_replicant_cluster_2.sh:/start_replicant_cluster_2.sh
     depends_on:
       - mariadb_slave_1
       - mariadb_master_1
@@ -124,7 +120,7 @@ services:
       - mariadb_master_1
       - mariadb_master_2
       - mariadb_master_3
-    command: sh /wait_for_cluster_2_bootstrap.sh && mariadbd
+    command: sh /apply_master_slave_configuration.sh
     networks:
       - galera_cluster_network
 
@@ -142,8 +138,7 @@ services:
       - MARIADB_ROOT_PASSWORD=${MARIADB_ROOT_PASSWORD}
     volumes:
       - ./mariadb_slave_3/db.cnf:/etc/mysql/mariadb.conf.d/db.cnf
-      - ./wait-for-it.sh:/wait-for-it.sh
-      - ./wait_for_cluster_2_bootstrap.sh:/wait_for_cluster_2_bootstrap.sh
+      - ./start_replicant_cluster_2.sh:/start_replicant_cluster_2.sh
     depends_on:
       - mariadb_slave_1
       - mariadb_slave_2
@@ -156,7 +151,7 @@ services:
       - mariadb_master_1
       - mariadb_master_2
       - mariadb_master_3
-    command: sh /wait_for_cluster_2_bootstrap.sh && mariadbd
+    command: sh /start_replicant_cluster_2.sh
     networks:
       - galera_cluster_network
 
