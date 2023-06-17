@@ -7,7 +7,8 @@ services:
   # MariaDB Image
   # MariaDB is a community-developed fork of MySQL intended to remain free under the GNU GPL.
   mariadb_master_1:
-    image: mariadb:10.10
+    build:
+      context: ./graceful_shutdown_mariadb
     container_name: mariadb_master_1
     env_file:
       - .env
@@ -25,7 +26,8 @@ services:
   # MariaDB Image
   # MariaDB is a community-developed fork of MySQL intended to remain free under the GNU GPL.
   mariadb_master_2:
-    image: mariadb:10.10
+    build:
+      context: ./graceful_shutdown_mariadb
     container_name: mariadb_master_2
     env_file:
       - .env
@@ -48,7 +50,8 @@ services:
   # MariaDB Image
   # MariaDB is a community-developed fork of MySQL intended to remain free under the GNU GPL.
   mariadb_master_3:
-    image: mariadb:10.10
+    build:
+      context: ./graceful_shutdown_mariadb
     container_name: mariadb_master_3
     env_file:
       - .env
@@ -71,7 +74,8 @@ services:
   # MariaDB Image
   # MariaDB is a community-developed fork of MySQL intended to remain free under the GNU GPL.
   mariadb_slave_1:
-    image: mariadb:10.10
+    build:
+      context: ./graceful_shutdown_mariadb
     container_name: mariadb_slave_1
     env_file:
       - .env
@@ -97,7 +101,8 @@ services:
   # MariaDB Image
   # MariaDB is a community-developed fork of MySQL intended to remain free under the GNU GPL.
   mariadb_slave_2:
-    image: mariadb:10.10
+    build:
+      context: ./graceful_shutdown_mariadb
     container_name: mariadb_slave_2
     env_file:
       - .env
@@ -127,7 +132,8 @@ services:
   # MariaDB Image
   # MariaDB is a community-developed fork of MySQL intended to remain free under the GNU GPL.
   mariadb_slave_3:
-    image: mariadb:10.10
+    build:
+      context: ./graceful_shutdown_mariadb
     container_name: mariadb_slave_3
     env_file:
       - .env
