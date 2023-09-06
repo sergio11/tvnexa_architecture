@@ -1,4 +1,4 @@
-package com.dreamsoftware.plugins
+package com.dreamsoftware.api.plugins
 
 import io.ktor.server.plugins.openapi.*
 import io.ktor.server.routing.*
