@@ -53,7 +53,6 @@ dependencies {
     implementation("io.ktor:ktor-server-compression-jvm:$ktor_version")
     implementation("io.ktor:ktor-server-caching-headers-jvm:$ktor_version")
     implementation("io.ktor:ktor-server-netty-jvm:$ktor_version")
-    implementation("com.github.papsign:Swagger4k:0.8.0")
     // Import common module
     implementation(project(":iptv_common"))
 
