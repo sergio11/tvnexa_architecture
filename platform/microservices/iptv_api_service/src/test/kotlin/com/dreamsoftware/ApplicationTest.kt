@@ -1,6 +1,6 @@
 package com.dreamsoftware
 
-import com.dreamsoftware.plugins.configureRouting
+import com.dreamsoftware.api.plugins.configureRouting
 import io.ktor.client.request.*
 import io.ktor.client.statement.*
 import io.ktor.server.testing.*

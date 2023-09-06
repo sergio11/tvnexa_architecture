@@ -1,4 +1,4 @@
-package com.dreamsoftware.plugins
+package com.dreamsoftware.api.plugins
 
 import io.ktor.server.auth.*
 import io.ktor.server.auth.jwt.*
