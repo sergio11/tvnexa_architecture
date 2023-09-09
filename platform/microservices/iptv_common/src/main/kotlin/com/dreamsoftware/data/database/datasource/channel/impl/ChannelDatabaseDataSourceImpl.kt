@@ -8,6 +8,7 @@ import com.dreamsoftware.data.database.datasource.core.SupportDatabaseDataSource
 import com.dreamsoftware.data.database.entity.ChannelEntity
 import com.dreamsoftware.data.database.entity.SaveChannelEntity
 import org.jetbrains.exposed.sql.Transaction
+import org.jetbrains.exposed.sql.and
 import org.jetbrains.exposed.sql.statements.UpdateBuilder
 
 internal class ChannelDatabaseDataSourceImpl(
@@ -21,6 +22,18 @@ internal class ChannelDatabaseDataSourceImpl(
 
     private companion object {
         const val BATCH_SIZE = 500
+    }
+
+    override fun filterByCategoryAndCountry(categoryId: String?, countryId: String?): Iterable<ChannelEntity> {
+        return entityDAO.find { if (!categoryId.isNullOrBlank() && !countryId.isNullOrBlank()) {
+            (ChannelCategoryTable.category eq categoryId) and (ChannelTable.country eq countryId)
+        } else if (!categoryId.isNullOrBlank()) {
+            ChannelCategoryTable.category eq categoryId
+        } else if (!countryId.isNullOrBlank()) {
+            ChannelTable.country eq countryId
+        } else {
+            ChannelTable.id.isNotNull()
+        } }.map(mapper::map)
     }
 
     override suspend fun save(data: Iterable<SaveChannelEntity>) {

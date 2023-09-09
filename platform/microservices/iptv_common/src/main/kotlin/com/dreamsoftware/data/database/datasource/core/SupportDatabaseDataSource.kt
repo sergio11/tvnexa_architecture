@@ -14,7 +14,7 @@ import org.slf4j.LoggerFactory
 
 internal abstract class SupportDatabaseDataSource<KEY : Comparable<KEY>, DAO : Entity<KEY>, INPUT, OUTPUT>(
     private val database: IDatabaseFactory,
-    private val mapper: IMapper<DAO, OUTPUT>,
+    protected val mapper: IMapper<DAO, OUTPUT>,
     protected val entityDAO: EntityClass<KEY, DAO>
 ) : ISupportDatabaseDataSource<KEY, INPUT, OUTPUT> {
 
