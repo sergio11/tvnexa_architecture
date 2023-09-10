@@ -8,7 +8,10 @@ import com.dreamsoftware.data.database.datasource.core.SupportDatabaseDataSource
 import com.dreamsoftware.data.database.datasource.epg.IEpgChannelProgrammeDatabaseDataSource
 import com.dreamsoftware.data.database.entity.EpgChannelProgrammeEntity
 import com.dreamsoftware.data.database.entity.SaveEpgChannelProgrammeEntity
+import org.jetbrains.exposed.sql.and
 import org.jetbrains.exposed.sql.statements.UpdateBuilder
+import java.time.LocalDateTime
+import java.util.*
 
 internal class EpgChannelProgrammeDatabaseDataSourceImpl(
     database: IDatabaseFactory,
@@ -26,4 +29,11 @@ internal class EpgChannelProgrammeDatabaseDataSourceImpl(
         this@onMapEntityToSave[EpgChannelProgrammeTable.end] = end
         this@onMapEntityToSave[EpgChannelProgrammeTable.date] = date
     }
+
+    override fun findByChannelIdAndDateRange(channelId: String, startAt: LocalDateTime, endAt: LocalDateTime): Iterable<EpgChannelProgrammeEntity> =
+        entityDAO.find {
+            (EpgChannelProgrammeTable.channelId eq channelId) and
+                    (EpgChannelProgrammeTable.start greaterEq startAt) and
+                        (EpgChannelProgrammeTable.end lessEq endAt )
+        }.map(mapper::map)
 }

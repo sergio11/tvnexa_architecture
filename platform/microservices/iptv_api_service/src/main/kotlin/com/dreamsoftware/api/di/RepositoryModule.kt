@@ -1,13 +1,7 @@
 package com.dreamsoftware.api.di
 
-import com.dreamsoftware.api.repository.ICategoryRepository
-import com.dreamsoftware.api.repository.IChannelRepository
-import com.dreamsoftware.api.repository.ICountryRepository
-import com.dreamsoftware.api.repository.IRegionRepository
-import com.dreamsoftware.api.repository.impl.CategoryRepositoryImpl
-import com.dreamsoftware.api.repository.impl.ChannelRepositoryImpl
-import com.dreamsoftware.api.repository.impl.CountryRepositoryImpl
-import com.dreamsoftware.api.repository.impl.RegionRepositoryImpl
+import com.dreamsoftware.api.repository.*
+import com.dreamsoftware.api.repository.impl.*
 import org.koin.dsl.module
 
 val repositoryModule = module {
@@ -15,4 +9,5 @@ val repositoryModule = module {
     single<ICountryRepository> { CountryRepositoryImpl(get()) }
     single<IRegionRepository> {  RegionRepositoryImpl(get()) }
     single<IChannelRepository> { ChannelRepositoryImpl(get()) }
+    single<IEpgChannelProgrammeRepository> { EpgChannelProgrammeRepositoryImpl(get()) }
 }
