@@ -21,9 +21,14 @@ class ChannelGuidesIngestionJob(
 
     override suspend fun onStartExecution(jobData: JobDataMap?, scheduler: Scheduler?) {
         val guides = guidesNetworkDataSource.fetchContent()
-        guidesDatabaseDataSource.save(guidesMapper.mapList(guides))
+        val savedGuides = guidesDatabaseDataSource.findAll()
+        val guideSites = guides.map { it.site }
         scheduler?.let {
             with(scheduler) {
+                savedGuides.filterNot { guideSites.contains(it.site) }.forEach { deletedGuide ->
+                    val jobId = EPG_GRABBING_JOB_ID.replace("{lang}", deletedGuide.lang)
+                    deleteJob(JobKey.jobKey(jobId))
+                }
                 guides.groupBy { it.lang }.forEach { group ->
                     if (!checkExists(EpgGrabbingJob.getJobKey(EPG_GRABBING_JOB_ID.replace("{lang}", group.key)))) {
                         scheduleJob(
@@ -40,6 +45,7 @@ class ChannelGuidesIngestionJob(
                 }
             }
         }
+        guidesDatabaseDataSource.save(guidesMapper.mapList(guides))
     }
 
     companion object : IJobBuilder {
