@@ -12,7 +12,7 @@ import org.jetbrains.exposed.sql.statements.UpdateBuilder
 
 internal class ChannelGuideDatabaseDataSourceImpl(
     database: IDatabaseFactory,
-    private val mapper: IMapper<ChannelGuideEntityDAO, ChannelGuideEntity>
+    mapper: IMapper<ChannelGuideEntityDAO, ChannelGuideEntity>
 ): SupportDatabaseDataSource<Long, ChannelGuideEntityDAO, SaveChannelGuideEntity, ChannelGuideEntity>(database, mapper, ChannelGuideEntityDAO), IChannelGuideDatabaseDataSource {
 
     override fun UpdateBuilder<Int>.onMapEntityToSave(entityToSave: SaveChannelGuideEntity) = with(entityToSave) {
