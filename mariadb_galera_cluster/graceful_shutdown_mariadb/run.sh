@@ -10,14 +10,15 @@ safeToBootStrap() {
     exit
 }
 
-signalListener() {
+startListener() {
     "$@" &
     #Trap SIGTERM
     trap 'safeToBootStrap' INT TERM
-
+    exec /usr/bin/run_xinetd.sh &
     while :; do
         sleep 1s
     done
 }
 
-signalListener docker-entrypoint.sh "$@"
+
+startListener docker-entrypoint.sh "$@"

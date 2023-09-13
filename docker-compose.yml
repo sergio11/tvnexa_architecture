@@ -41,6 +41,12 @@ services:
     links:
       - ftp_repository
 
+  iptv_ingestion_service_2:
+    container_name: iptv_ingestion_service_2
+    image: ssanchez11/iptv_ingestion_service:0.0.1
+    links:
+      - ftp_repository
+
   # IPTV API Service
   iptv_api_service_1:
     container_name: iptv_api_service_1
