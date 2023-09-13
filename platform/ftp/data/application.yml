@@ -1,8 +1,8 @@
 dbConfig: {
   driverClass: "com.mysql.cj.jdbc.Driver",
-  databaseUrl: "jdbc:mysql://192.168.1.39:6033/iptv?useUnicode=true&characterEncoding=UTF-8",
-  connUser: iptv,
-  connPassword: iptv00,
+  databaseUrl: "jdbc:mysql://192.168.1.39:3306/TVNexa?useUnicode=true&characterEncoding=UTF-8",
+  connUser: dreamsoftware,
+  connPassword: dreamsoftware00,
   maxPoolSize: 10
 }
 iptvOrgConfig: {

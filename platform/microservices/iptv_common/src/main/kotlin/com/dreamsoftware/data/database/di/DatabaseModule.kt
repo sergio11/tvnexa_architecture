@@ -19,8 +19,11 @@ val databaseModule = module {
                 username = connUser
                 password = connPassword
                 maximumPoolSize = maxPoolSize
-                isAutoCommit = false
-                transactionIsolation = "TRANSACTION_REPEATABLE_READ"
+                isAutoCommit = true
+                minimumIdle = 5
+                idleTimeout = 30000
+                connectionTimeout = 30000
+                maxLifetime = 1800000
                 validate()
             })
         }

@@ -7,7 +7,6 @@ import com.dreamsoftware.jobs.core.manager.JobChainingOffsetDelayJobListener
 import org.quartz.Scheduler
 import org.slf4j.LoggerFactory
 
-
 internal class JobSchedulerManagerImpl(
     private val scheduler: Scheduler
 ) : IJobSchedulerManager {
@@ -20,7 +19,8 @@ internal class JobSchedulerManagerImpl(
                 val jobChainingListener = JobChainingOffsetDelayJobListener()
                 jobBuilderList.forEach { jobBuilder ->
                     with(jobBuilder) {
-                        log.debug("JobSchedulerManager - scheduleJob - job ${getJobKey().name}")
+                        val jobKey = getJobKey()
+                        log.debug("JobSchedulerManager - scheduleJob - job ${jobKey.name}")
                         (getParentJobKeys() ?: getParentJobKey()?.let { listOf(it) })?.takeIf {
                             it.toList().isNotEmpty()
                         }?.let { parentJobKeys ->
@@ -33,9 +33,13 @@ internal class JobSchedulerManagerImpl(
                                 )
                             )
                         } ?: run {
-                            log.debug("Tell quartz to schedule the job using trigger ${getJobKey().name}")
-                            // Tell quartz to schedule the job using trigger
-                            scheduleJob(buildJob(), buildTrigger())
+                            log.debug("Tell quartz to schedule the job using trigger ${jobKey.name}")
+                            if (!checkExists(jobKey)) {
+                                // Tell quartz to schedule the job using trigger
+                                scheduleJob(buildJob(), buildTrigger())
+                            } else {
+                                log.debug("Job ${jobKey.name} already exists in Quartz.")
+                            }
                         }
                     }
                 }

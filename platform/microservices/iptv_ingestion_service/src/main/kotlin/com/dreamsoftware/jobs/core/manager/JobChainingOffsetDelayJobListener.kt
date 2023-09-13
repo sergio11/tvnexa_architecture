@@ -1,10 +1,8 @@
 package com.dreamsoftware.jobs.core.manager
 
 import com.dreamsoftware.jobs.core.IJobBuilder
-import com.dreamsoftware.jobs.core.createNewTrigger
 import org.quartz.*
 import org.quartz.listeners.JobListenerSupport
-import java.util.*
 import java.util.Calendar
 
 
@@ -69,8 +67,12 @@ class JobChainingOffsetDelayJobListener: JobListenerSupport() {
                 log.info("rescheduleJob ${jobDetail.key.name}")
                 rescheduleJob(it.key, buildTrigger(jobDetail.key, intervalOffsetInMinutes))
             } ?: run {
-                log.info("scheduleJob ${jobDetail.key.name}")
-                scheduleJob(jobDetail, buildTrigger(jobDetail.key, intervalOffsetInMinutes))
+                if (!checkExists(jobDetail.key)) {
+                    // Tell quartz to schedule the job using trigger
+                    scheduleJob(jobDetail, buildTrigger(jobDetail.key, intervalOffsetInMinutes))
+                } else {
+                    log.debug("Job ${jobDetail.key.name} already exists in Quartz.")
+                }
             }
         }
     }
