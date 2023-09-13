@@ -1,92 +1,100 @@
 version: "3.6"
 
-## MariaDB Galera Cluster, a type of MySQL cluster, with ProxySQL
+# Service templates
+
+x-mariadb-defaults: &mariadb-service
+  build:
+    context: ./graceful_shutdown_mariadb
+  env_file:
+    - ./.env
+  environment:
+    - MARIADB_USER=${MARIADB_USER}
+    - MARIADB_PASSWORD=${MARIADB_PASSWORD}
+    - MARIADB_DATABASE=${MARIADB_DATABASE}
+    - MARIADB_ROOT_PASSWORD=${MARIADB_ROOT_PASSWORD}
+  networks:
+    - galera-ha-stack
+
+x-haproxy-defaults: &haproxy-service
+  image: "haproxytech/haproxy-alpine:2.7"
+  depends_on:
+    - mariadb_slave_1
+    - mariadb_slave_2
+    - mariadb_slave_3
+    - mariadb_master_1
+    - mariadb_master_2
+    - mariadb_master_3
+  links:
+    - mariadb_slave_1
+    - mariadb_slave_2
+    - mariadb_slave_3
+    - mariadb_master_1
+    - mariadb_master_2
+    - mariadb_master_3
+  volumes:
+    - ./haproxy:/usr/local/etc/haproxy:ro
+
+
+networks:
+  galera-ha-stack:
+    ipam:
+      config:
+        - subnet: 172.20.0.0/24
+
+
+## MariaDB Galera Cluster, a type of MySQL cluster, with HAproxy
 ## multi-primary MySQL Cluster, in the form of MariaDB Galera Cluster, to make it more reliable to load balance databases.
 services:
 
   # MariaDB Image
   # MariaDB is a community-developed fork of MySQL intended to remain free under the GNU GPL.
   mariadb_master_1:
-    build:
-      context: ./graceful_shutdown_mariadb
+    <<: *mariadb-service
     container_name: mariadb_master_1
-    env_file:
-      - .env
-    environment:
-      - MARIADB_USER=${MARIADB_USER}
-      - MARIADB_PASSWORD=${MARIADB_PASSWORD}
-      - MARIADB_DATABASE=${MARIADB_DATABASE}
-      - MARIADB_ROOT_PASSWORD=${MARIADB_ROOT_PASSWORD}
     volumes:
       - ./mariadb_master_1/db.cnf:/etc/mysql/mariadb.conf.d/db.cnf
       - ./mariadb_master_1/entrypoint-initdb.d/init.sql:/docker-entrypoint-initdb.d/init.sql
-    networks:
-      - galera_cluster_network
 
   # MariaDB Image
   # MariaDB is a community-developed fork of MySQL intended to remain free under the GNU GPL.
   mariadb_master_2:
-    build:
-      context: ./graceful_shutdown_mariadb
+    <<: *mariadb-service
     container_name: mariadb_master_2
-    env_file:
-      - .env
-    environment:
-      - MARIADB_USER=${MARIADB_USER}
-      - MARIADB_PASSWORD=${MARIADB_PASSWORD}
-      - MARIADB_DATABASE=${MARIADB_DATABASE}
-      - MARIADB_ROOT_PASSWORD=${MARIADB_ROOT_PASSWORD}
     volumes:
       - ./mariadb_master_2/db.cnf:/etc/mysql/mariadb.conf.d/db.cnf
-      - ./start_replicant_cluster_1.sh:/start_replicant_cluster_1.sh
+      - ./mariadb_master_2/entrypoint-initdb.d/init.sql:/docker-entrypoint-initdb.d/init.sql
+      - ./start_master_replicant.sh:/start_master_replicant.sh
     depends_on:
       - mariadb_master_1
+    command: sh /start_master_replicant.sh
     links:
       - mariadb_master_1
-    command: sh /start_replicant_cluster_1.sh
-    networks:
-      - galera_cluster_network
 
   # MariaDB Image
   # MariaDB is a community-developed fork of MySQL intended to remain free under the GNU GPL.
   mariadb_master_3:
-    build:
-      context: ./graceful_shutdown_mariadb
+    <<: *mariadb-service
     container_name: mariadb_master_3
-    env_file:
-      - .env
     volumes:
       - ./mariadb_master_3/db.cnf:/etc/mysql/mariadb.conf.d/db.cnf
-      - ./start_replicant_cluster_1.sh:/start_replicant_cluster_1.sh
-    environment:
-      - MARIADB_USER=${MARIADB_USER}
-      - MARIADB_PASSWORD=${MARIADB_PASSWORD}
-      - MARIADB_DATABASE=${MARIADB_DATABASE}
-      - MARIADB_ROOT_PASSWORD=${MARIADB_ROOT_PASSWORD}
+      - ./mariadb_master_3/entrypoint-initdb.d/init.sql:/docker-entrypoint-initdb.d/init.sql
+      - ./start_master_replicant.sh:/start_master_replicant.sh
     depends_on:
       - mariadb_master_2
+    command: sh /start_master_replicant.sh
     links:
       - mariadb_master_2
-    command: sh /start_replicant_cluster_1.sh
-    networks:
-      - galera_cluster_network
 
   # MariaDB Image
   # MariaDB is a community-developed fork of MySQL intended to remain free under the GNU GPL.
   mariadb_slave_1:
-    build:
-      context: ./graceful_shutdown_mariadb
+    <<: *mariadb-service
     container_name: mariadb_slave_1
-    env_file:
-      - .env
     volumes:
       - ./mariadb_slave_1/db.cnf:/etc/mysql/mariadb.conf.d/db.cnf
       - ./mariadb_slave_1/entrypoint-initdb.d/init.sql:/docker-entrypoint-initdb.d/init.sql
-    environment:
-      - MARIADB_USER=${MARIADB_USER}
-      - MARIADB_PASSWORD=${MARIADB_PASSWORD}
-      - MARIADB_DATABASE=${MARIADB_DATABASE}
-      - MARIADB_ROOT_PASSWORD=${MARIADB_ROOT_PASSWORD}
+      - ./configure_slave.sh:/usr/bin/configure_slave.sh
+      - ./start_master_slave.sh:/docker-entrypoint-initdb.d/start_master_slave.sh
     depends_on:
       - mariadb_master_1
       - mariadb_master_2
@@ -95,26 +103,16 @@ services:
       - mariadb_master_1
       - mariadb_master_2
       - mariadb_master_3
-    networks:
-      - galera_cluster_network
 
   # MariaDB Image
   # MariaDB is a community-developed fork of MySQL intended to remain free under the GNU GPL.
   mariadb_slave_2:
-    build:
-      context: ./graceful_shutdown_mariadb
+    <<: *mariadb-service
     container_name: mariadb_slave_2
-    env_file:
-      - .env
-    environment:
-      - MARIADB_USER=${MARIADB_USER}
-      - MARIADB_PASSWORD=${MARIADB_PASSWORD}
-      - MARIADB_DATABASE=${MARIADB_DATABASE}
-      - MARIADB_ROOT_PASSWORD=${MARIADB_ROOT_PASSWORD}
     volumes:
       - ./mariadb_slave_2/db.cnf:/etc/mysql/mariadb.conf.d/db.cnf
-      - ./apply_master_slave_configuration.sh:/apply_master_slave_configuration.sh
-      - ./start_replicant_cluster_2.sh:/start_replicant_cluster_2.sh
+      - ./mariadb_slave_2/entrypoint-initdb.d/init.sql:/docker-entrypoint-initdb.d/init.sql
+      - ./start_master_slave.sh:/docker-entrypoint-initdb.d/start_slave.sh
     depends_on:
       - mariadb_slave_1
       - mariadb_master_1
@@ -125,26 +123,16 @@ services:
       - mariadb_master_1
       - mariadb_master_2
       - mariadb_master_3
-    command: sh /apply_master_slave_configuration.sh
-    networks:
-      - galera_cluster_network
 
   # MariaDB Image
   # MariaDB is a community-developed fork of MySQL intended to remain free under the GNU GPL.
   mariadb_slave_3:
-    build:
-      context: ./graceful_shutdown_mariadb
+    <<: *mariadb-service
     container_name: mariadb_slave_3
-    env_file:
-      - .env
-    environment:
-      - MARIADB_USER=${MARIADB_USER}
-      - MARIADB_PASSWORD=${MARIADB_PASSWORD}
-      - MARIADB_DATABASE=${MARIADB_DATABASE}
-      - MARIADB_ROOT_PASSWORD=${MARIADB_ROOT_PASSWORD}
     volumes:
       - ./mariadb_slave_3/db.cnf:/etc/mysql/mariadb.conf.d/db.cnf
-      - ./start_replicant_cluster_2.sh:/start_replicant_cluster_2.sh
+      - ./mariadb_slave_3/entrypoint-initdb.d/init.sql:/docker-entrypoint-initdb.d/init.sql
+      - ./start_master_slave.sh:/docker-entrypoint-initdb.d/start_slave.sh
     depends_on:
       - mariadb_slave_1
       - mariadb_slave_2
@@ -157,58 +145,35 @@ services:
       - mariadb_master_1
       - mariadb_master_2
       - mariadb_master_3
-    command: sh /start_replicant_cluster_2.sh
-    networks:
-      - galera_cluster_network
 
-  # ProxySQL is built with an advanced multi-core architecture to support hundreds of thousands of concurrent connections,
-  # multiplexed to thousands of servers
-  proxysql:
-    image: proxysql/proxysql:2.5.2
-    container_name: proxysql
-    volumes:
-      - ./proxysql/proxysql.cnf:/etc/proxysql.cnf
+  # HAProxy is a free, very fast and reliable reverse-proxy offering high availability, 
+  # load balancing, and proxying for TCP and HTTP-based applications.
+  mariadb_haproxy:
+    <<: *haproxy-service
+    container_name: mariadb_haproxy
     ports:
-      - "6032:6032"
-      - "6033:6033"
-      - "6070:6070"
-      - "6080:6080"
-    depends_on:
-      - mariadb_slave_1
-      - mariadb_slave_2
-      - mariadb_slave_3
-      - mariadb_master_1
-      - mariadb_master_2
-      - mariadb_master_3
-    links:
-      - mariadb_slave_1
-      - mariadb_slave_2
-      - mariadb_slave_3
-      - mariadb_master_1
-      - mariadb_master_2
-      - mariadb_master_3
+      - "8404:8404"
+      - "3306:3306"
+      - "3307:3307"
     networks:
-      - galera_cluster_network
+      - galera-ha-stack
+
 
   # php My Admin
-  phpMyAdmin:
+  mariadb_web_admin:
     image: phpmyadmin/phpmyadmin
     container_name: phpmyadmin
     restart: always
     depends_on:
-      - proxysql
+      - mariadb_haproxy
     environment:
       PMA_HOST: ${PMA_HOST}
       PMA_PORT: ${PMA_PORT}
       PMA_USER: ${PMA_USER}
       PMA_PASSWORD: ${PMA_PASSWORD}
     links:
-      - proxysql
+      - mariadb_haproxy
     ports:
       - "8081:80"
     networks:
-      - galera_cluster_network
-
-networks:
-  galera_cluster_network:
-    driver: bridge
+      - galera-ha-stack
