@@ -1,6 +1,6 @@
 package com.dreamsoftware.data.database.datasource.epg.impl
 
-import com.dreamsoftware.core.IMapper
+import com.dreamsoftware.core.ISimpleMapper
 import com.dreamsoftware.data.database.core.IDatabaseFactory
 import com.dreamsoftware.data.database.dao.EpgChannelProgrammeEntityDAO
 import com.dreamsoftware.data.database.dao.EpgChannelProgrammeTable
@@ -11,11 +11,10 @@ import com.dreamsoftware.data.database.entity.SaveEpgChannelProgrammeEntity
 import org.jetbrains.exposed.sql.and
 import org.jetbrains.exposed.sql.statements.UpdateBuilder
 import java.time.LocalDateTime
-import java.util.*
 
 internal class EpgChannelProgrammeDatabaseDataSourceImpl(
     database: IDatabaseFactory,
-    mapper: IMapper<EpgChannelProgrammeEntityDAO, EpgChannelProgrammeEntity>
+    mapper: ISimpleMapper<EpgChannelProgrammeEntityDAO, EpgChannelProgrammeEntity>
 ) : SupportDatabaseDataSource<Long, EpgChannelProgrammeEntityDAO, SaveEpgChannelProgrammeEntity, EpgChannelProgrammeEntity>(
     database,
     mapper,

@@ -1,10 +1,10 @@
 package com.dreamsoftware.data.api.mapper
 
-import com.dreamsoftware.core.IMapper
+import com.dreamsoftware.core.ISimpleMapper
 import com.dreamsoftware.data.database.entity.SaveSubdivisionEntity
 import com.dreamsoftware.data.iptvorg.model.SubdivisionDTO
 
-class SaveSubdivisionDTOMapper: IMapper<SubdivisionDTO, SaveSubdivisionEntity> {
+class SaveSubdivisionDTOMapper: ISimpleMapper<SubdivisionDTO, SaveSubdivisionEntity> {
     override fun map(input: SubdivisionDTO): SaveSubdivisionEntity = with(input) {
         SaveSubdivisionEntity(
             code = code,

@@ -37,8 +37,8 @@ fun Application.doOnStartup() {
                     SubdivisionsIngestionJob,
                     RegionsIngestionJob,
                     ChannelsIngestionJob,
-                    ChannelStreamsIngestionJob,
-                    ChannelGuidesIngestionJob
+                    ChannelStreamsIngestionJob
+                    //ChannelGuidesIngestionJob
                 )
             )
         }

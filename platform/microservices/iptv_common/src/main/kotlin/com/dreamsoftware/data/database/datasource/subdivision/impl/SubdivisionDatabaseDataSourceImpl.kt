@@ -1,6 +1,6 @@
 package com.dreamsoftware.data.database.datasource.subdivision.impl
 
-import com.dreamsoftware.core.IMapper
+import com.dreamsoftware.core.ISimpleMapper
 import com.dreamsoftware.data.database.core.IDatabaseFactory
 import com.dreamsoftware.data.database.dao.SubdivisionEntityDAO
 import com.dreamsoftware.data.database.dao.SubdivisionTable
@@ -12,7 +12,7 @@ import org.jetbrains.exposed.sql.statements.UpdateBuilder
 
 internal class SubdivisionDatabaseDataSourceImpl(
     database: IDatabaseFactory,
-    mapper: IMapper<SubdivisionEntityDAO, SubdivisionEntity>
+    mapper: ISimpleMapper<SubdivisionEntityDAO, SubdivisionEntity>
 ): SupportDatabaseDataSource<String, SubdivisionEntityDAO, SaveSubdivisionEntity , SubdivisionEntity>(database, mapper, SubdivisionEntityDAO), ISubdivisionDatabaseDataSource {
 
     override fun UpdateBuilder<Int>.onMapEntityToSave(entityToSave: SaveSubdivisionEntity) = with(entityToSave) {

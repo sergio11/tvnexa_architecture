@@ -12,22 +12,22 @@ import org.koin.core.scope.Scope
  * This method will declare your implementation inside module lambda
  */
 inline fun <reified I, reified O> Module.mapper(
-    noinline definition: Definition<IMapper<I, O>>
-): KoinDefinition<IMapper<I, O>> {
+    noinline definition: Definition<ISimpleMapper<I, O>>
+): KoinDefinition<ISimpleMapper<I, O>> {
     return factory(qualifier = named(identifier<I, O>()), definition = definition)
 }
 
 /**
  * This will recover and inject your interface like the method get() in koin.
  */
-inline fun <reified I, reified O> Scope.getMapper(): IMapper<I, O> {
+inline fun <reified I, reified O> Scope.getMapper(): ISimpleMapper<I, O> {
     return get(named(identifier<I, O>()))
 }
 
 /**
  * This will recover and inject your interface in implementations of KoinComponent
  */
-inline fun <reified I, reified O> KoinComponent.injectMapper(): Lazy<IMapper<I, O>> {
+inline fun <reified I, reified O> KoinComponent.injectMapper(): Lazy<ISimpleMapper<I, O>> {
     return inject(named(identifier<I, O>()))
 }
 

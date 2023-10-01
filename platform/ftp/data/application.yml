@@ -1,9 +1,9 @@
 dbConfig: {
-  driverClass: "com.mysql.cj.jdbc.Driver",
-  databaseUrl: "jdbc:mysql://192.168.1.39:3306/TVNexa?useUnicode=true&characterEncoding=UTF-8",
+  driverClass: "org.mariadb.jdbc.Driver",
+  databaseUrl: "jdbc:mariadb://192.168.1.39:3306/TVNexa",
   connUser: dreamsoftware,
   connPassword: dreamsoftware00,
-  maxPoolSize: 10
+  maxPoolSize: 20
 }
 iptvOrgConfig: {
   countriesEndpoint: "https://iptv-org.github.io/api/countries.json",

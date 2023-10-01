@@ -4,6 +4,7 @@ import com.dreamsoftware.core.getMapper
 import com.dreamsoftware.data.database.core.IDbMigrationConfig
 import com.dreamsoftware.data.iptvorg.di.*
 import com.dreamsoftware.jobs.*
+import com.dreamsoftware.jobs.core.QuartzJobsConnectionProvider
 import com.dreamsoftware.jobs.core.manager.IJobSchedulerManager
 import com.dreamsoftware.jobs.core.manager.impl.JobSchedulerManagerImpl
 import com.dreamsoftware.model.DatabaseConfig
@@ -14,21 +15,21 @@ import org.koin.dsl.module
 import org.quartz.Scheduler
 import org.quartz.impl.StdSchedulerFactory
 import org.quartz.spi.JobFactory
+import org.quartz.utils.DBConnectionManager
 import java.util.*
 
 val jobsModule = module {
     includes(configModule)
+
     factory(named("quartzProperties")) {
         with(get<DatabaseConfig>()) {
             Properties().apply {
+                // Quartz Configuration
                 setProperty("org.quartz.scheduler.instanceName", "IptvJobsScheduler")
+                setProperty("org.quartz.scheduler.instanceId", "AUTO")
                 setProperty("org.quartz.threadPool.threadCount", "3")
-                setProperty("org.quartz.jobStore.dataSource", "mySql")
-                setProperty("org.quartz.dataSource.mySql.driver", driverClass)
-                setProperty("org.quartz.dataSource.mySql.URL", databaseUrl)
-                setProperty("org.quartz.dataSource.mySql.user", connUser)
-                setProperty("org.quartz.dataSource.mySql.password", connPassword)
-                setProperty("org.quartz.dataSource.mySql.maxConnections", "10")
+                setProperty("org.quartz.jobStore.dataSource", "myDS")
+                setProperty("org.quartz.dataSource.myDS.connectionProvider.class", "com.dreamsoftware.jobs.core.QuartzJobsConnectionProvider")
                 setProperty("org.quartz.jobStore.class", "org.quartz.impl.jdbcjobstore.JobStoreTX")
                 setProperty("org.quartz.jobStore.driverDelegateClass", "org.quartz.impl.jdbcjobstore.StdJDBCDelegate")
                 setProperty("org.quartz.jobStore.tablePrefix", "QRTZ_")
@@ -44,8 +45,9 @@ val jobsModule = module {
                     "org.quartz.plugin.triggHistory.triggerCompleteMessage",
                     """Trigger {1}.{0} completed firing job {6}.{5} at {4, date, HH:mm:ss MM/dd/yyyy}"""
                 )
-                setProperty("org.quartz.jobStore.isClustered", "true")
-                setProperty("org.quartz.jobStore.clusterCheckinInterval", "15000")
+                // INFO  org.quartz.impl.StdSchedulerFactory - Using ConnectionProvider class 'org.quartz.utils.C3p0PoolingConnectionProvider' for data source 'myDS'
+                //setProperty("org.quartz.jobStore.isClustered", "true")
+                //setProperty("org.quartz.jobStore.clusterCheckinInterval", "15000")
             }
         }
     }

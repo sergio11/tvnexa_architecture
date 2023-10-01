@@ -1,10 +1,10 @@
 package com.dreamsoftware.data.api.mapper
 
-import com.dreamsoftware.core.IMapper
+import com.dreamsoftware.core.ISimpleMapper
 import com.dreamsoftware.data.database.entity.SaveChannelEntity
 import com.dreamsoftware.data.iptvorg.model.ChannelDTO
 
-class SaveChannelDTOMapper: IMapper<ChannelDTO, SaveChannelEntity> {
+class SaveChannelDTOMapper: ISimpleMapper<ChannelDTO, SaveChannelEntity> {
     override fun map(input: ChannelDTO): SaveChannelEntity = with(input) {
         SaveChannelEntity(
             channelId = id,

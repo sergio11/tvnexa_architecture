@@ -1,10 +1,10 @@
 package com.dreamsoftware.data.api.mapper
 
-import com.dreamsoftware.core.IMapper
+import com.dreamsoftware.core.ISimpleMapper
 import com.dreamsoftware.data.database.entity.SaveCountryEntity
 import com.dreamsoftware.data.iptvorg.model.CountryDTO
 
-class SaveCountryDTOMapper: IMapper<CountryDTO, SaveCountryEntity> {
+class SaveCountryDTOMapper: ISimpleMapper<CountryDTO, SaveCountryEntity> {
     override fun map(input: CountryDTO): SaveCountryEntity = with(input) {
         SaveCountryEntity(
             code = code,
