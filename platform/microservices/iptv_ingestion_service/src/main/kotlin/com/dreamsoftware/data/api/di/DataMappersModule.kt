@@ -5,6 +5,7 @@ import com.dreamsoftware.data.api.mapper.*
 import org.koin.dsl.module
 
 val dataMappersModule = module {
+    // Define mappers for different DTOs
     mapper { SaveLanguageDTOMapper() }
     mapper { SaveCategoryDTOMapper() }
     mapper { SaveCountryDTOMapper() }

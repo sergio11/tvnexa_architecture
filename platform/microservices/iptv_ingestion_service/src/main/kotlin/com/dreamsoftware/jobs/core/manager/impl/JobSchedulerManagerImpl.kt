@@ -7,12 +7,23 @@ import com.dreamsoftware.jobs.core.manager.JobChainingOffsetDelayJobListener
 import org.quartz.Scheduler
 import org.slf4j.LoggerFactory
 
+/**
+ * The `JobSchedulerManagerImpl` class is an implementation of the [IJobSchedulerManager] interface.
+ * It is responsible for scheduling and starting jobs based on a list of job builders, and it supports job chaining with offset delays.
+ *
+ * @param scheduler The Quartz scheduler instance used for job scheduling.
+ */
 internal class JobSchedulerManagerImpl(
     private val scheduler: Scheduler
 ) : IJobSchedulerManager {
 
     private val log = LoggerFactory.getLogger(this::class.java)
 
+    /**
+     * Schedule and start jobs based on a list of job builders.
+     *
+     * @param jobBuilderList An iterable list of job builders that define the jobs to be scheduled.
+     */
     override fun scheduleJobsAndStart(jobBuilderList: Iterable<IJobBuilder>) {
         with(scheduler) {
             if (!isStarted) {

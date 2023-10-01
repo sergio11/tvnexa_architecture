@@ -3,32 +3,42 @@ package com.dreamsoftware.data.iptvorg.datasource.core
 import com.dreamsoftware.data.iptvorg.exception.*
 import io.ktor.client.plugins.*
 import io.ktor.client.statement.*
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.withContext
 import java.io.IOException
-import java.nio.charset.Charset
 
 /**
- * Some HTTP response codes that We could get when making something request
+ * Abstract base class for network data sources that provides methods for handling network requests and exceptions.
  */
-const val BAD_REQUEST_CODE: Int = 400
-const val UNAUTHORIZED_CODE: Int = 401
-const val NOT_FOUND_CODE: Int = 404
-const val INTERNAL_SERVER_ERROR_CODE: Int = 500
-const val CONFLICT_ERROR_CODE: Int = 409
-const val FORBIDDEN_CODE: Int = 403
-
 abstract class SupportNetworkDataSource {
 
+    companion object {
+        /**
+         * Constants for some common HTTP response codes.
+         */
+        const val BAD_REQUEST_CODE: Int = 400
+        const val UNAUTHORIZED_CODE: Int = 401
+        const val NOT_FOUND_CODE: Int = 404
+        const val INTERNAL_SERVER_ERROR_CODE: Int = 500
+        const val CONFLICT_ERROR_CODE: Int = 409
+        const val FORBIDDEN_CODE: Int = 403
+    }
+
     /**
-     * Wrap for safe Network Call
-     * @param onExecuted
+     * Safely executes a network call, handling exceptions and errors.
+     *
+     * @param onExecuted A suspend function that performs the network call.
+     * @return The result of the network call.
+     * @throws NetworkNoInternetException If there is no internet connectivity.
+     * @throws NetworkException If a network-related exception occurs.
+     * @throws NetworkBadRequestException If a bad request (HTTP 400) is encountered.
+     * @throws NetworkUnauthorizedException If an unauthorized request (HTTP 401) is encountered.
+     * @throws NetworkForbiddenException If a forbidden request (HTTP 403) is encountered.
+     * @throws NetworkNoResultException If no result (HTTP 404) is found.
+     * @throws NetworkErrorException If a general network error occurs.
      */
-    protected suspend fun <T> safeNetworkCall(onExecuted: suspend () -> T): T = withContext(Dispatchers.Default)  {
+    protected suspend fun <T> safeNetworkCall(onExecuted: suspend () -> T): T {
         try {
-            onExecuted()
-        } catch (exception: IOException){
-            // map interrupted I/O to Network No Internet Exception
+            return onExecuted()
+        } catch (exception: IOException) {
             throw NetworkNoInternetException()
         } catch (exception: NetworkException) {
             throw exception
@@ -44,37 +54,25 @@ abstract class SupportNetworkDataSource {
     }
 
     /**
-     * Map HTTP Error codes to exceptions to easy handler
-     * @param responseException
+     * Maps HTTP error codes to specific exceptions for easier handling.
+     *
+     * @param responseException The response exception containing HTTP status information.
+     * @return An exception that corresponds to the HTTP error code.
      */
-    open suspend fun onApiException(responseException: ResponseException): Exception =
-        responseException.response.let {
-            when(it.status.value) {
-                BAD_REQUEST_CODE -> {
-                    Charset.forName("UTF-8")
-                    NetworkBadRequestException(message = it.bodyAsText(), cause = responseException)
-                }
-                UNAUTHORIZED_CODE -> {
-                    Charset.forName("UTF-8")
-                    NetworkUnauthorizedException(message = it.bodyAsText(), cause = responseException)
-                }
-                FORBIDDEN_CODE -> {
-                    Charset.forName("UTF-8")
-                    NetworkForbiddenException(message = it.bodyAsText(), cause = responseException)
-                }
-                NOT_FOUND_CODE -> {
-                    Charset.forName("UTF-8")
-                    NetworkNoResultException(message = it.bodyAsText(), cause = responseException)
-                }
-                INTERNAL_SERVER_ERROR_CODE -> {
-                    Charset.forName("UTF-8")
-                    NetworkErrorException(message = it.bodyAsText(), cause = responseException)
-                }
-                CONFLICT_ERROR_CODE -> {
-                    Charset.forName("UTF-8")
-                    NetworkUnverifiedAccountException(message = it.bodyAsText(), cause = responseException)
-                }
+    open suspend fun onApiException(responseException: ResponseException): Exception {
+        return responseException.response.let {
+            when (it.status.value) {
+                BAD_REQUEST_CODE -> NetworkBadRequestException(message = it.bodyAsText(), cause = responseException)
+                UNAUTHORIZED_CODE -> NetworkUnauthorizedException(message = it.bodyAsText(), cause = responseException)
+                FORBIDDEN_CODE -> NetworkForbiddenException(message = it.bodyAsText(), cause = responseException)
+                NOT_FOUND_CODE -> NetworkNoResultException(message = it.bodyAsText(), cause = responseException)
+                INTERNAL_SERVER_ERROR_CODE -> NetworkErrorException(message = it.bodyAsText(), cause = responseException)
+                CONFLICT_ERROR_CODE -> NetworkUnverifiedAccountException(
+                    message = it.bodyAsText(),
+                    cause = responseException
+                )
                 else -> NetworkErrorException()
             }
         }
+    }
 }
