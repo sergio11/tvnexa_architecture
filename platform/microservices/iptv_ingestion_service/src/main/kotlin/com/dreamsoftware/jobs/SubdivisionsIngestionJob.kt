@@ -1,6 +1,6 @@
 package com.dreamsoftware.jobs
 
-import com.dreamsoftware.core.IMapper
+import com.dreamsoftware.core.ISimpleMapper
 import com.dreamsoftware.data.database.datasource.subdivision.ISubdivisionDatabaseDataSource
 import com.dreamsoftware.data.database.entity.SaveSubdivisionEntity
 import com.dreamsoftware.data.iptvorg.datasource.IptvOrgNetworkDataSource
@@ -14,7 +14,7 @@ import org.quartz.*
 @DisallowConcurrentExecution
 class SubdivisionsIngestionJob(
     private val subdivisionsNetworkDataSource: IptvOrgNetworkDataSource<SubdivisionDTO>,
-    private val subdivisionsMapper: IMapper<SubdivisionDTO, SaveSubdivisionEntity>,
+    private val subdivisionsMapper: ISimpleMapper<SubdivisionDTO, SaveSubdivisionEntity>,
     private val subdivisionsDatabaseDataSource: ISubdivisionDatabaseDataSource
 ): SupportJob() {
 

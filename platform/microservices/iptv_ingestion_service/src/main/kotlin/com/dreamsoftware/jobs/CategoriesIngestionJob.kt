@@ -1,6 +1,6 @@
 package com.dreamsoftware.jobs
 
-import com.dreamsoftware.core.IMapper
+import com.dreamsoftware.core.ISimpleMapper
 import com.dreamsoftware.data.database.datasource.category.ICategoryDatabaseDataSource
 import com.dreamsoftware.data.database.entity.SaveCategoryEntity
 import com.dreamsoftware.data.iptvorg.datasource.IptvOrgNetworkDataSource
@@ -11,7 +11,7 @@ import org.quartz.*
 @DisallowConcurrentExecution
 class CategoriesIngestionJob(
     private val categoriesNetworkDataSource: IptvOrgNetworkDataSource<CategoryDTO>,
-    private val categoriesMapper: IMapper<CategoryDTO, SaveCategoryEntity>,
+    private val categoriesMapper: ISimpleMapper<CategoryDTO, SaveCategoryEntity>,
     private val categoriesDatabaseDataSource: ICategoryDatabaseDataSource
 ): SupportJob() {
 

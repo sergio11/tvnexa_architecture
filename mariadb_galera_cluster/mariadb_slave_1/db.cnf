@@ -5,6 +5,7 @@ character-set-server=utf8mb4
 collation_server=utf8mb4_unicode_ci
 general_log=1
 general_log_file=/var/log/mysql/general.log
+wait_timeout=600
 # Slow query settings:
 slow_query_log=1
 slow_query_log_file=/var/log/mysql/slow.log

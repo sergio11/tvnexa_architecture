@@ -13,4 +13,7 @@
     <logger name="Exposed" level="warn" additivity="false">
         <appender-ref ref="STDOUT"/>
     </logger>
+    <logger name="org.mariadb.jdbc" level="info" additivity="false">
+        <appender-ref ref="STDOUT"/>
+    </logger>
 </configuration>

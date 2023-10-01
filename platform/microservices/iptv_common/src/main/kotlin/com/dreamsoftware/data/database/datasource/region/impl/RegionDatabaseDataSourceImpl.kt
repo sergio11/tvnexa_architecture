@@ -1,6 +1,6 @@
 package com.dreamsoftware.data.database.datasource.region.impl
 
-import com.dreamsoftware.core.IMapper
+import com.dreamsoftware.core.ISimpleMapper
 import com.dreamsoftware.data.database.core.IDatabaseFactory
 import com.dreamsoftware.data.database.dao.RegionCountryTable
 import com.dreamsoftware.data.database.dao.RegionEntityDAO
@@ -14,7 +14,7 @@ import org.jetbrains.exposed.sql.statements.UpdateBuilder
 
 internal class RegionDatabaseDataSourceImpl(
     database: IDatabaseFactory,
-    mapper: IMapper<RegionEntityDAO, RegionEntity>
+    mapper: ISimpleMapper<RegionEntityDAO, RegionEntity>
 ) : SupportDatabaseDataSource<String, RegionEntityDAO, SaveRegionEntity, RegionEntity>(
     database,
     mapper,

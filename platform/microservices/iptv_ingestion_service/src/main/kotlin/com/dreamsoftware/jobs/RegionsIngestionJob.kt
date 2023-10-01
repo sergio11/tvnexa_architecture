@@ -1,6 +1,6 @@
 package com.dreamsoftware.jobs
 
-import com.dreamsoftware.core.IMapper
+import com.dreamsoftware.core.ISimpleMapper
 import com.dreamsoftware.data.database.datasource.region.IRegionDatabaseDataSource
 import com.dreamsoftware.data.database.entity.SaveRegionEntity
 import com.dreamsoftware.data.iptvorg.datasource.IptvOrgNetworkDataSource
@@ -14,7 +14,7 @@ import org.quartz.*
 @DisallowConcurrentExecution
 class RegionsIngestionJob(
     private val regionsNetworkDataSource: IptvOrgNetworkDataSource<RegionDTO>,
-    private val regionMapper: IMapper<RegionDTO, SaveRegionEntity>,
+    private val regionMapper: ISimpleMapper<RegionDTO, SaveRegionEntity>,
     private val regionsDatabaseDataSource: IRegionDatabaseDataSource
 ): SupportJob() {
 

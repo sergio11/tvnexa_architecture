@@ -1,6 +1,6 @@
 package com.dreamsoftware.data.database.datasource.core
 
-import com.dreamsoftware.core.IMapper
+import com.dreamsoftware.core.ISimpleMapper
 import com.dreamsoftware.data.database.core.IDatabaseFactory
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
@@ -14,7 +14,7 @@ import org.slf4j.LoggerFactory
 
 internal abstract class SupportDatabaseDataSource<KEY : Comparable<KEY>, DAO : Entity<KEY>, INPUT, OUTPUT>(
     private val database: IDatabaseFactory,
-    protected val mapper: IMapper<DAO, OUTPUT>,
+    protected val mapper: ISimpleMapper<DAO, OUTPUT>,
     protected val entityDAO: EntityClass<KEY, DAO>
 ) : ISupportDatabaseDataSource<KEY, INPUT, OUTPUT> {
 

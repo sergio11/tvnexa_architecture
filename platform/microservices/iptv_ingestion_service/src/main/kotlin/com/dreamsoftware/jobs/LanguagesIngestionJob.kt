@@ -1,6 +1,6 @@
 package com.dreamsoftware.jobs
 
-import com.dreamsoftware.core.IMapper
+import com.dreamsoftware.core.ISimpleMapper
 import com.dreamsoftware.data.database.datasource.language.ILanguageDatabaseDataSource
 import com.dreamsoftware.data.database.entity.SaveLanguageEntity
 import com.dreamsoftware.data.iptvorg.datasource.IptvOrgNetworkDataSource
@@ -11,7 +11,7 @@ import org.quartz.*
 @DisallowConcurrentExecution
 class LanguagesIngestionJob(
     private val languageNetworkDataSource: IptvOrgNetworkDataSource<LanguageDTO>,
-    private val languageMapper: IMapper<LanguageDTO, SaveLanguageEntity>,
+    private val languageMapper: ISimpleMapper<LanguageDTO, SaveLanguageEntity>,
     private val languageDatabaseDataSource: ILanguageDatabaseDataSource
 ): SupportJob() {
 

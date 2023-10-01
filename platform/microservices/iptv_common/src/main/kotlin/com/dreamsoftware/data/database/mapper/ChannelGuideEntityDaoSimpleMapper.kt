@@ -1,14 +1,14 @@
 package com.dreamsoftware.data.database.mapper
 
-import com.dreamsoftware.core.IMapper
+import com.dreamsoftware.core.ISimpleMapper
 import com.dreamsoftware.data.database.dao.ChannelEntityDAO
 import com.dreamsoftware.data.database.dao.ChannelGuideEntityDAO
 import com.dreamsoftware.data.database.entity.ChannelEntity
 import com.dreamsoftware.data.database.entity.ChannelGuideEntity
 
-class ChannelGuideEntityDaoMapper(
-    private val channelMapper: IMapper<ChannelEntityDAO, ChannelEntity>
-): IMapper<ChannelGuideEntityDAO, ChannelGuideEntity> {
+class ChannelGuideEntityDaoSimpleMapper(
+    private val channelMapper: ISimpleMapper<ChannelEntityDAO, ChannelEntity>
+): ISimpleMapper<ChannelGuideEntityDAO, ChannelGuideEntity> {
 
     override fun map(input: ChannelGuideEntityDAO): ChannelGuideEntity = with(input) {
         ChannelGuideEntity(

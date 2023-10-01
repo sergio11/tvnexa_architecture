@@ -18,7 +18,7 @@ class ConfigFtpDataSourceImpl(
         with(ftpClient) {
             try {
                 println("try to connect to FTP Host: $hostname")
-                connect(hostname)
+                connect("192.168.1.39")
                 enterLocalPassiveMode()
                 login(user, password)
                 if (!FTPReply.isPositiveCompletion(replyCode)) {
@@ -26,8 +26,8 @@ class ConfigFtpDataSourceImpl(
                 }
                 println("try to download file ${fileName}.${fileExt}")
                 val remoteFile = retrieveFileStream("$fileName.$fileExt")
-                downloadedFile = File(Files.createTempDirectory(null).toFile(), "$fileName.$fileExt")
                 println("copy to local file")
+                downloadedFile = File(Files.createTempDirectory(null).toFile(), "$fileName.$fileExt")
                 FileUtils.copyInputStreamToFile(remoteFile, downloadedFile)
                 logout()
             } catch (ex: Exception) {

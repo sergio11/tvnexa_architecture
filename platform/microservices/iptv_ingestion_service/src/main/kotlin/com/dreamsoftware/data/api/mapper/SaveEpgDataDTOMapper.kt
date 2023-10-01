@@ -1,11 +1,11 @@
 package com.dreamsoftware.data.api.mapper
 
-import com.dreamsoftware.core.IMapper
+import com.dreamsoftware.core.ISimpleMapper
 import com.dreamsoftware.core.toLocalDateTime
 import com.dreamsoftware.data.database.entity.SaveEpgChannelProgrammeEntity
 import com.dreamsoftware.data.epg.model.EpgDataDTO
 
-class SaveEpgDataDTOMapper: IMapper<EpgDataDTO, SaveEpgChannelProgrammeEntity> {
+class SaveEpgDataDTOMapper: ISimpleMapper<EpgDataDTO, SaveEpgChannelProgrammeEntity> {
 
     override fun map(input: EpgDataDTO): SaveEpgChannelProgrammeEntity = with(input) {
         SaveEpgChannelProgrammeEntity(

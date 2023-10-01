@@ -6,13 +6,13 @@ import com.dreamsoftware.data.database.mapper.*
 import org.koin.dsl.module
 
 val databaseMapperModule = module {
-    mapper { LanguageEntityDaoMapper() }
-    mapper { CategoryEntityDaoMapper() }
-    mapper { CountryEntityDaoMapper(getMapper()) }
-    mapper { SubdivisionEntityDaoMapper(getMapper()) }
-    mapper { RegionEntityDaoMapper(getMapper()) }
-    mapper { ChannelEntityDaoMapper(getMapper(), getMapper(), getMapper(), getMapper()) }
-    mapper { ChannelStreamEntityDaoMapper(getMapper()) }
-    mapper { ChannelGuideEntityDaoMapper(getMapper()) }
-    mapper { EpgChannelProgrammeDaoMapper(getMapper(), getMapper()) }
+    mapper { LanguageEntityDaoSimpleMapper() }
+    mapper { CategoryEntityDaoSimpleMapper() }
+    mapper { CountryEntityDaoSimpleMapper(getMapper()) }
+    mapper { SubdivisionEntityDaoSimpleMapper(getMapper()) }
+    mapper { RegionEntityDaoSimpleMapper(getMapper()) }
+    mapper { ChannelEntityDaoSimpleMapper(getMapper(), getMapper(), getMapper(), getMapper()) }
+    mapper { ChannelStreamEntityDaoSimpleMapper(getMapper()) }
+    mapper { ChannelGuideEntityDaoSimpleMapper(getMapper()) }
+    mapper { EpgChannelProgrammeDaoSimpleMapper(getMapper(), getMapper()) }
 }

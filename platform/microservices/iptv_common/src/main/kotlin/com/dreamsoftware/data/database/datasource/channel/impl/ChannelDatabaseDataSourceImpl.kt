@@ -1,6 +1,6 @@
 package com.dreamsoftware.data.database.datasource.channel.impl
 
-import com.dreamsoftware.core.IMapper
+import com.dreamsoftware.core.ISimpleMapper
 import com.dreamsoftware.data.database.core.IDatabaseFactory
 import com.dreamsoftware.data.database.dao.*
 import com.dreamsoftware.data.database.datasource.channel.IChannelDatabaseDataSource
@@ -13,7 +13,7 @@ import org.jetbrains.exposed.sql.statements.UpdateBuilder
 
 internal class ChannelDatabaseDataSourceImpl(
     database: IDatabaseFactory,
-    mapper: IMapper<ChannelEntityDAO, ChannelEntity>
+    mapper: ISimpleMapper<ChannelEntityDAO, ChannelEntity>
 ) : SupportDatabaseDataSource<String, ChannelEntityDAO, SaveChannelEntity, ChannelEntity>(
     database,
     mapper,
@@ -21,7 +21,7 @@ internal class ChannelDatabaseDataSourceImpl(
 ), IChannelDatabaseDataSource {
 
     private companion object {
-        const val BATCH_SIZE = 500
+        const val BATCH_SIZE = 1000
     }
 
     override fun filterByCategoryAndCountry(categoryId: String?, countryId: String?): Iterable<ChannelEntity> {

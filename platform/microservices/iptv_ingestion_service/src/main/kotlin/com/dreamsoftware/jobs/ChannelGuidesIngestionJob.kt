@@ -1,6 +1,6 @@
 package com.dreamsoftware.jobs
 
-import com.dreamsoftware.core.IMapper
+import com.dreamsoftware.core.ISimpleMapper
 import com.dreamsoftware.data.database.datasource.guide.IChannelGuideDatabaseDataSource
 import com.dreamsoftware.data.database.entity.SaveChannelGuideEntity
 import com.dreamsoftware.data.iptvorg.datasource.IptvOrgNetworkDataSource
@@ -15,7 +15,7 @@ import org.quartz.*
 @DisallowConcurrentExecution
 class ChannelGuidesIngestionJob(
     private val guidesNetworkDataSource: IptvOrgNetworkDataSource<ChannelGuideDTO>,
-    private val guidesMapper: IMapper<ChannelGuideDTO, SaveChannelGuideEntity>,
+    private val guidesMapper: ISimpleMapper<ChannelGuideDTO, SaveChannelGuideEntity>,
     private val guidesDatabaseDataSource: IChannelGuideDatabaseDataSource
 ) : SupportJob() {
 

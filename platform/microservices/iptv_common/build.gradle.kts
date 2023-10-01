@@ -5,7 +5,7 @@ val koin_version: String by project
 val commons_net_version: String by project
 val commons_io_version: String by project
 val exposed_version: String by project
-val mysql_connector_version: String by project
+val mariadb_java_client_version: String by project
 val hikaricp_version: String by project
 val flyway_version: String by project
 val h2_version: String by project
@@ -45,7 +45,7 @@ dependencies {
     implementation("org.jetbrains.exposed:exposed-dao:$exposed_version")
     implementation("org.jetbrains.exposed:exposed-jdbc:$exposed_version")
     implementation("org.jetbrains.exposed:exposed-java-time:$exposed_version")
-    implementation("mysql:mysql-connector-java:$mysql_connector_version")
+    implementation("org.mariadb.jdbc:mariadb-java-client:$mariadb_java_client_version")
     implementation("com.zaxxer:HikariCP:$hikaricp_version")
     implementation("org.flywaydb:flyway-core:$flyway_version")
     implementation("org.flywaydb:flyway-mysql:$flyway_version")

@@ -19,11 +19,11 @@ val databaseModule = module {
                 username = connUser
                 password = connPassword
                 maximumPoolSize = maxPoolSize
-                isAutoCommit = true
-                minimumIdle = 5
-                idleTimeout = 30000
-                connectionTimeout = 30000
-                maxLifetime = 1800000
+                isAutoCommit = false
+                maxLifetime = 600000 // 10 minutes
+                idleTimeout = 540000 // 9 minutes
+                connectionTimeout = 30000 // 30 seconds
+                poolName = "TvNexaDataSourcePool"
                 validate()
             })
         }

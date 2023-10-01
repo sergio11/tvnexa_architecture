@@ -1,6 +1,6 @@
 package com.dreamsoftware.jobs
 
-import com.dreamsoftware.core.IMapper
+import com.dreamsoftware.core.ISimpleMapper
 import com.dreamsoftware.data.database.datasource.country.ICountryDatabaseDataSource
 import com.dreamsoftware.data.database.entity.SaveCountryEntity
 import com.dreamsoftware.data.iptvorg.datasource.IptvOrgNetworkDataSource
@@ -14,7 +14,7 @@ import org.quartz.*
 @DisallowConcurrentExecution
 class CountriesIngestionJob(
     private val countriesNetworkDataSource: IptvOrgNetworkDataSource<CountryDTO>,
-    private val countriesMapper: IMapper<CountryDTO, SaveCountryEntity>,
+    private val countriesMapper: ISimpleMapper<CountryDTO, SaveCountryEntity>,
     private val countriesDatabaseDataSource: ICountryDatabaseDataSource
 ): SupportJob() {
 

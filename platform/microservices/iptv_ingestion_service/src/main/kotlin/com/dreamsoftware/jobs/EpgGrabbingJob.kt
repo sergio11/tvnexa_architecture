@@ -1,6 +1,6 @@
 package com.dreamsoftware.jobs
 
-import com.dreamsoftware.core.IMapper
+import com.dreamsoftware.core.ISimpleMapper
 import com.dreamsoftware.data.database.datasource.epg.IEpgChannelProgrammeDatabaseDataSource
 import com.dreamsoftware.data.database.datasource.guide.IChannelGuideDatabaseDataSource
 import com.dreamsoftware.data.database.entity.SaveEpgChannelProgrammeEntity
@@ -14,7 +14,7 @@ class EpgGrabbingJob(
     private val channelGuideDatabaseDataSource: IChannelGuideDatabaseDataSource,
     private val epgChannelProgrammeDatabaseDataSource: IEpgChannelProgrammeDatabaseDataSource,
     private val epgGrabbingDataSource: IEpgGrabbingDataSource,
-    private val epgDataMapper: IMapper<EpgDataDTO, SaveEpgChannelProgrammeEntity>
+    private val epgDataMapper: ISimpleMapper<EpgDataDTO, SaveEpgChannelProgrammeEntity>
 ) : SupportJob() {
 
     override suspend fun onStartExecution(jobData: JobDataMap?, scheduler: Scheduler?) {
