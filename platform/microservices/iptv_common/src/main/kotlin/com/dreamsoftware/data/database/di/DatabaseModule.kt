@@ -6,24 +6,47 @@ import com.dreamsoftware.data.database.core.IDbMigrationConfig
 import com.dreamsoftware.model.DatabaseConfig
 import com.zaxxer.hikari.HikariConfig
 import com.zaxxer.hikari.HikariDataSource
+import org.koin.core.qualifier.named
 import org.koin.dsl.bind
 import org.koin.dsl.module
 import javax.sql.DataSource
 
+const val WRITE_DATA_SOURCE = "writeDataSource"
+const val READ_DATA_SOURCE = "readDataSource"
+
 val databaseModule = module {
-    single<DataSource> {
+
+    factory {
         with(get<DatabaseConfig>()) {
-            HikariDataSource(HikariConfig().apply {
+            HikariConfig().apply {
                 driverClassName = driverClass
-                jdbcUrl = databaseUrl
                 username = connUser
                 password = connPassword
-                maximumPoolSize = maxPoolSize
                 isAutoCommit = false
                 maxLifetime = 600000 // 10 minutes
                 idleTimeout = 540000 // 9 minutes
                 connectionTimeout = 30000 // 30 seconds
-                poolName = "TvNexaDataSourcePool"
+            }
+        }
+    }
+
+    single<DataSource>(named(READ_DATA_SOURCE)) {
+        with(get<DatabaseConfig>().readGroupConfig) {
+            HikariDataSource(get<HikariConfig>().apply {
+                jdbcUrl = databaseUrl
+                maximumPoolSize = maxPoolSize
+                poolName = "TvNexaReadDataSourcePool"
+                validate()
+            })
+        }
+    }
+
+    single<DataSource>(named(WRITE_DATA_SOURCE)) {
+        with(get<DatabaseConfig>().writeGroupConfig) {
+            HikariDataSource(get<HikariConfig>().apply {
+                jdbcUrl = databaseUrl
+                maximumPoolSize = maxPoolSize
+                poolName = "TvNexaWriteDataSourcePool"
                 validate()
             })
         }
@@ -39,7 +62,7 @@ val databaseModule = module {
         }
     } bind IDbMigrationConfig::class
     single<IDatabaseFactory>(createdAtStart = true) {
-        DatabaseFactoryImpl(get(), getAll()).also {
+        DatabaseFactoryImpl(get(named(WRITE_DATA_SOURCE)), get(named(READ_DATA_SOURCE)), getAll()).also {
             it.connectAndMigrate()
         }
     }
