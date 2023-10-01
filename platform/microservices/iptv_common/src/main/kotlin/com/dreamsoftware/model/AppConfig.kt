@@ -6,12 +6,18 @@ data class AppConfig(
     val epgGrabbingConfig: EpgGrabbingConfig
 )
 
+data class DatabaseGroupConfig(
+    val databaseUrl: String,
+    val maxPoolSize: Int
+)
+
 data class DatabaseConfig(
     val driverClass: String,
-    val databaseUrl: String,
+    val writeGroupConfig: DatabaseGroupConfig,
+    val readGroupConfig: DatabaseGroupConfig,
     val connUser: String,
     val connPassword: String,
-    val maxPoolSize: Int
+
 )
 
 data class IptvOrgConfig(

@@ -1,9 +1,15 @@
 dbConfig: {
   driverClass: "org.mariadb.jdbc.Driver",
-  databaseUrl: "jdbc:mariadb://192.168.1.39:3306/TVNexa",
   connUser: dreamsoftware,
   connPassword: dreamsoftware00,
-  maxPoolSize: 20
+  writeGroupConfig: {
+    databaseUrl: "jdbc:mariadb://192.168.1.39:3306/TVNexa",
+    maxPoolSize: 20
+  },
+  readGroupConfig: {
+    databaseUrl: "jdbc:mariadb://192.168.1.39:3307/TVNexa",
+    maxPoolSize: 30
+  }
 }
 iptvOrgConfig: {
   countriesEndpoint: "https://iptv-org.github.io/api/countries.json",

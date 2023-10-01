@@ -18,18 +18,25 @@ internal abstract class SupportDatabaseDataSource<KEY : Comparable<KEY>, DAO : E
     protected val entityDAO: EntityClass<KEY, DAO>
 ) : ISupportDatabaseDataSource<KEY, INPUT, OUTPUT> {
 
+    private companion object {
+        const val BATCH_SIZE = 1000
+    }
+
     protected val log = LoggerFactory.getLogger(this::class.java)
 
-    override suspend fun findAll(): Iterable<OUTPUT> = dbExec {
+    protected open val defaultBatchSize: Int
+        get() = BATCH_SIZE
+
+    override suspend fun findAll(): Iterable<OUTPUT> = execQuery {
         entityDAO.all().sortedByDescending { it.id }.map(mapper::map)
     }
 
-    override suspend fun findByKey(key: KEY): OUTPUT = dbExec {
+    override suspend fun findByKey(key: KEY): OUTPUT = execQuery {
         entityDAO.findById(key)?.let(mapper::map) ?: throw RuntimeException()
     }
 
     override suspend fun save(data: INPUT) {
-        dbExec {
+        execWrite {
             entityDAO.table.insertOnDuplicateKeyUpdate(
                 onDupUpdateColumns = listOf(entityDAO.table.id),
                 data = data
@@ -39,22 +46,24 @@ internal abstract class SupportDatabaseDataSource<KEY : Comparable<KEY>, DAO : E
     }
 
     override suspend fun save(data: Iterable<INPUT>) = with(data) {
-        dbExec(disableFkValidations = true) {
-            entityDAO.table.batchInsertOnDuplicateKeyUpdate(
-                onDupUpdateColumns = listOf(entityDAO.table.id),
-                itemsCount = count(),
-                onSuccess = {
-                    onSaveTransactionFinished(data)
-                }
-            ) { idx -> onMapEntityToSave(elementAt(idx)) }
+        repeat(chunked(defaultBatchSize).size) {
+            execWrite(disableFkValidations = true) {
+                entityDAO.table.batchInsertOnDuplicateKeyUpdate(
+                    onDupUpdateColumns = listOf(entityDAO.table.id),
+                    itemsCount = count(),
+                    onSuccess = {
+                        onSaveTransactionFinished(data)
+                    }
+                ) { idx -> onMapEntityToSave(elementAt(idx)) }
+            }
         }
     }
 
-    override suspend fun deleteByKey(key: KEY): Unit = dbExec {
+    override suspend fun deleteByKey(key: KEY): Unit = execWrite {
         entityDAO.table.deleteWhere { id eq key }
     }
 
-    override suspend fun deleteAll(): Unit = dbExec { entityDAO.table.deleteAll() }
+    override suspend fun deleteAll(): Unit = execWrite { entityDAO.table.deleteAll() }
 
     abstract fun UpdateBuilder<Int>.onMapEntityToSave(entityToSave: INPUT)
 
@@ -62,13 +71,19 @@ internal abstract class SupportDatabaseDataSource<KEY : Comparable<KEY>, DAO : E
 
     open fun Transaction.onSaveTransactionFinished(data: INPUT) {}
 
-    protected suspend fun <OUTPUT> dbExec(disableFkValidations: Boolean = false, dbExecution: Transaction.() -> OUTPUT): OUTPUT = withContext(Dispatchers.IO) {
-        database.dbExec(disableFkValidations) {
+    protected suspend fun <OUTPUT> execWrite(disableFkValidations: Boolean = false, dbExecution: Transaction.() -> OUTPUT): OUTPUT = withContext(Dispatchers.IO) {
+        database.execWritableTransaction(disableFkValidations) {
             dbExecution()
         }
     }
 
-    protected fun <T : Table, E> T.insertOnDuplicateKeyUpdate(
+    protected suspend fun <OUTPUT> execQuery(dbExecution: Transaction.() -> OUTPUT): OUTPUT = withContext(Dispatchers.IO) {
+        database.execReadableTransaction {
+            dbExecution()
+        }
+    }
+
+    private fun <T : Table, E> T.insertOnDuplicateKeyUpdate(
         data: E,
         onDupUpdateColumns: List<Column<*>>,
         onSaveData: UpdateBuilder<Int>.(data: E) -> Unit = {}

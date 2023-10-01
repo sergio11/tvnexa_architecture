@@ -20,10 +20,6 @@ internal class ChannelDatabaseDataSourceImpl(
     ChannelEntityDAO
 ), IChannelDatabaseDataSource {
 
-    private companion object {
-        const val BATCH_SIZE = 1000
-    }
-
     override fun filterByCategoryAndCountry(categoryId: String?, countryId: String?): Iterable<ChannelEntity> {
         return entityDAO.find { if (!categoryId.isNullOrBlank() && !countryId.isNullOrBlank()) {
             (ChannelCategoryTable.category eq categoryId) and (ChannelTable.country eq countryId)
@@ -34,10 +30,6 @@ internal class ChannelDatabaseDataSourceImpl(
         } else {
             ChannelTable.id.isNotNull()
         } }.map(mapper::map)
-    }
-
-    override suspend fun save(data: Iterable<SaveChannelEntity>) {
-        data.chunked(BATCH_SIZE).forEach { super.save(it) }
     }
 
     override fun UpdateBuilder<Int>.onMapEntityToSave(entityToSave: SaveChannelEntity) = with(entityToSave) {
