@@ -22,11 +22,11 @@ internal class ChannelGuideDatabaseDataSourceImpl(
         this@onMapEntityToSave[ChannelGuideTable.lang] = lang
     }
 
-    override suspend fun findByChannelId(channelId: String): Iterable<ChannelGuideEntity> = dbExec {
+    override suspend fun findByChannelId(channelId: String): Iterable<ChannelGuideEntity> = execQuery {
         entityDAO.find { ChannelGuideTable.channelId eq channelId }.map(mapper::map)
     }
 
-    override suspend fun findByLanguageId(languageId: String): Iterable<ChannelGuideEntity> = dbExec {
+    override suspend fun findByLanguageId(languageId: String): Iterable<ChannelGuideEntity> = execQuery {
         entityDAO.find { ChannelGuideTable.lang eq languageId }.distinctBy { ChannelGuideTable.site }.map(mapper::map)
     }
 }

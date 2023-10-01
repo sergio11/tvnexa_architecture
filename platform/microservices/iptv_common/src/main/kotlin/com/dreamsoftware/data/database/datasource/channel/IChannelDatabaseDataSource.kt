@@ -6,6 +6,6 @@ import com.dreamsoftware.data.database.entity.SaveChannelEntity
 
 interface IChannelDatabaseDataSource: ISupportDatabaseDataSource<String, SaveChannelEntity, ChannelEntity> {
 
-    fun filterByCategoryAndCountry(categoryId: String?, countryId: String?): Iterable<ChannelEntity>
+    suspend fun filterByCategoryAndCountry(categoryId: String?, countryId: String?): Iterable<ChannelEntity>
 
 }
