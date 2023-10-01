@@ -20,16 +20,18 @@ internal class ChannelDatabaseDataSourceImpl(
     ChannelEntityDAO
 ), IChannelDatabaseDataSource {
 
-    override fun filterByCategoryAndCountry(categoryId: String?, countryId: String?): Iterable<ChannelEntity> {
-        return entityDAO.find { if (!categoryId.isNullOrBlank() && !countryId.isNullOrBlank()) {
-            (ChannelCategoryTable.category eq categoryId) and (ChannelTable.country eq countryId)
-        } else if (!categoryId.isNullOrBlank()) {
-            ChannelCategoryTable.category eq categoryId
-        } else if (!countryId.isNullOrBlank()) {
-            ChannelTable.country eq countryId
-        } else {
-            ChannelTable.id.isNotNull()
-        } }.map(mapper::map)
+    override suspend fun filterByCategoryAndCountry(categoryId: String?, countryId: String?): Iterable<ChannelEntity> = execQuery {
+        entityDAO.find {
+            if (!categoryId.isNullOrBlank() && !countryId.isNullOrBlank()) {
+                (ChannelCategoryTable.category eq categoryId) and (ChannelTable.country eq countryId)
+            } else if (!categoryId.isNullOrBlank()) {
+                ChannelCategoryTable.category eq categoryId
+            } else if (!countryId.isNullOrBlank()) {
+                ChannelTable.country eq countryId
+            } else {
+                ChannelTable.id.isNotNull()
+            }
+        }.map(mapper::map)
     }
 
     override fun UpdateBuilder<Int>.onMapEntityToSave(entityToSave: SaveChannelEntity) = with(entityToSave) {

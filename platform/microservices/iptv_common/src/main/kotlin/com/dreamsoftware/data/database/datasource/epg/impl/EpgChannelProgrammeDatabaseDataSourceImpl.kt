@@ -29,10 +29,11 @@ internal class EpgChannelProgrammeDatabaseDataSourceImpl(
         this@onMapEntityToSave[EpgChannelProgrammeTable.date] = date
     }
 
-    override fun findByChannelIdAndDateRange(channelId: String, startAt: LocalDateTime, endAt: LocalDateTime): Iterable<EpgChannelProgrammeEntity> =
+    override suspend fun findByChannelIdAndDateRange(channelId: String, startAt: LocalDateTime, endAt: LocalDateTime): Iterable<EpgChannelProgrammeEntity> = execQuery {
         entityDAO.find {
             (EpgChannelProgrammeTable.channelId eq channelId) and
                     (EpgChannelProgrammeTable.start greaterEq startAt) and
-                        (EpgChannelProgrammeTable.end lessEq endAt )
+                    (EpgChannelProgrammeTable.end lessEq endAt )
         }.map(mapper::map)
+    }
 }

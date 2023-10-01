@@ -7,5 +7,5 @@ import java.time.LocalDateTime
 
 interface IEpgChannelProgrammeDatabaseDataSource: ISupportDatabaseDataSource<Long, SaveEpgChannelProgrammeEntity, EpgChannelProgrammeEntity> {
 
-    fun findByChannelIdAndDateRange(channelId: String, startAt: LocalDateTime, endAt: LocalDateTime): Iterable<EpgChannelProgrammeEntity>
+    suspend fun findByChannelIdAndDateRange(channelId: String, startAt: LocalDateTime, endAt: LocalDateTime): Iterable<EpgChannelProgrammeEntity>
 }
