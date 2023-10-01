@@ -3,7 +3,6 @@ package com.dreamsoftware
 import com.dreamsoftware.di.appModule
 import com.dreamsoftware.jobs.*
 import com.dreamsoftware.jobs.core.manager.IJobSchedulerManager
-import com.dreamsoftware.plugins.configureRouting
 import io.ktor.server.application.*
 import io.ktor.server.engine.*
 import io.ktor.server.netty.*
@@ -22,7 +21,6 @@ fun Application.module() {
         slf4jLogger()
         modules(appModule)
     }
-    configureRouting()
     doOnStartup()
 }
 
@@ -37,8 +35,8 @@ fun Application.doOnStartup() {
                     SubdivisionsIngestionJob,
                     RegionsIngestionJob,
                     ChannelsIngestionJob,
-                    ChannelStreamsIngestionJob
-                    //ChannelGuidesIngestionJob
+                    ChannelStreamsIngestionJob,
+                    ChannelGuidesIngestionJob
                 )
             )
         }
