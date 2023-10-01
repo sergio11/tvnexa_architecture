@@ -21,6 +21,7 @@ import java.util.*
 val jobsModule = module {
     includes(configModule)
 
+    // Define properties for Quartz scheduler configuration
     factory(named("quartzProperties")) {
         with(get<DatabaseConfig>()) {
             Properties().apply {
@@ -45,23 +46,30 @@ val jobsModule = module {
                     "org.quartz.plugin.triggHistory.triggerCompleteMessage",
                     """Trigger {1}.{0} completed firing job {6}.{5} at {4, date, HH:mm:ss MM/dd/yyyy}"""
                 )
-                // INFO  org.quartz.impl.StdSchedulerFactory - Using ConnectionProvider class 'org.quartz.utils.C3p0PoolingConnectionProvider' for data source 'myDS'
                 //setProperty("org.quartz.jobStore.isClustered", "true")
                 //setProperty("org.quartz.jobStore.clusterCheckinInterval", "15000")
             }
         }
     }
+
+    // Define JobFactory for Quartz jobs
     single<JobFactory> {
         JobFactoryImpl()
     }
+
+    // Create a Scheduler with Quartz scheduler factory
     single<Scheduler> {
         StdSchedulerFactory(get<Properties>(named("quartzProperties"))).scheduler.also {
             it.setJobFactory(get())
         }
     }
+
+    // Define a Job Scheduler Manager
     single<IJobSchedulerManager> {
         JobSchedulerManagerImpl(get())
     }
+
+    // Define DB migration configuration
     single {
         object : IDbMigrationConfig {
             override val schemaTableName: String
@@ -73,6 +81,7 @@ val jobsModule = module {
         }
     } bind IDbMigrationConfig::class
 
+    // Define various jobs for ingestion
     factory { LanguagesIngestionJob(get(named(LANGUAGES_NETWORK_DATA_SOURCE)), getMapper(), get()) }
     factory { CategoriesIngestionJob(get(named(CATEGORIES_NETWORK_DATA_SOURCE)), getMapper(), get()) }
     factory { CountriesIngestionJob(get(named(COUNTRIES_NETWORK_DATA_SOURCE)), getMapper(), get()) }
