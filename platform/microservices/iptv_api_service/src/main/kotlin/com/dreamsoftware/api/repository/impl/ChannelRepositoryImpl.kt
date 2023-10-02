@@ -15,4 +15,7 @@ class ChannelRepositoryImpl(
 
     override suspend fun filterByCategoryAndCountry(categoryId: String?, countryId: String?): Iterable<ChannelEntity> =
         channelDataSource.filterByCategoryAndCountry(categoryId, countryId)
+
+    override suspend fun filterByCountry(countryId: String): Iterable<ChannelEntity> =
+        channelDataSource.findByCountry(countryId)
 }

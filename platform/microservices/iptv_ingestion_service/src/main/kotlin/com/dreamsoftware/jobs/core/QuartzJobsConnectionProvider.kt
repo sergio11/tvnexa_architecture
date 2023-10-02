@@ -1,8 +1,10 @@
 package com.dreamsoftware.jobs.core
 
+import com.dreamsoftware.data.database.di.WRITE_DATA_SOURCE
 import com.zaxxer.hikari.HikariDataSource
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
+import org.koin.core.qualifier.named
 import org.quartz.utils.ConnectionProvider
 import org.slf4j.LoggerFactory
 import java.sql.Connection
@@ -19,7 +21,7 @@ class QuartzJobsConnectionProvider : ConnectionProvider, KoinComponent {
     private val log = LoggerFactory.getLogger(this::class.java)
 
     // Injecting the DataSource using Koin
-    private val dataSource: DataSource by inject()
+    private val dataSource: DataSource by inject(named(WRITE_DATA_SOURCE))
 
     /**
      * Get a database connection for Quartz job execution.

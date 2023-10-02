@@ -4,7 +4,7 @@ import com.dreamsoftware.api.dto.CountryResponseDTO
 import com.dreamsoftware.api.repository.ICountryRepository
 import com.dreamsoftware.api.services.CountryServiceException
 import com.dreamsoftware.api.services.ICountryService
-import com.dreamsoftware.core.IMapper
+import com.dreamsoftware.core.ISimpleMapper
 import com.dreamsoftware.data.database.entity.CountryEntity
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
@@ -12,7 +12,7 @@ import kotlin.jvm.Throws
 
 class CountryServiceImpl(
     private val countryRepository: ICountryRepository,
-    private val mapper: IMapper<CountryEntity, CountryResponseDTO>
+    private val mapper: ISimpleMapper<CountryEntity, CountryResponseDTO>
 ): ICountryService {
 
     @Throws(CountryServiceException.InternalServerError::class)
