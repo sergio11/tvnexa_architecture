@@ -34,6 +34,16 @@ internal class ChannelDatabaseDataSourceImpl(
         }.map(mapper::map)
     }
 
+    override suspend fun findByCountry(countryId: String): Iterable<ChannelEntity> = execQuery {
+        entityDAO.find {
+            if (countryId.isNotBlank()) {
+                ChannelTable.country eq countryId
+            } else {
+                ChannelTable.id.isNotNull()
+            }
+        }.map(mapper::map)
+    }
+
     override fun UpdateBuilder<Int>.onMapEntityToSave(entityToSave: SaveChannelEntity) = with(entityToSave) {
         this@onMapEntityToSave[ChannelTable.channelId] = channelId
         this@onMapEntityToSave[ChannelTable.name] = name

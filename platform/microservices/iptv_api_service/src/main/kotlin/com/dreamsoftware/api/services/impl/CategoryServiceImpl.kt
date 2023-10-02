@@ -4,14 +4,14 @@ import com.dreamsoftware.api.dto.CategoryResponseDTO
 import com.dreamsoftware.api.repository.ICategoryRepository
 import com.dreamsoftware.api.services.CategoryServiceException
 import com.dreamsoftware.api.services.ICategoryService
-import com.dreamsoftware.core.IMapper
+import com.dreamsoftware.core.ISimpleMapper
 import com.dreamsoftware.data.database.entity.CategoryEntity
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 
 class CategoryServiceImpl(
     private val categoryRepository: ICategoryRepository,
-    private val mapper: IMapper<CategoryEntity, CategoryResponseDTO>
+    private val mapper: ISimpleMapper<CategoryEntity, CategoryResponseDTO>
 ): ICategoryService {
 
     @Throws(CategoryServiceException.InternalServerError::class)

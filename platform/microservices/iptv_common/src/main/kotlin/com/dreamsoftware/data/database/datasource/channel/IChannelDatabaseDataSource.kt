@@ -8,4 +8,6 @@ interface IChannelDatabaseDataSource: ISupportDatabaseDataSource<String, SaveCha
 
     suspend fun filterByCategoryAndCountry(categoryId: String?, countryId: String?): Iterable<ChannelEntity>
 
+    suspend fun findByCountry(countryId: String): Iterable<ChannelEntity>
+
 }

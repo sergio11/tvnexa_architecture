@@ -4,14 +4,14 @@ import com.dreamsoftware.api.dto.ChannelResponseDTO
 import com.dreamsoftware.api.repository.IChannelRepository
 import com.dreamsoftware.api.services.ChannelServiceException
 import com.dreamsoftware.api.services.IChannelService
-import com.dreamsoftware.core.IMapper
+import com.dreamsoftware.core.ISimpleMapper
 import com.dreamsoftware.data.database.entity.ChannelEntity
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 
 class ChannelServiceImpl(
     private val channelRepository: IChannelRepository,
-    private val channelMapper: IMapper<ChannelEntity, ChannelResponseDTO>
+    private val channelMapper: ISimpleMapper<ChannelEntity, ChannelResponseDTO>
 ): IChannelService {
 
     @Throws(ChannelServiceException.InternalServerError::class)
