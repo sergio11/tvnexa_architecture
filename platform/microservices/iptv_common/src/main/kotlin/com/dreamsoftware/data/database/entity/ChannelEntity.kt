@@ -14,6 +14,7 @@ data class ChannelEntity(
     val launched: String? = null,
     val closed: String? = null,
     val replacedBy: ChannelEntity? = null,
+    val stream: ChannelStreamEntity? = null,
     val languages: Iterable<LanguageEntity>,
     val categories: Iterable<CategoryEntity>
 )

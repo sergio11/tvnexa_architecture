@@ -45,7 +45,6 @@ object ChannelNameTable: LongIdTable(name = "channels_alt_names") {
     val channel = reference("channel", ChannelTable)
     val altName = varchar(name = "name", length = 100)
 
-
     init {
         uniqueIndex("UNIQUE_ChannelName", channel, altName)
     }
@@ -113,4 +112,5 @@ class ChannelEntityDAO(id: EntityID<String>) : Entity<String>(id) {
     var replacedBy by ChannelEntityDAO optionalReferencedOn ChannelTable.replacedBy
     val languages by LanguageEntityDAO referrersOn ChannelLanguageTable.channel
     val categories by CategoryEntityDAO referrersOn ChannelCategoryTable.channel
+    val stream by ChannelStreamEntityDAO optionalBackReferencedOn ChannelStreamTable.channelId
 }

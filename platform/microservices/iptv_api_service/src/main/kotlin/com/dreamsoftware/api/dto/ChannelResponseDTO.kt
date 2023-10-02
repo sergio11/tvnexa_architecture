@@ -75,6 +75,12 @@ data class ChannelResponseDTO(
     val replacedBy: ChannelResponseDTO? = null,
 
     /**
+     * The stream data for the channel
+     */
+    @SerialName("stream")
+    val stream: ChannelStreamResponseDTO? = null,
+
+    /**
      * The languages spoken or used by the channel.
      */
     @SerialName("languages")
