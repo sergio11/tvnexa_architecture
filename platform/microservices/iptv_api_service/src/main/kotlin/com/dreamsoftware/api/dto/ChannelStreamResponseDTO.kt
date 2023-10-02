@@ -12,12 +12,6 @@ data class ChannelStreamResponseDTO(
     val url: String,
 
     /**
-     * The channel information associated with the stream.
-     */
-    @SerialName("channel")
-    val channel: ChannelResponseDTO,
-
-    /**
      * The HTTP referrer header (if provided).
      */
     @SerialName("http_referrer")
