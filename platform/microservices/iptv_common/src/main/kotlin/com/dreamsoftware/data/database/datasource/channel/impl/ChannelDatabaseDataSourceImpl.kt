@@ -9,9 +9,14 @@ import com.dreamsoftware.data.database.entity.ChannelEntity
 import com.dreamsoftware.data.database.entity.SaveChannelEntity
 import org.jetbrains.exposed.sql.Transaction
 import org.jetbrains.exposed.sql.and
-import org.jetbrains.exposed.sql.selectAll
 import org.jetbrains.exposed.sql.statements.UpdateBuilder
 
+/**
+ * Implementation of the [IChannelDatabaseDataSource] interface for managing channel-related database operations.
+ *
+ * @param database The database factory used for database interactions.
+ * @param mapper The mapper used to convert database entities to domain entities.
+ */
 internal class ChannelDatabaseDataSourceImpl(
     database: IDatabaseFactory,
     mapper: ISimpleMapper<ChannelEntityDAO, ChannelEntity>
@@ -21,6 +26,13 @@ internal class ChannelDatabaseDataSourceImpl(
     ChannelEntityDAO
 ), IChannelDatabaseDataSource {
 
+    /**
+     * Retrieves a list of channels filtered by category and country.
+     *
+     * @param categoryId The category ID to filter by. Pass null to exclude this filter.
+     * @param countryId The country ID to filter by. Pass null to exclude this filter.
+     * @return An iterable collection of [ChannelEntity] objects matching the provided filters.
+     */
     override suspend fun filterByCategoryAndCountry(categoryId: String?, countryId: String?): Iterable<ChannelEntity> = execQuery {
         entityDAO.find {
             if (!categoryId.isNullOrBlank() && !countryId.isNullOrBlank()) {
@@ -35,6 +47,23 @@ internal class ChannelDatabaseDataSourceImpl(
         }.map(mapper::map)
     }
 
+    /**
+     * Retrieves a list of channels that allow generating Catchup content.
+     *
+     * @return An iterable collection of [ChannelEntity] objects representing channels that permit Catchup content.
+     */
+    override suspend fun findChannelsAllowingCatchup(): Iterable<ChannelEntity> = execQuery {
+        entityDAO.find {
+            ChannelTable.catchupEnabled eq true
+        }.map(mapper::map)
+    }
+
+    /**
+     * Retrieves a list of channels based on the provided country ID.
+     *
+     * @param countryId The country ID to filter by. Pass null to exclude this filter.
+     * @return An iterable collection of [ChannelEntity] objects matching the provided country filter.
+     */
     override suspend fun findByCountry(countryId: String): Iterable<ChannelEntity> = execQuery {
         entityDAO.find {
             if (countryId.isNotBlank()) {
@@ -45,6 +74,11 @@ internal class ChannelDatabaseDataSourceImpl(
         }.map(mapper::map)
     }
 
+    /**
+     * Maps attributes from [SaveChannelEntity] to the database update builder.
+     *
+     * @param entityToSave The [SaveChannelEntity] to map.
+     */
     override fun UpdateBuilder<Int>.onMapEntityToSave(entityToSave: SaveChannelEntity) = with(entityToSave) {
         this@onMapEntityToSave[ChannelTable.channelId] = channelId
         this@onMapEntityToSave[ChannelTable.name] = name

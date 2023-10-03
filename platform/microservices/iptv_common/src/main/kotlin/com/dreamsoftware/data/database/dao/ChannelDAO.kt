@@ -34,6 +34,8 @@ object ChannelTable: IdTable<String>(name = "channels") {
     val website = varchar(name = "website", length = 1000).nullable()
     // Logo URL
     val logo = varchar(name = "logo", length = 1000).nullable()
+    // Indicates whether the channel allows Catchup content generation
+    val catchupEnabled = bool(name = "catchup_enabled").default(false)
 
     override val id: Column<EntityID<String>> = channelId.entityId()
     override val primaryKey: PrimaryKey = PrimaryKey(id)
@@ -109,6 +111,7 @@ class ChannelEntityDAO(id: EntityID<String>) : Entity<String>(id) {
     var logo by ChannelTable.logo
     var launched by ChannelTable.launched
     var closed by ChannelTable.closed
+    var catchupEnabled by ChannelTable.catchupEnabled
     var replacedBy by ChannelEntityDAO optionalReferencedOn ChannelTable.replacedBy
     val languages by LanguageEntityDAO referrersOn ChannelLanguageTable.channel
     val categories by CategoryEntityDAO referrersOn ChannelCategoryTable.channel
