@@ -51,6 +51,10 @@ class JobChainingOffsetDelayJobListener : JobListenerSupport() {
             jobExecutedMap[it.jobDetail.key] = true
             jobInProgressMap[it.jobDetail.key] = false
             rescheduleJobs(it.scheduler, it.jobDetail.key)
+            if (it.jobDetail.jobDataMap.getBoolean(IJobBuilder.JOB_MAP_ONE_SHOT_KEY)) {
+                log.info("jobWasExecuted - an one-shot job finished, removed it CALLED!")
+                it.scheduler.deleteJob(it.jobDetail.key)
+            }
         }
     }
 

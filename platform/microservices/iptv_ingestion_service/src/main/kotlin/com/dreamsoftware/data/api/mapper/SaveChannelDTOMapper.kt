@@ -36,7 +36,8 @@ class SaveChannelDTOMapper : ISimpleMapper<ChannelDTO, SaveChannelEntity> {
             categories = categories,
             owners = owners,
             altNames = altNames,
-            broadcastArea = broadcastArea
+            broadcastArea = broadcastArea,
+            catchupEnabled = false
         )
     }
 

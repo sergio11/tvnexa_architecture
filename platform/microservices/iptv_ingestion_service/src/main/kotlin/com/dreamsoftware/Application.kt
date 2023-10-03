@@ -36,7 +36,8 @@ fun Application.doOnStartup() {
                     RegionsIngestionJob,
                     ChannelsIngestionJob,
                     ChannelStreamsIngestionJob,
-                    ChannelGuidesIngestionJob
+                    ChannelGuidesIngestionJob,
+                    CatchupIptvChannelsJob
                 )
             )
         }
