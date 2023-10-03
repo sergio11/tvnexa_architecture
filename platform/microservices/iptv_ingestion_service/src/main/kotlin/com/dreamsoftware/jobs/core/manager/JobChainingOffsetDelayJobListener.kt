@@ -106,6 +106,7 @@ class JobChainingOffsetDelayJobListener : JobListenerSupport() {
                     existingTriggers.forEach { trigger ->
                         unscheduleJob(trigger.key)
                     }
+                    deleteJob(jobKey)
                     scheduleJob(jobDetail, buildTrigger(jobKey, intervalOffsetInMinutes))
                 }
             } else {
