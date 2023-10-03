@@ -3,6 +3,7 @@ package com.dreamsoftware.jobs.core.manager
 import com.dreamsoftware.jobs.core.IJobBuilder
 import org.quartz.*
 import org.quartz.listeners.JobListenerSupport
+import java.util.*
 import java.util.Calendar
 
 /**
@@ -76,27 +77,49 @@ class JobChainingOffsetDelayJobListener : JobListenerSupport() {
     }
 
     /**
-     * Reschedule a job with an offset delay.
+     * Reschedules a Quartz job with a specified time interval offset.
+     *
+     * This method allows you to reschedule a job in the Quartz scheduler with a delay
+     * specified by the `intervalOffsetInMinutes`. It checks if the job is already scheduled
+     * for future executions and, if so, takes no action. If the job is not scheduled for
+     * future executions or does not exist, it deletes any existing triggers and schedules
+     * the job to run with the specified offset delay.
      *
      * @param scheduler The Quartz scheduler instance.
      * @param jobDetail The JobDetail of the job to be rescheduled.
-     * @param intervalOffsetInMinutes The interval offset in minutes.
+     * @param intervalOffsetInMinutes The time interval offset in minutes for job scheduling.
      */
     private fun rescheduleJob(scheduler: Scheduler, jobDetail: JobDetail, intervalOffsetInMinutes: Int) {
         with(scheduler) {
-            getTriggersOfJob(jobDetail.key).takeIf { it.isNotEmpty() }?.forEach {
-                log.info("rescheduleJob ${jobDetail.key.name}")
-                rescheduleJob(it.key, buildTrigger(jobDetail.key, intervalOffsetInMinutes))
-            } ?: run {
-                if (!checkExists(jobDetail.key)) {
-                    // Tell Quartz to schedule the job using a trigger
-                    scheduleJob(jobDetail, buildTrigger(jobDetail.key, intervalOffsetInMinutes))
-                } else {
-                    log.debug("Job ${jobDetail.key.name} already exists in Quartz.")
+            val jobKey = jobDetail.key
+            val existingTriggers = getTriggersOfJob(jobKey)
+
+            if (existingTriggers.isNotEmpty()) {
+                val futureTriggers = existingTriggers.filter { trigger ->
+                    val triggerTime = trigger.nextFireTime
+                    triggerTime != null && triggerTime.after(Date())
                 }
+                if (futureTriggers.isNotEmpty()) {
+                    log.info("Job ${jobKey.name} already scheduled for the future.")
+                } else {
+                    log.info("Rescheduling job ${jobKey.name}")
+                    existingTriggers.forEach { trigger ->
+                        unscheduleJob(trigger.key)
+                    }
+                    scheduleJob(jobDetail, buildTrigger(jobKey, intervalOffsetInMinutes))
+                }
+            } else {
+                if (checkExists(jobKey)) {
+                    log.info("Job ${jobKey.name} already exists in Quartz. Rescheduling...")
+                    deleteJob(jobKey)
+                }
+                log.info("Scheduling job ${jobKey.name}")
+                scheduleJob(jobDetail, buildTrigger(jobKey, intervalOffsetInMinutes))
             }
         }
     }
+
+
 
     /**
      * Build a Quartz Trigger instance with an offset delay.
