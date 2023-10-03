@@ -38,6 +38,7 @@ class ChannelServiceImpl(
         }
     }
 
+    @Throws(ChannelServiceException.InternalServerError::class)
     override suspend fun filterByCategoryAndCountry(category: String?, country: String?): Iterable<ChannelResponseDTO> =
         withContext(Dispatchers.IO) {
             try {

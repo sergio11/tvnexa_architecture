@@ -25,7 +25,6 @@ val databaseModule = module {
                 isAutoCommit = false
                 maxLifetime = 600000 // 10 minutes
                 idleTimeout = 540000 // 9 minutes
-                connectionTimeout = 30000 // 30 seconds
             }
         }
     }

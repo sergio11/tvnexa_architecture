@@ -1,6 +1,6 @@
 package com.dreamsoftware.api.plugins
 
-import channelRoutes
+import com.dreamsoftware.api.routes.channelRoutes
 import com.dreamsoftware.api.routes.categoriesRoutes
 import com.dreamsoftware.api.routes.countryRoutes
 import com.dreamsoftware.api.routes.epgChannelProgrammeRoutes

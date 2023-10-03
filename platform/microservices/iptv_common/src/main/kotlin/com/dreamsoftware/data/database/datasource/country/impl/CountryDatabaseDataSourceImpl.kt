@@ -28,6 +28,7 @@ internal class CountryDatabaseDataSourceImpl(
     }
 
     override fun Transaction.onSaveTransactionFinished(data: Iterable<SaveCountryEntity>) {
+        log.debug("CountryDatabaseDataSourceImpl onSaveTransactionFinished countries -> ${data.count()}")
         saveCountriesLanguages(data.fold(listOf()) { items, country ->
             items + country.toLanguagesByCountry()
         })
