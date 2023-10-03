@@ -1,4 +1,5 @@
-import com.dreamsoftware.api.dto.ChannelResponseDTO
+package com.dreamsoftware.api.routes
+
 import com.dreamsoftware.api.services.ChannelServiceException
 import com.dreamsoftware.api.services.IChannelService
 import io.ktor.http.HttpStatusCode

@@ -8,6 +8,8 @@ import org.jetbrains.exposed.sql.Database
 import org.jetbrains.exposed.sql.Transaction
 import org.jetbrains.exposed.sql.transactions.transaction
 import org.slf4j.LoggerFactory
+import java.sql.Connection
+import java.sql.SQLException
 import javax.sql.DataSource
 
 /**
@@ -156,25 +158,7 @@ internal class DatabaseFactoryImpl(
      * @param dataSource The data source to connect to.
      */
     private fun connectIfNotConnected(dataSource: DataSource) {
-        if (!isConnected(dataSource)) {
-            // Connect to the data source if not already connected
-            Database.connect(dataSource)
-        }
-    }
-
-    /**
-     * Checks if the database connection is active.
-     *
-     * @param dataSource The data source to check (read or write).
-     * @return True if the connection for the data source is active, otherwise false.
-     */
-    private fun isConnected(dataSource: DataSource) = transaction {
-        try {
-            // Check if the connection is not closed in the provided data source
-            !dataSource.connection.isClosed
-        } catch (e: Exception) {
-            // Handle exceptions and return false if an error occurs
-            false
-        }
+        // Connect to the data source if not already connected
+        Database.connect(dataSource)
     }
 }

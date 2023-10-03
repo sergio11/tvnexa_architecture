@@ -3,7 +3,6 @@ package com.dreamsoftware.data.database.entity
 
 data class ChannelStreamEntity(
     val url: String,
-    val channel: ChannelEntity,
     val httpReferrer: String? = null,
     val userAgent: String? = null
 )
