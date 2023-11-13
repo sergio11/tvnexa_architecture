@@ -8,8 +8,8 @@ import org.koin.dsl.module
 val dataMappersModule = module {
     mapper { CategoryResponseDtoMapper() }
     mapper { ChannelGuideResponseDtoMapper(getMapper()) }
-    mapper { ChannelResponseDtoMapper(getMapper(), getMapper(), getMapper(), getMapper()) }
-    mapper { ChannelStreamResponseDtoMapper(getMapper()) }
+    mapper { ChannelResponseDtoMapper(getMapper(), getMapper(), getMapper(), getMapper(), getMapper()) }
+    mapper { ChannelStreamResponseDtoMapper() }
     mapper { CountryResponseDtoMapper(getMapper()) }
     mapper { EpgChannelProgrammeResponseDtoMapper(getMapper(), getMapper()) }
     mapper { LanguageResponseDtoMapper() }
