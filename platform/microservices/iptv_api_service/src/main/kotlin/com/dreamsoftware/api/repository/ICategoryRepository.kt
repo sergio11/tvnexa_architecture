@@ -20,5 +20,5 @@ interface ICategoryRepository {
      * @param id The unique identifier of the category to retrieve.
      * @return The category entity matching the specified ID.
      */
-    suspend fun findById(id: String): CategoryEntity
+    suspend fun findById(id: String): CategoryEntity?
 }

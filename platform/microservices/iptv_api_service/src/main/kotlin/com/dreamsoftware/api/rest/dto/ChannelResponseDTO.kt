@@ -1,4 +1,4 @@
-package com.dreamsoftware.api.dto
+package com.dreamsoftware.api.rest.dto
 
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable

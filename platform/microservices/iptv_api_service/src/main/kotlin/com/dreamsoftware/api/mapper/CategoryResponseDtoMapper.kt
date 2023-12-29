@@ -1,6 +1,6 @@
 package com.dreamsoftware.api.mapper
 
-import com.dreamsoftware.api.dto.CategoryResponseDTO
+import com.dreamsoftware.api.rest.dto.CategoryResponseDTO
 import com.dreamsoftware.core.ISimpleMapper
 import com.dreamsoftware.data.database.entity.CategoryEntity
 

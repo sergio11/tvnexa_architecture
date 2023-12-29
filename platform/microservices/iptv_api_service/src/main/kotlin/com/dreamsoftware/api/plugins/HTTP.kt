@@ -1,7 +1,5 @@
 package com.dreamsoftware.api.plugins
 
-import io.ktor.server.plugins.openapi.*
-import io.ktor.server.routing.*
 import io.ktor.server.plugins.conditionalheaders.*
 import io.ktor.server.plugins.compression.*
 import io.ktor.server.plugins.cachingheaders.*
@@ -10,9 +8,6 @@ import io.ktor.http.*
 import io.ktor.server.application.*
 
 fun Application.configureHTTP() {
-    routing {
-        openAPI(path = "openapi")
-    }
     install(ConditionalHeaders)
     install(Compression) {
         gzip {

@@ -59,10 +59,9 @@ internal abstract class SupportDatabaseDataSource<KEY : Comparable<KEY>, DAO : E
      *
      * @param key The primary key of the record to retrieve.
      * @return The retrieved record as OUTPUT.
-     * @throws RuntimeException if the record is not found.
      */
-    override suspend fun findByKey(key: KEY): OUTPUT = execQuery {
-        entityDAO.findById(key)?.let(mapper::map) ?: throw RuntimeException()
+    override suspend fun findByKey(key: KEY): OUTPUT? = execQuery {
+        entityDAO.findById(key)?.let(mapper::map)
     }
 
     /**

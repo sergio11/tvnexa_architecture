@@ -28,6 +28,6 @@ class RegionRepositoryImpl(
      * @param code The unique code of the region to retrieve.
      * @return The region entity matching the specified code.
      */
-    override suspend fun findByCode(code: String): RegionEntity =
+    override suspend fun findByCode(code: String): RegionEntity? =
         regionDatabaseDataSource.findByKey(code)
 }

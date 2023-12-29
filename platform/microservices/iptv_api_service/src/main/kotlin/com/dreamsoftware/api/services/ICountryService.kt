@@ -1,16 +1,34 @@
 package com.dreamsoftware.api.services
 
-import com.dreamsoftware.api.dto.CountryResponseDTO
+import com.dreamsoftware.api.model.exceptions.AppException
+import com.dreamsoftware.api.rest.dto.CountryResponseDTO
 import kotlin.jvm.Throws
 
+/**
+ * Interface for managing countries.
+ */
 interface ICountryService {
-    @Throws(CountryServiceException.InternalServerError::class)
-    suspend fun findAll(): Iterable<CountryResponseDTO>
-    @Throws(CountryServiceException.InternalServerError::class, CountryServiceException.CountryNotFoundException::class)
-    suspend fun findByCode(code: String): CountryResponseDTO
-}
 
-sealed class CountryServiceException(message: String) : Exception(message) {
-    class CountryNotFoundException(code: String) : CountryServiceException("Country with code '$code' not found.")
-    class InternalServerError(message: String) : CountryServiceException("Internal server error: $message")
+    /**
+     * Retrieves all countries.
+     *
+     * @return Iterable of CountryResponseDTO containing all countries.
+     * @throws AppException.InternalServerError if there's an internal server error.
+     */
+    @Throws(AppException.InternalServerError::class)
+    suspend fun findAll(): Iterable<CountryResponseDTO>
+
+    /**
+     * Retrieves a country by its code.
+     *
+     * @param code The code of the country to retrieve.
+     * @return CountryResponseDTO containing the country details.
+     * @throws AppException.InternalServerError if there's an internal server error.
+     * @throws AppException.NotFoundException.CountryNotFoundException if the country is not found.
+     */
+    @Throws(
+        AppException.InternalServerError::class,
+        AppException.NotFoundException.CountryNotFoundException::class
+    )
+    suspend fun findByCode(code: String): CountryResponseDTO
 }

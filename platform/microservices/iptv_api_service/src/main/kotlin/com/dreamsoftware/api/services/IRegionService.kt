@@ -1,15 +1,17 @@
 package com.dreamsoftware.api.services
 
-import com.dreamsoftware.api.dto.RegionResponseDTO
+import com.dreamsoftware.api.model.exceptions.AppException
+import com.dreamsoftware.api.rest.dto.RegionResponseDTO
 
 interface IRegionService {
-    @Throws(RegionServiceException.InternalServerError::class)
+
+    @Throws(AppException.InternalServerError::class)
     suspend fun findAll(): Iterable<RegionResponseDTO>
-    @Throws(RegionServiceException.InternalServerError::class, RegionServiceException.RegionNotFoundException::class)
+
+    @Throws(
+        AppException.InternalServerError::class,
+        AppException.NotFoundException.RegionNotFoundException::class
+    )
     suspend fun findByCode(code: String): RegionResponseDTO
 }
 
-sealed class RegionServiceException(message: String) : Exception(message) {
-    class RegionNotFoundException(code: String) : RegionServiceException("Region with code '$code' not found.")
-    class InternalServerError(message: String) : RegionServiceException("Internal server error: $message")
-}

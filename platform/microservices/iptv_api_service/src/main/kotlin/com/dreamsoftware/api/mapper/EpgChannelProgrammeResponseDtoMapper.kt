@@ -1,8 +1,8 @@
 package com.dreamsoftware.api.mapper
 
-import com.dreamsoftware.api.dto.CategoryResponseDTO
-import com.dreamsoftware.api.dto.ChannelResponseDTO
-import com.dreamsoftware.api.dto.EpgChannelProgrammeResponseDTO
+import com.dreamsoftware.api.rest.dto.CategoryResponseDTO
+import com.dreamsoftware.api.rest.dto.ChannelResponseDTO
+import com.dreamsoftware.api.rest.dto.EpgChannelProgrammeResponseDTO
 import com.dreamsoftware.core.ISimpleMapper
 import com.dreamsoftware.data.database.entity.CategoryEntity
 import com.dreamsoftware.data.database.entity.ChannelEntity

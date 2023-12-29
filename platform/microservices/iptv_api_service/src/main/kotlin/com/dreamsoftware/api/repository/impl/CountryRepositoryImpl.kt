@@ -28,6 +28,6 @@ class CountryRepositoryImpl(
      * @param code The unique code of the country to retrieve.
      * @return The country entity matching the specified code.
      */
-    override suspend fun findByCode(code: String): CountryEntity =
+    override suspend fun findByCode(code: String): CountryEntity? =
         countryDatabaseDataSource.findByKey(code)
 }

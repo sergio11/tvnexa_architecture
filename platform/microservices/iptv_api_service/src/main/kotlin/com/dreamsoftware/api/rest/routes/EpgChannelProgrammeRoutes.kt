@@ -1,4 +1,4 @@
-package com.dreamsoftware.api.routes
+package com.dreamsoftware.api.rest.routes
 
 import com.dreamsoftware.api.services.IEpgChannelProgrammeService
 import io.ktor.http.*
@@ -9,7 +9,7 @@ import org.koin.ktor.ext.inject
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 
-fun Routing.epgChannelProgrammeRoutes() {
+fun Route.epgChannelProgrammeRoutes() {
     val epgChannelProgrammeService by inject<IEpgChannelProgrammeService>()
 
     route("/epg") {

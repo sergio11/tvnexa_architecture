@@ -20,7 +20,7 @@ interface IChannelRepository {
      * @param id The unique identifier of the channel to retrieve.
      * @return The channel entity matching the specified ID.
      */
-    suspend fun findById(id: String): ChannelEntity
+    suspend fun findById(id: String): ChannelEntity?
 
     /**
      * Filter channels by category and country.

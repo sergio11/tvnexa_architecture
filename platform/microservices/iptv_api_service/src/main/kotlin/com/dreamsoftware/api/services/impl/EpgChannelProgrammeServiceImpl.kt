@@ -1,9 +1,9 @@
 package com.dreamsoftware.api.services.impl
 
-import com.dreamsoftware.api.dto.EpgChannelProgrammeResponseDTO
+import com.dreamsoftware.api.model.exceptions.AppException
+import com.dreamsoftware.api.rest.dto.EpgChannelProgrammeResponseDTO
 import com.dreamsoftware.api.repository.IChannelRepository
 import com.dreamsoftware.api.repository.IEpgChannelProgrammeRepository
-import com.dreamsoftware.api.services.EpgChannelProgrammeServiceException
 import com.dreamsoftware.api.services.IEpgChannelProgrammeService
 import com.dreamsoftware.core.ISimpleMapper
 import com.dreamsoftware.data.database.entity.EpgChannelProgrammeEntity
@@ -32,7 +32,7 @@ class EpgChannelProgrammeServiceImpl(
                 .map(epgChannelProgrammeMapper::map)
         } catch (e: Exception) {
             // Handle exceptions and throw a custom service exception
-            throw EpgChannelProgrammeServiceException.InternalServerError(e.message ?: "Unknown error")
+            throw AppException.InternalServerError(e.message ?: "Unknown error")
         }
     }
 
@@ -58,7 +58,7 @@ class EpgChannelProgrammeServiceImpl(
             return@withContext deferredProgrammes.awaitAll().toMap()
         } catch (e: Exception) {
             // Handle exceptions and throw a custom service exception
-            throw EpgChannelProgrammeServiceException.InternalServerError(e.message ?: "Unknown error")
+            throw AppException.InternalServerError(e.message ?: "Unknown error")
         }
     }
 }
