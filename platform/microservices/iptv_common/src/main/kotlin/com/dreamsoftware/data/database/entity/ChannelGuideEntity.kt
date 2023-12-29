@@ -5,7 +5,7 @@ data class ChannelGuideEntity(
     val site: String,
     val siteId: String,
     val siteName: String,
-    val channel: ChannelEntity?,
+    val channel: String?,
     val lang: String
 )
 
