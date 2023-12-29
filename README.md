@@ -35,7 +35,7 @@ Additionally, TVNexa has developed an API powered by the Ktor framework, ensurin
 * **Ktor Framework:** Empowers the highly optimized API for rapid and efficient data retrieval. 💡
 * **Redis Cluster:** Implements Redis Cluster as a caching system for optimizing data retrieval through the API. 🔄
 
-##Data Sources and APIs
+## Data Sources and APIs
 
 TVNexa integrates data from various sources to provide a comprehensive television viewing experience. The platform accesses and integrates detailed information from:
 
