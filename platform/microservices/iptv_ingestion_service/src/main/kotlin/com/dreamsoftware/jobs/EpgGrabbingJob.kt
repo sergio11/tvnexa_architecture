@@ -47,10 +47,9 @@ class EpgGrabbingJob(
         val epgData = epgGrabbingDataSource.fetchEpgForSites(languageId, channelSites)
 
         // Map and save the fetched EPG data to the database
-        val mappedEpgData = epgDataMapper.mapList(epgData)
-        epgChannelProgrammeDatabaseDataSource.save(mappedEpgData)
+        epgChannelProgrammeDatabaseDataSource.save(epgDataMapper.mapList(epgData))
 
-        log.debug("EpgGrabbingJob execution completed successfully.")
+        log.debug("EpgGrabbingJob $languageId execution completed successfully.")
     }
 
     companion object : IJobBuilder {
