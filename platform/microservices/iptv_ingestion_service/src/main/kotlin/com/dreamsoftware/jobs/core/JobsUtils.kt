@@ -9,19 +9,15 @@ import org.quartz.*
  * @param data Optional job data as a map of key-value pairs.
  * @return A configured JobDetail instance.
  */
-inline fun <reified T: Job> createNewJob(jobId: String, data: Map<String, String>? = null): JobDetail {
-    return JobBuilder.newJob(T::class.java)
+inline fun <reified T: Job> createNewJob( jobId: String, data: Map<String, String>? = null): JobDetail =
+    JobBuilder.newJob(T::class.java)
         .withIdentity(jobId, IJobBuilder.WATCH_JOB_GROUP)
         .storeDurably(true)
-        .usingJobData(IJobBuilder.JOB_MAP_NAME_ID_KEY, jobId)
-        .apply {
-            data?.forEach {
-                usingJobData(it.key, it.value)
-            }
-        }
+        .usingJobData(JobDataMap().apply {
+            put(IJobBuilder.JOB_MAP_NAME_ID_KEY, jobId)
+            data?.let { putAll(it) }
+        })
         .build()
-}
-
 /**
  * Creates a new Quartz Trigger with specified trigger ID and interval settings.
  *
