@@ -8,20 +8,23 @@ import org.jetbrains.exposed.dao.id.LongIdTable
 object ChannelGuideTable: LongIdTable(name = "channel_guides") {
 
     // Channel ID
-    val channelId = varchar(name = "channel", length = 50).references(ChannelTable.channelId)
+    val channel = varchar(name = "channel", length = 50).references(ChannelTable.channelId).nullable()
     // Program source domain name
     val site = varchar(name = "site", length = 100)
+    // Unique channel ID used on the site.
+    val siteId = varchar(name = "site_id", length = 100).uniqueIndex()
+    // Channel name used on the site
+    val siteName = varchar(name = "site_name", length = 100)
     // Language of the guide (ISO_639-1 code)
     val lang = char(name = "lang", length = 2)
-    // Number of days for which this guide is intended
-    val days = integer(name = "days")
 }
 
 class ChannelGuideEntityDAO(id: EntityID<Long>) : Entity<Long>(id) {
     companion object : EntityClass<Long, ChannelGuideEntityDAO>(ChannelGuideTable)
 
-    val channel by ChannelEntityDAO referencedOn ChannelTable.channelId
+    var channel by ChannelEntityDAO optionalReferencedOn ChannelGuideTable.channel
     var site by ChannelGuideTable.site
+    var siteId by ChannelGuideTable.siteId
+    var siteName by ChannelGuideTable.siteName
     var lang by ChannelGuideTable.lang
-    var days by ChannelGuideTable.days
 }

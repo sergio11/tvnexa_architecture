@@ -46,8 +46,10 @@ internal class JobSchedulerManagerImpl(
                         } ?: run {
                             log.debug("Tell quartz to schedule the job using trigger ${jobKey.name}")
                             if (!checkExists(jobKey)) {
-                                // Tell quartz to schedule the job using trigger
-                                scheduleJob(buildJob(), buildTrigger())
+                                runCatching {
+                                    // Tell quartz to schedule the job using trigger
+                                    scheduleJob(buildJob(), buildTrigger())
+                                }
                             } else {
                                 log.debug("Job ${jobKey.name} already exists in Quartz.")
                             }

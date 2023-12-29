@@ -21,9 +21,10 @@ class SaveChannelGuideDTOMapper : ISimpleMapper<ChannelGuideDTO, SaveChannelGuid
         // Create a new SaveChannelGuideEntity object using properties from ChannelGuideDTO.
         SaveChannelGuideEntity(
             site = site,
+            siteId = siteId,
+            siteName = siteName,
             channel = channel,
-            lang = lang,
-            days = days
+            lang = lang
         )
     }
 

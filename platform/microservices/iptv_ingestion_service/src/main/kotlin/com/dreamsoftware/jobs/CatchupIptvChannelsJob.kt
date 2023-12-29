@@ -78,7 +78,7 @@ class CatchupIptvChannelsJob(
 
         // Default job ID for the CatchupIptvChannelsJob
         private const val DEFAULT_JOB_ID = "catchup_iptv_channels_job"
-        private const val DEFAULT_TRIGGER_ID = "ingest_languages_job_trigger"
+        private const val DEFAULT_TRIGGER_ID = "ingest_catchup_job_trigger"
         private const val INTERVAL_IN_MINUTES = 5
 
         /**

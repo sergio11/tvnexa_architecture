@@ -11,7 +11,7 @@ object CountryTable: IdTable<String>(name = "countries") {
 
     val code = char(name = "code", length = 2)
     val name = varchar(name = "name", length = 100).uniqueIndex()
-    val flag = char(name = "flag", length = 10).uniqueIndex()
+    val flag = char(name = "flag", length = 10)
 
     override val id: Column<EntityID<String>> = code.entityId()
     override val primaryKey: PrimaryKey = PrimaryKey(id)

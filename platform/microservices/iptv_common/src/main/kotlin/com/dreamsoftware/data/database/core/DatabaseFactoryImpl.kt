@@ -2,6 +2,8 @@ package com.dreamsoftware.data.database.core
 
 import com.dreamsoftware.core.isDevelopmentMode
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.sync.Mutex
+import kotlinx.coroutines.sync.withLock
 import kotlinx.coroutines.withContext
 import org.flywaydb.core.Flyway
 import org.jetbrains.exposed.sql.Database
@@ -31,6 +33,7 @@ internal class DatabaseFactoryImpl(
         const val PROD_MIGRATION_FOLDER = "/prod"
     }
 
+    private val writeTransactionLock = Mutex()
     private val log = LoggerFactory.getLogger(this::class.java)
 
     // Determine the appropriate migration folder based on the environment
@@ -74,17 +77,22 @@ internal class DatabaseFactoryImpl(
      */
     override suspend fun <T> execWritableTransaction(disableFkValidations: Boolean, block: Transaction.() -> T): T = withContext(Dispatchers.IO) {
         connectIfNotConnected(writeDatasource)
-        transaction {
-            if(disableFkValidations) {
-                // Disable foreign key checks if requested
-                exec("SET foreign_key_checks = 0")
-            }
-            block().also {
+        writeTransactionLock.withLock {
+            log.info("Starting writable transaction")
+            val result = transaction {
                 if(disableFkValidations) {
-                    // Re-enable foreign key checks after the transaction
+                    log.info("Disabling foreign key checks")
+                    exec("SET foreign_key_checks = 0")
+                }
+                val result = block()
+                if(disableFkValidations) {
+                    log.info("Enabling foreign key checks")
                     exec("SET foreign_key_checks = 1")
                 }
+                result
             }
+            log.info("Writable transaction finished")
+            result
         }
     }
 
