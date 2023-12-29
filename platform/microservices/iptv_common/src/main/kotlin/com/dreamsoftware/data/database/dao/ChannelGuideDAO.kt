@@ -8,7 +8,7 @@ import org.jetbrains.exposed.dao.id.LongIdTable
 object ChannelGuideTable: LongIdTable(name = "channel_guides") {
 
     // Channel ID
-    val channel = varchar(name = "channel", length = 50).references(ChannelTable.channelId).nullable()
+    val channel = varchar(name = "channel", length = 50).nullable()
     // Program source domain name
     val site = varchar(name = "site", length = 100)
     // Unique channel ID used on the site.
@@ -22,7 +22,7 @@ object ChannelGuideTable: LongIdTable(name = "channel_guides") {
 class ChannelGuideEntityDAO(id: EntityID<Long>) : Entity<Long>(id) {
     companion object : EntityClass<Long, ChannelGuideEntityDAO>(ChannelGuideTable)
 
-    var channel by ChannelEntityDAO optionalReferencedOn ChannelGuideTable.channel
+    var channel by ChannelGuideTable.channel
     var site by ChannelGuideTable.site
     var siteId by ChannelGuideTable.siteId
     var siteName by ChannelGuideTable.siteName
