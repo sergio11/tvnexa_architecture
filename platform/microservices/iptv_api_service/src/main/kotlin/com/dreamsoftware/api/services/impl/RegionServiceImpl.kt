@@ -1,9 +1,9 @@
 package com.dreamsoftware.api.services.impl
 
-import com.dreamsoftware.api.dto.RegionResponseDTO
+import com.dreamsoftware.api.model.exceptions.AppException
+import com.dreamsoftware.api.rest.dto.RegionResponseDTO
 import com.dreamsoftware.api.repository.IRegionRepository
 import com.dreamsoftware.api.services.IRegionService
-import com.dreamsoftware.api.services.RegionServiceException
 import com.dreamsoftware.core.ISimpleMapper
 import com.dreamsoftware.data.database.entity.RegionEntity
 import kotlinx.coroutines.Dispatchers
@@ -14,27 +14,30 @@ class RegionServiceImpl(
     private val regionMapper: ISimpleMapper<RegionEntity, RegionResponseDTO>
 ) : IRegionService {
 
-    @Throws(RegionServiceException.InternalServerError::class)
+    @Throws(AppException.InternalServerError::class)
     override suspend fun findAll(): Iterable<RegionResponseDTO> = withContext(Dispatchers.IO) {
         try {
             val regions = regionRepository.findAll()
             regions.map(regionMapper::map)
         } catch (e: Exception) {
-            throw RegionServiceException.InternalServerError(e.message ?: "Unknown error")
+            throw AppException.InternalServerError(e.message ?: "Unknown error")
         }
     }
 
-    @Throws(RegionServiceException.InternalServerError::class, RegionServiceException.RegionNotFoundException::class)
+    @Throws(
+        AppException.InternalServerError::class,
+        AppException.NotFoundException.RegionNotFoundException::class
+    )
     override suspend fun findByCode(code: String): RegionResponseDTO = withContext(Dispatchers.IO) {
         try {
             val region = regionRepository.findByCode(code)
             if (region != null) {
                 regionMapper.map(region)
             } else {
-                throw RegionServiceException.RegionNotFoundException(code)
+                throw AppException.NotFoundException.RegionNotFoundException(code)
             }
         } catch (e: Exception) {
-            throw RegionServiceException.InternalServerError(e.message ?: "Unknown error")
+            throw AppException.InternalServerError(e.message ?: "Unknown error")
         }
     }
 }

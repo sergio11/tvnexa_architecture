@@ -28,6 +28,6 @@ class CategoryRepositoryImpl(
      * @param id The unique identifier of the category to retrieve.
      * @return The category entity matching the specified ID.
      */
-    override suspend fun findById(id: String): CategoryEntity =
+    override suspend fun findById(id: String): CategoryEntity? =
         categoriesDatabaseDataSource.findByKey(id)
 }

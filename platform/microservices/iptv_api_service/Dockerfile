@@ -2,7 +2,7 @@
 FROM gradle:7-jdk17  AS build
 RUN apt-get update
 RUN apt-get install -y dos2unix
-COPY --chown=gradle:gradle iptv_certificates /home/gradle/certificates
+COPY --chown=gradle:gradle src/main/resources/cert /home/gradle/certificates
 COPY --chown=gradle:gradle iptv_common /home/gradle/iptv_common
 COPY --chown=gradle:gradle iptv_api_service /home/gradle/iptv_api_service
 WORKDIR /home/gradle/iptv_api_service

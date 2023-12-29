@@ -20,5 +20,5 @@ interface ICountryRepository {
      * @param code The unique code of the country to retrieve.
      * @return The country entity matching the specified code.
      */
-    suspend fun findByCode(code: String): CountryEntity
+    suspend fun findByCode(code: String): CountryEntity?
 }

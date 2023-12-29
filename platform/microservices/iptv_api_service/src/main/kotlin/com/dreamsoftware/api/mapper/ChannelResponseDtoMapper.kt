@@ -1,6 +1,7 @@
 package com.dreamsoftware.api.mapper
 
 import com.dreamsoftware.api.dto.*
+import com.dreamsoftware.api.rest.dto.*
 import com.dreamsoftware.core.ISimpleMapper
 import com.dreamsoftware.data.database.entity.*
 

@@ -1,7 +1,8 @@
 package com.dreamsoftware.api.di
 
+import com.dreamsoftware.di.configModule
 import org.koin.dsl.module
 
 val appModule = module {
-    includes(serviceModule, dataModule)
+    includes(configModule, serviceModule, dataModule)
 }

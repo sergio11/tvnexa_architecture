@@ -1,4 +1,4 @@
-package com.dreamsoftware.api.dto
+package com.dreamsoftware.api.rest.dto
 
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
@@ -18,20 +18,26 @@ data class ChannelGuideResponseDTO(
     val site: String,
 
     /**
+     * Unique channel ID used on the site.
+     */
+    @SerialName("site_id")
+    val siteId: String,
+
+    /**
+     * Channel name used on the site
+     */
+    @SerialName("site_name")
+    val siteName: String,
+
+    /**
      * The channel information associated with the guide entry.
      */
     @SerialName("channel")
-    val channel: ChannelResponseDTO,
+    val channel: String?,
 
     /**
      * The language of the channel guide.
      */
     @SerialName("lang")
-    val lang: String,
-
-    /**
-     * The number of days for which the guide is available.
-     */
-    @SerialName("days")
-    val days: Int
+    val lang: String
 )

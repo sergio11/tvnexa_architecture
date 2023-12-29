@@ -22,7 +22,7 @@ interface ISupportDatabaseDataSource<KEY : Comparable<KEY>, INPUT, OUTPUT> {
      * @param key The key used to identify the data record.
      * @return The output data record associated with the key.
      */
-    suspend fun findByKey(key: KEY): OUTPUT
+    suspend fun findByKey(key: KEY): OUTPUT?
 
     /**
      * Saves a single data record in the data source.

@@ -28,7 +28,7 @@ class ChannelRepositoryImpl(
      * @param id The unique identifier of the channel to retrieve.
      * @return The channel entity matching the specified ID.
      */
-    override suspend fun findById(id: String): ChannelEntity =
+    override suspend fun findById(id: String): ChannelEntity? =
         channelDataSource.findByKey(id)
 
     /**
