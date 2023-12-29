@@ -25,14 +25,21 @@ class ChannelGuidesIngestionJob(
         // Fetch channel guides from an external source
         val guides = guidesNetworkDataSource.fetchContent()
 
+        // Log the number of channel guides to be processed
+        log.debug("${guides.count()} channel guides will be processed")
+
         // Fetch saved channel guides from the database
         val savedGuides = guidesDatabaseDataSource.findAll()
 
         // Extract unique guide sites
         val guideSites = guides.map { it.site }
 
+        // Save the fetched channel guides to the database
+        guidesDatabaseDataSource.save(guidesMapper.mapList(guides))
+
         scheduler?.let {
             with(scheduler) {
+
                 // Iterate through saved guides and delete jobs for guides that are no longer present
                 savedGuides.filterNot { guideSites.contains(it.site) }.forEach { deletedGuide ->
                     val jobId = EPG_GRABBING_JOB_ID.replace("{lang}", deletedGuide.lang)
@@ -42,26 +49,29 @@ class ChannelGuidesIngestionJob(
 
                 // Group fetched guides by language and schedule jobs for each language
                 guides.groupBy { it.lang }.forEach { group ->
-                    if (!checkExists(EpgGrabbingJob.getJobKey(EPG_GRABBING_JOB_ID.replace("{lang}", group.key)))) {
+                    val epgJobKey = EPG_GRABBING_JOB_ID.replace("{lang}", group.key)
+                    if (!checkExists(EpgGrabbingJob.getJobKey(epgJobKey))) {
                         // Build and schedule an EpgGrabbingJob for the language
                         scheduleJob(
                             EpgGrabbingJob.buildJob(
-                                jobId = EPG_GRABBING_JOB_ID.replace("{lang}", group.key),
-                                data = buildMap {
-                                    LANGUAGE_ID_ARG to group.key
-                                }),
+                                jobId = epgJobKey,
+                                data = mapOf(LANGUAGE_ID_ARG to group.key)
+                            ).also {
+                                log.debug("JobDataMap For Job $epgJobKey")
+                                it.jobDataMap.forEach { item ->
+                                    log.debug("JobDataMap key: ${item.key}, value: ${item.value}")
+                                }
+                            },
                             EpgGrabbingJob.buildTrigger(
                                 EPG_GRABBING_TRIGGER_ID.replace("{lang}", group.key)
                             )
                         )
-                        log.debug("Scheduled job for guide with language ${group.key}.")
+                        log.debug("Scheduled job $epgJobKey for guide with language ${group.key}.")
                     }
                 }
             }
         }
 
-        // Save the fetched channel guides to the database
-        guidesDatabaseDataSource.save(guidesMapper.mapList(guides))
         log.debug("Saved ${guides.count()} channel guides to the database.")
         log.debug("ChannelGuidesIngestionJob execution completed.")
     }
@@ -70,7 +80,7 @@ class ChannelGuidesIngestionJob(
         private const val EPG_GRABBING_JOB_ID = "epg_grabbing_{lang}_job"
         private const val EPG_GRABBING_TRIGGER_ID = "epg_grabbing_{lang}_trigger"
         private const val DEFAULT_JOB_ID = "channel_guides_ingestion_job"
-        private const val INTERVAL_IN_MINUTES = 5
+        private const val INTERVAL_IN_MINUTES = 2
 
         // Implement the methods from the IJobBuilder interface
         override fun buildJob(jobId: String?, data: Map<String, String>?): JobDetail =
@@ -78,6 +88,6 @@ class ChannelGuidesIngestionJob(
 
         override fun getJobKey(jobId: String?): JobKey = createJobKey(jobId ?: DEFAULT_JOB_ID)
         override fun getIntervalInMinutes(): Int = INTERVAL_IN_MINUTES
-        override fun getParentJobKey(): JobKey = ChannelsIngestionJob.getJobKey()
+        override fun getParentJobKey(): JobKey = ChannelStreamsIngestionJob.getJobKey()
     }
 }
