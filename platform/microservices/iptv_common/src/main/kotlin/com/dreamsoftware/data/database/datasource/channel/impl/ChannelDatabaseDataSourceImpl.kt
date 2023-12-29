@@ -26,6 +26,9 @@ internal class ChannelDatabaseDataSourceImpl(
     ChannelEntityDAO
 ), IChannelDatabaseDataSource {
 
+    override val disableFkValidationsOnBatchOperation: Boolean
+        get() = true
+
     /**
      * Retrieves a list of channels filtered by category and country.
      *
@@ -96,6 +99,7 @@ internal class ChannelDatabaseDataSourceImpl(
 
     override fun Transaction.onSaveTransactionFinished(data: Iterable<SaveChannelEntity>) {
         with(data) {
+            log.debug("onSaveTransactionFinished data size ${count()}")
             saveCategories(fold(listOf()) { items, channel ->
                 items + channel.toCategoriesByChannel()
             })
@@ -136,6 +140,7 @@ internal class ChannelDatabaseDataSourceImpl(
                 this[ChannelCategoryTable.category] = it.second
             }
         )
+        log.debug("saveCategories CALLED!")
     }
 
     private fun saveLanguages(data: Iterable<Pair<String, String>>) {

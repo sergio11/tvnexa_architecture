@@ -28,8 +28,9 @@ class ChannelGuideEntityDaoSimpleMapper(
         ChannelGuideEntity(
             id = id.value,
             site = site,
-            channel = channelMapper.map(channel),
-            days = days,
+            siteId = siteId,
+            siteName = siteName,
+            channel = channel?.let { channelMapper.map(it) },
             lang = lang
         )
     }

@@ -16,14 +16,15 @@ internal class ChannelGuideDatabaseDataSourceImpl(
 ): SupportDatabaseDataSource<Long, ChannelGuideEntityDAO, SaveChannelGuideEntity, ChannelGuideEntity>(database, mapper, ChannelGuideEntityDAO), IChannelGuideDatabaseDataSource {
 
     override fun UpdateBuilder<Int>.onMapEntityToSave(entityToSave: SaveChannelGuideEntity) = with(entityToSave) {
-        this@onMapEntityToSave[ChannelGuideTable.channelId] = channel
+        this@onMapEntityToSave[ChannelGuideTable.channel] = channel
         this@onMapEntityToSave[ChannelGuideTable.site] = site
-        this@onMapEntityToSave[ChannelGuideTable.days] = days
+        this@onMapEntityToSave[ChannelGuideTable.siteId] = siteId
+        this@onMapEntityToSave[ChannelGuideTable.siteName] = siteName
         this@onMapEntityToSave[ChannelGuideTable.lang] = lang
     }
 
     override suspend fun findByChannelId(channelId: String): Iterable<ChannelGuideEntity> = execQuery {
-        entityDAO.find { ChannelGuideTable.channelId eq channelId }.map(mapper::map)
+        entityDAO.find { ChannelGuideTable.channel eq channelId }.map(mapper::map)
     }
 
     override suspend fun findByLanguageId(languageId: String): Iterable<ChannelGuideEntity> = execQuery {

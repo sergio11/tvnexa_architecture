@@ -42,6 +42,9 @@ internal abstract class SupportDatabaseDataSource<KEY : Comparable<KEY>, DAO : E
     protected open val defaultBatchSize: Int
         get() = BATCH_SIZE
 
+    protected open val disableFkValidationsOnBatchOperation: Boolean
+        get() = false
+
     /**
      * Finds all records in the database and returns them as an iterable of OUTPUT.
      *
@@ -83,15 +86,16 @@ internal abstract class SupportDatabaseDataSource<KEY : Comparable<KEY>, DAO : E
      * @param data An iterable of input data to save as new records or update existing ones.
      */
     override suspend fun save(data: Iterable<INPUT>) = with(data) {
-        repeat(chunked(defaultBatchSize).size) {
-            execWrite(disableFkValidations = true) {
+        chunked(defaultBatchSize).forEach { chunk ->
+            log.debug("save chunk size ${chunk.count()}")
+            execWrite(disableFkValidations = disableFkValidationsOnBatchOperation) {
                 entityDAO.table.batchInsertOnDuplicateKeyUpdate(
                     onDupUpdateColumns = listOf(entityDAO.table.id),
-                    itemsCount = count(),
+                    itemsCount = chunk.count(),
                     onSuccess = {
-                        onSaveTransactionFinished(data)
+                        onSaveTransactionFinished(chunk)
                     }
-                ) { idx -> onMapEntityToSave(elementAt(idx)) }
+                ) { idx -> onMapEntityToSave(chunk.elementAt(idx)) }
             }
         }
     }

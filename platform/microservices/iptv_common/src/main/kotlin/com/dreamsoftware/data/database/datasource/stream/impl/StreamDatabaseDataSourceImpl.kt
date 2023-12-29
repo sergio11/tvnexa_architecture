@@ -10,21 +10,43 @@ import com.dreamsoftware.data.database.entity.SaveChannelStreamEntity
 import com.dreamsoftware.data.database.entity.ChannelStreamEntity
 import org.jetbrains.exposed.sql.statements.UpdateBuilder
 
+/**
+ * Implementation of the [IStreamDatabaseDataSource] interface for managing channel stream data in a database.
+ *
+ * @param database The [IDatabaseFactory] instance for accessing the database.
+ * @param mapper The mapper to convert between the database entity ([ChannelStreamEntityDAO]) and domain entity ([ChannelStreamEntity]).
+ */
 internal class StreamDatabaseDataSourceImpl(
     database: IDatabaseFactory,
     mapper: ISimpleMapper<ChannelStreamEntityDAO, ChannelStreamEntity>
-): SupportDatabaseDataSource<Long, ChannelStreamEntityDAO, SaveChannelStreamEntity, ChannelStreamEntity>(database, mapper, ChannelStreamEntityDAO), IStreamDatabaseDataSource {
+) : SupportDatabaseDataSource<Long, ChannelStreamEntityDAO, SaveChannelStreamEntity, ChannelStreamEntity>(database, mapper, ChannelStreamEntityDAO),
+    IStreamDatabaseDataSource {
 
+    /**
+     * Saves a single channel stream entity to the database.
+     *
+     * @param data The [SaveChannelStreamEntity] to be saved.
+     */
     override suspend fun save(data: SaveChannelStreamEntity) {
-        if(data.channelId.isNotBlank()) {
+        if (data.channelId.isNotBlank()) {
             super.save(data)
         }
     }
 
+    /**
+     * Saves multiple channel stream entities to the database.
+     *
+     * @param data The collection of [SaveChannelStreamEntity] instances to be saved.
+     */
     override suspend fun save(data: Iterable<SaveChannelStreamEntity>) {
         super.save(data.filter { it.channelId.isNotBlank() })
     }
 
+    /**
+     * Maps a [SaveChannelStreamEntity] to a database update builder for saving to the database.
+     *
+     * @param entityToSave The [SaveChannelStreamEntity] to be mapped.
+     */
     override fun UpdateBuilder<Int>.onMapEntityToSave(entityToSave: SaveChannelStreamEntity) = with(entityToSave) {
         this@onMapEntityToSave[ChannelStreamTable.url] = url
         this@onMapEntityToSave[ChannelStreamTable.userAgent] = userAgent

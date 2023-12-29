@@ -1,4 +1,4 @@
-package com.dreamsoftware.data.ftp.model
+package com.dreamsoftware.data.configuration.model
 
 data class FtpConfig(
     val hostname: String,

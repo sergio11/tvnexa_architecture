@@ -24,7 +24,14 @@ fun Application.module() {
     doOnStartup()
 }
 
+/**
+ * Performs startup tasks for the application, such as scheduling jobs and setting up shutdown hooks.
+ *
+ * - Schedules various ingestion jobs using the [IJobSchedulerManager].
+ * - Adds a shutdown hook to gracefully handle application shutdown by destroying child processes.
+ */
 fun Application.doOnStartup() {
+    // Schedule ingestion jobs on application startup
     with(getKoin()) {
         with(get<IJobSchedulerManager>()) {
             scheduleJobsAndStart(
@@ -42,6 +49,8 @@ fun Application.doOnStartup() {
             )
         }
     }
+
+    // Add a shutdown hook to gracefully handle application shutdown
     Runtime.getRuntime().addShutdownHook(Thread {
         ProcessHandle
             .allProcesses()
@@ -49,3 +58,4 @@ fun Application.doOnStartup() {
             .forEach(ProcessHandle::destroy)
     })
 }
+

@@ -1,8 +1,8 @@
-package com.dreamsoftware.data.ftp.di
+package com.dreamsoftware.data.configuration.di
 
-import com.dreamsoftware.data.ftp.datasource.IConfigFtpDataSource
-import com.dreamsoftware.data.ftp.datasource.impl.ConfigFtpDataSourceImpl
-import com.dreamsoftware.data.ftp.model.FtpConfig
+import com.dreamsoftware.data.configuration.datasource.IConfigurationDataSource
+import com.dreamsoftware.data.configuration.datasource.impl.ConfigurationDataSourceImpl
+import com.dreamsoftware.data.configuration.model.FtpConfig
 import org.apache.commons.net.ftp.FTPClient
 import org.koin.dsl.module
 
@@ -21,5 +21,5 @@ val ftpModule = module {
         fileName = CONFIG_FILE_NAME,
         fileExt = CONFIG_FILE_EXT
     ) }
-    factory<IConfigFtpDataSource> { ConfigFtpDataSourceImpl(get(), get()) }
+    factory<IConfigurationDataSource> { ConfigurationDataSourceImpl(get(), get()) }
 }

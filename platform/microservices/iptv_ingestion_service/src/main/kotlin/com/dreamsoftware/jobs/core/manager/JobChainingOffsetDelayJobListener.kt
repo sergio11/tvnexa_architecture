@@ -41,6 +41,7 @@ class JobChainingOffsetDelayJobListener : JobListenerSupport() {
     override fun jobToBeExecuted(context: JobExecutionContext?) {
         super.jobToBeExecuted(context)
         context?.jobDetail?.key?.let { jobKey ->
+            log.info("jobToBeExecuted - Job ${jobKey.name} CALLED!")
             jobExecutedMap[jobKey] = false
         }
     }
@@ -55,6 +56,13 @@ class JobChainingOffsetDelayJobListener : JobListenerSupport() {
                 log.info("jobWasExecuted - an one-shot job finished, removed it CALLED!")
                 it.scheduler.deleteJob(it.jobDetail.key)
             }
+        }
+    }
+
+    override fun jobExecutionVetoed(context: JobExecutionContext?) {
+        super.jobExecutionVetoed(context)
+        context?.jobDetail?.key?.let { jobKey ->
+            log.info("jobExecutionVetoed - Job ${jobKey.name} CALLED!")
         }
     }
 
@@ -98,33 +106,32 @@ class JobChainingOffsetDelayJobListener : JobListenerSupport() {
             val jobKey = jobDetail.key
             val existingTriggers = getTriggersOfJob(jobKey)
 
-            if (existingTriggers.isNotEmpty()) {
-                val futureTriggers = existingTriggers.filter { trigger ->
-                    val triggerTime = trigger.nextFireTime
-                    triggerTime != null && triggerTime.after(Date())
-                }
-                if (futureTriggers.isNotEmpty()) {
-                    log.info("Job ${jobKey.name} already scheduled for the future.")
-                } else {
-                    log.info("Rescheduling job ${jobKey.name}")
-                    existingTriggers.forEach { trigger ->
-                        unscheduleJob(trigger.key)
-                    }
-                    deleteJob(jobKey)
-                    scheduleJob(jobDetail, buildTrigger(jobKey, intervalOffsetInMinutes))
-                }
+            // Filter triggers scheduled for the future
+            val futureTriggers = existingTriggers.filter { trigger ->
+                val triggerTime = trigger.nextFireTime
+                triggerTime != null && triggerTime.after(Date())
+            }
+
+            if (futureTriggers.isNotEmpty()) {
+                log.info("Job ${jobKey.name} already scheduled for the future.")
             } else {
+                // Delete all existing triggers
+                existingTriggers.forEach { trigger ->
+                    unscheduleJob(trigger.key)
+                }
+
+                // Delete the job if it exists
                 if (checkExists(jobKey)) {
-                    log.info("Job ${jobKey.name} already exists in Quartz. Rescheduling...")
+                    log.info("Job ${jobKey.name} already exists in Quartz. Deleting...")
                     deleteJob(jobKey)
                 }
+
+                // Schedule the job with the new trigger
                 log.info("Scheduling job ${jobKey.name}")
                 scheduleJob(jobDetail, buildTrigger(jobKey, intervalOffsetInMinutes))
             }
         }
     }
-
-
 
     /**
      * Build a Quartz Trigger instance with an offset delay.

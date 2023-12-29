@@ -8,17 +8,20 @@ import kotlinx.serialization.Serializable
  *
  * @property channel Identifier of the channel.
  * @property site Site or source of the channel guide.
- * @property lang Language of the channel guide.
- * @property days Number of days covered by the guide.
+ * @property siteId Unique channel ID used on the site.
+ * @property siteName Channel name used on the site
+ * @property lang Language of the guide (ISO 639-1 code)
  */
 @Serializable
 data class ChannelGuideDTO(
     @SerialName("channel")
-    val channel: String,
+    val channel: String?,
     @SerialName("site")
     val site: String,
+    @SerialName("site_id")
+    val siteId: String,
+    @SerialName("site_name")
+    val siteName: String,
     @SerialName("lang")
-    val lang: String,
-    @SerialName("days")
-    val days: Int
+    val lang: String
 )
