@@ -13,7 +13,7 @@ val databaseMapperModule = module {
     mapper { RegionEntityDaoSimpleMapper(getMapper()) }
     mapper { ChannelEntityDaoSimpleMapper(getMapper(), getMapper(), getMapper(), getMapper(), getMapper()) }
     mapper { ChannelStreamEntityDaoSimpleMapper() }
-    mapper { ChannelGuideEntityDaoSimpleMapper(getMapper()) }
+    mapper { ChannelGuideEntityDaoSimpleMapper() }
     mapper { EpgChannelProgrammeDaoSimpleMapper(getMapper(), getMapper()) }
     mapper { CatchupEntityDaoSimpleMapper() }
 }
