@@ -6,11 +6,13 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import org.jetbrains.exposed.dao.Entity
 import org.jetbrains.exposed.dao.EntityClass
+import org.jetbrains.exposed.dao.with
 import org.jetbrains.exposed.sql.*
 import org.jetbrains.exposed.sql.SqlExpressionBuilder.eq
 import org.jetbrains.exposed.sql.statements.UpdateBuilder
 import org.jetbrains.exposed.sql.transactions.TransactionManager
 import org.slf4j.LoggerFactory
+import kotlin.reflect.KProperty1
 
 /**
  * An abstract base class for supporting database data sources.
@@ -45,13 +47,34 @@ internal abstract class SupportDatabaseDataSource<KEY : Comparable<KEY>, DAO : E
     protected open val disableFkValidationsOnBatchOperation: Boolean
         get() = false
 
+    protected open val eagerRelationships: List<KProperty1<DAO, Any?>>
+        get() = emptyList()
+
     /**
      * Finds all records in the database and returns them as an iterable of OUTPUT.
      *
      * @return An iterable of OUTPUT containing all records.
      */
     override suspend fun findAll(): Iterable<OUTPUT> = execQuery {
-        entityDAO.all().sortedByDescending { it.id }.map(mapper::map)
+        entityDAO.all()
+            .with(*eagerRelationships.toTypedArray())
+            .sortedByDescending { it.id }
+            .map(mapper::map)
+    }
+
+    /**
+     * Retrieves a paginated list of records from the database and maps them to an iterable of OUTPUT.
+     *
+     * @param offset The offset indicating the starting point from where records should be fetched.
+     * @param limit The maximum number of records to be retrieved.
+     * @return An iterable of OUTPUT containing a paginated list of records.
+     */
+    override suspend fun findPaginated(offset: Long, limit: Int): Iterable<OUTPUT> = execQuery {
+        entityDAO.all()
+            .limit(limit, offset = offset)
+            .with(*eagerRelationships.toTypedArray())
+            .sortedByDescending { it.id }
+            .map(mapper::map)
     }
 
     /**

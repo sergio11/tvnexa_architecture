@@ -84,11 +84,11 @@ data class ChannelResponseDTO(
      * The languages spoken or used by the channel.
      */
     @SerialName("languages")
-    val languages: Iterable<LanguageResponseDTO>,
+    val languages: List<LanguageResponseDTO>,
 
     /**
      * The categories or genres to which the channel belongs.
      */
     @SerialName("categories")
-    val categories: Iterable<CategoryResponseDTO>
+    val categories: List<CategoryResponseDTO>
 )

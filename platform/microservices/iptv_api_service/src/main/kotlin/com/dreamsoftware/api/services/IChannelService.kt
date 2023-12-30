@@ -9,13 +9,15 @@ import com.dreamsoftware.api.rest.dto.ChannelResponseDTO
 interface IChannelService {
 
     /**
-     * Retrieves all channels.
+     * Retrieves a paginated list of channels.
      *
-     * @return Iterable of ChannelResponseDTO containing all channels.
-     * @throws AppException.InternalServerError if there's an internal server error.
+     * @param offset The offset indicating the starting point from where channels should be fetched.
+     * @param limit The maximum number of channels to be retrieved in a single request.
+     * @return List of ChannelResponseDTO containing a paginated list of channels.
+     * @throws AppException.InternalServerError if there's an internal server error during retrieval.
      */
     @Throws(AppException.InternalServerError::class)
-    suspend fun findAll(): List<ChannelResponseDTO>
+    suspend fun findPaginated(offset: Long, limit: Long): List<ChannelResponseDTO>
 
     /**
      * Retrieves a channel by its ID.

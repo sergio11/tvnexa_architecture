@@ -17,6 +17,15 @@ interface ISupportDatabaseDataSource<KEY : Comparable<KEY>, INPUT, OUTPUT> {
     suspend fun findAll(): Iterable<OUTPUT>
 
     /**
+     * Retrieves a paginated list of records from the database and maps them to an iterable of OUTPUT.
+     *
+     * @param offset The offset indicating the starting point from where records should be fetched.
+     * @param limit The maximum number of records to be retrieved.
+     * @return An iterable of OUTPUT containing a paginated list of records.
+     */
+    suspend fun findPaginated(offset: Long, limit: Int): Iterable<OUTPUT>
+
+    /**
      * Retrieves a specific data record from the data source based on its key.
      *
      * @param key The key used to identify the data record.

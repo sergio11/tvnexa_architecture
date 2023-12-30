@@ -11,6 +11,7 @@ import com.dreamsoftware.data.database.entity.CountryEntity
 import com.dreamsoftware.data.database.entity.SaveCountryEntity
 import org.jetbrains.exposed.sql.Transaction
 import org.jetbrains.exposed.sql.statements.UpdateBuilder
+import kotlin.reflect.KProperty1
 
 internal class CountryDatabaseDataSourceImpl(
     database: IDatabaseFactory,
@@ -20,6 +21,9 @@ internal class CountryDatabaseDataSourceImpl(
     mapper,
     CountryEntityDAO
 ), ICountryDatabaseDataSource {
+
+    override val eagerRelationships: List<KProperty1<CountryEntityDAO, Any?>>
+        get() = listOf(CountryEntityDAO::languages)
 
     override fun UpdateBuilder<Int>.onMapEntityToSave(entityToSave: SaveCountryEntity) = with(entityToSave) {
         this@onMapEntityToSave[CountryTable.code] = code

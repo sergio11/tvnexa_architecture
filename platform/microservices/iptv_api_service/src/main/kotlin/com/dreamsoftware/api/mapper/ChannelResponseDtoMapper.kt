@@ -1,6 +1,5 @@
 package com.dreamsoftware.api.mapper
 
-import com.dreamsoftware.api.dto.*
 import com.dreamsoftware.api.rest.dto.*
 import com.dreamsoftware.core.ISimpleMapper
 import com.dreamsoftware.data.database.entity.*
@@ -47,9 +46,9 @@ class ChannelResponseDtoMapper(
             launched = input.launched,
             closed = input.closed,
             replacedBy = input.replacedBy?.let { map(it) },
-            languages = languagesDto,
+            languages = languagesDto.toList(),
             stream = channelStreamDto,
-            categories = categoriesDto
+            categories = categoriesDto.toList()
         )
     }
 

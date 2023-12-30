@@ -18,14 +18,15 @@ class ChannelServiceImpl(
     private val log = LoggerFactory.getLogger(this::class.java)
 
     @Throws(AppException.InternalServerError::class)
-    override suspend fun findAll(): List<ChannelResponseDTO> = withContext(Dispatchers.IO) {
+    override suspend fun findPaginated(offset: Long, limit: Long): List<ChannelResponseDTO> = withContext(Dispatchers.IO) {
         try {
+            log.debug("CHS (findPaginated) offset: $offset - limit: $limit")
             channelRepository
-                .findAll()
+                .findPaginated(offset, limit)
                 .map(channelMapper::map)
         } catch (e: Exception) {
             e.printStackTrace()
-            log.debug("CHS (findAll) An exception occurred: ${e.message ?: "Unknown error"}")
+            log.debug("CHS (findPaginated) An exception occurred: ${e.message ?: "Unknown error"}")
             throw AppException.InternalServerError("An error occurred while fetching all channels.")
         }
     }

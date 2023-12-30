@@ -33,7 +33,7 @@ class CountryResponseDtoMapper(
         code = input.code,
         name = input.name,
         flag = input.flag,
-        languages = languageMapper.mapList(input.languages)
+        languages = languageMapper.mapList(input.languages).toList()
     )
 
     /**

@@ -103,8 +103,6 @@ class ChannelEntityDAO(id: EntityID<String>) : Entity<String>(id) {
     var channelId by ChannelTable.channelId
     var name by ChannelTable.name
     var network by ChannelTable.network
-    var country by CountryEntityDAO referencedOn ChannelTable.country
-    var subdivision by SubdivisionEntityDAO optionalReferencedOn ChannelTable.subdivision
     var city by ChannelTable.city
     var isNsfw by ChannelTable.isNsfw
     var website by ChannelTable.website
@@ -112,8 +110,9 @@ class ChannelEntityDAO(id: EntityID<String>) : Entity<String>(id) {
     var launched by ChannelTable.launched
     var closed by ChannelTable.closed
     var catchupEnabled by ChannelTable.catchupEnabled
+    var country by CountryEntityDAO referencedOn ChannelTable.country
+    var subdivision by SubdivisionEntityDAO optionalReferencedOn ChannelTable.subdivision
     var replacedBy by ChannelEntityDAO optionalReferencedOn ChannelTable.replacedBy
-    val languages by LanguageEntityDAO referrersOn ChannelLanguageTable.channel
-    val categories by CategoryEntityDAO referrersOn ChannelCategoryTable.channel
-    val stream by ChannelStreamEntityDAO optionalBackReferencedOn ChannelStreamTable.channelId
+    val languages by LanguageEntityDAO via ChannelLanguageTable
+    val categories by CategoryEntityDAO via ChannelCategoryTable
 }

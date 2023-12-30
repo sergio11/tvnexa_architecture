@@ -13,3 +13,12 @@ suspend inline fun <reified T> ApplicationCall.generateSuccessResponse(code: Int
 suspend fun ApplicationCall.generateErrorResponse(errorType: ErrorType) {
     respond(errorType.toErrorResponseDTO())
 }
+
+suspend fun ApplicationCall.doIfParamExists(paramName: String, block: suspend (param: String) -> Unit) {
+    parameters[paramName]?.let { block(it) } ?: run {
+        generateErrorResponse(ErrorType.BAD_REQUEST)
+    }
+}
+
+fun ApplicationCall.getLongParamOrDefault(paramName: String, defaultValue: Long) =
+    parameters[paramName]?.toLongOrNull() ?: defaultValue
