@@ -18,12 +18,13 @@ class RegionServiceImpl(
     private val log = LoggerFactory.getLogger(this::class.java)
 
     @Throws(AppException.InternalServerError::class)
-    override suspend fun findAll(): Iterable<RegionResponseDTO> = withContext(Dispatchers.IO) {
+    override suspend fun findAll(): List<RegionResponseDTO> = withContext(Dispatchers.IO) {
         try {
             regionRepository
                 .findAll()
                 .map(regionMapper::map)
         } catch (e: Exception) {
+            e.printStackTrace()
             log.debug("RES (findAll) An exception occurred: ${e.message ?: "Unknown error"}")
             throw AppException.InternalServerError("An error occurred while fetching all regions.")
         }
@@ -39,6 +40,7 @@ class RegionServiceImpl(
                 throw AppException.NotFoundException.RegionNotFoundException("Region with code '$code' not found.")
             }
         } catch (e: Exception) {
+            e.printStackTrace()
             log.debug("RES (findByCode) An exception occurred: ${e.message ?: "Unknown error"}")
             throw AppException.InternalServerError("An error occurred while finding region by code.")
         }

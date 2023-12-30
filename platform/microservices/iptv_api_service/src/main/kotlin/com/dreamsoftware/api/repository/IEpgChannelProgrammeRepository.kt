@@ -20,5 +20,5 @@ interface IEpgChannelProgrammeRepository {
         channelId: String,
         startAt: LocalDateTime,
         endAt: LocalDateTime
-    ): Iterable<EpgChannelProgrammeEntity>
+    ): List<EpgChannelProgrammeEntity>
 }

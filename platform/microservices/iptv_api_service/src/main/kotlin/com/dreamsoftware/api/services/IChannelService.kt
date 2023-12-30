@@ -15,7 +15,7 @@ interface IChannelService {
      * @throws AppException.InternalServerError if there's an internal server error.
      */
     @Throws(AppException.InternalServerError::class)
-    suspend fun findAll(): Iterable<ChannelResponseDTO>
+    suspend fun findAll(): List<ChannelResponseDTO>
 
     /**
      * Retrieves a channel by its ID.
@@ -38,5 +38,5 @@ interface IChannelService {
      * @param country The country by which to filter the channels.
      * @return Iterable of ChannelResponseDTO containing filtered channels.
      */
-    suspend fun filterByCategoryAndCountry(category: String?, country: String?): Iterable<ChannelResponseDTO>
+    suspend fun filterByCategoryAndCountry(category: String?, country: String?): List<ChannelResponseDTO>
 }

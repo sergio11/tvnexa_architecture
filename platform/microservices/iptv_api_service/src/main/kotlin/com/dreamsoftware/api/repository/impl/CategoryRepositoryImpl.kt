@@ -3,6 +3,8 @@ package com.dreamsoftware.api.repository.impl
 import com.dreamsoftware.data.database.datasource.category.ICategoryDatabaseDataSource
 import com.dreamsoftware.api.repository.ICategoryRepository
 import com.dreamsoftware.data.database.entity.CategoryEntity
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 
 /**
  * Implementation of the [ICategoryRepository] interface that provides access to category data
@@ -10,7 +12,7 @@ import com.dreamsoftware.data.database.entity.CategoryEntity
  *
  * @property categoriesDatabaseDataSource The data source responsible for retrieving category data.
  */
-class CategoryRepositoryImpl(
+internal class CategoryRepositoryImpl(
     private val categoriesDatabaseDataSource: ICategoryDatabaseDataSource
 ) : ICategoryRepository {
 
@@ -19,8 +21,9 @@ class CategoryRepositoryImpl(
      *
      * @return An iterable collection of all category entities.
      */
-    override suspend fun findAll(): Iterable<CategoryEntity> =
-        categoriesDatabaseDataSource.findAll()
+    override suspend fun findAll(): List<CategoryEntity> = withContext(Dispatchers.IO) {
+        categoriesDatabaseDataSource.findAll().toList()
+    }
 
     /**
      * Retrieve a category by its unique identifier.
@@ -28,6 +31,7 @@ class CategoryRepositoryImpl(
      * @param id The unique identifier of the category to retrieve.
      * @return The category entity matching the specified ID.
      */
-    override suspend fun findById(id: String): CategoryEntity? =
+    override suspend fun findById(id: String): CategoryEntity? = withContext(Dispatchers.IO) {
         categoriesDatabaseDataSource.findByKey(id)
+    }
 }

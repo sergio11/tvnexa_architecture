@@ -12,7 +12,7 @@ interface ICountryRepository {
      *
      * @return An iterable collection of all country entities.
      */
-    suspend fun findAll(): Iterable<CountryEntity>
+    suspend fun findAll(): List<CountryEntity>
 
     /**
      * Retrieve a country by its unique code.

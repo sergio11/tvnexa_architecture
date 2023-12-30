@@ -12,7 +12,7 @@ interface IChannelRepository {
      *
      * @return An iterable collection of all channel entities.
      */
-    suspend fun findAll(): Iterable<ChannelEntity>
+    suspend fun findAll(): List<ChannelEntity>
 
     /**
      * Retrieve a channel by its unique identifier.
@@ -29,7 +29,7 @@ interface IChannelRepository {
      * @param countryId The unique identifier of the country to filter by (null for all countries).
      * @return An iterable collection of channel entities matching the specified category and country filters.
      */
-    suspend fun filterByCategoryAndCountry(categoryId: String?, countryId: String?): Iterable<ChannelEntity>
+    suspend fun filterByCategoryAndCountry(categoryId: String?, countryId: String?): List<ChannelEntity>
 
     /**
      * Filter channels by country.
@@ -37,5 +37,5 @@ interface IChannelRepository {
      * @param countryId The unique identifier of the country to filter by.
      * @return An iterable collection of channel entities matching the specified country filter.
      */
-    suspend fun filterByCountry(countryId: String): Iterable<ChannelEntity>
+    suspend fun filterByCountry(countryId: String): List<ChannelEntity>
 }

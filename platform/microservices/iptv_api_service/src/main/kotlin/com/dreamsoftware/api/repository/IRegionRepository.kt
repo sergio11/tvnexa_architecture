@@ -12,7 +12,7 @@ interface IRegionRepository {
      *
      * @return An iterable collection of all region entities.
      */
-    suspend fun findAll(): Iterable<RegionEntity>
+    suspend fun findAll(): List<RegionEntity>
 
     /**
      * Retrieve a region by its unique code.

@@ -13,7 +13,7 @@ import java.time.LocalDateTime
  *
  * @property epgChannelProgrammeDatabaseDataSource The data source responsible for retrieving EPG data.
  */
-class EpgChannelProgrammeRepositoryImpl(
+internal class EpgChannelProgrammeRepositoryImpl(
     private val epgChannelProgrammeDatabaseDataSource: IEpgChannelProgrammeDatabaseDataSource
 ) : IEpgChannelProgrammeRepository {
 
@@ -29,8 +29,8 @@ class EpgChannelProgrammeRepositoryImpl(
         channelId: String,
         startAt: LocalDateTime,
         endAt: LocalDateTime
-    ): Iterable<EpgChannelProgrammeEntity> = withContext(Dispatchers.IO) {
+    ): List<EpgChannelProgrammeEntity> = withContext(Dispatchers.IO) {
         // Delegate the retrieval of EPG data to the database data source
-        epgChannelProgrammeDatabaseDataSource.findByChannelIdAndDateRange(channelId, startAt, endAt)
+        epgChannelProgrammeDatabaseDataSource.findByChannelIdAndDateRange(channelId, startAt, endAt).toList()
     }
 }

@@ -15,7 +15,7 @@ interface ICategoryService {
      * @throws AppException.InternalServerError if there's an internal server error.
      */
     @Throws(AppException.InternalServerError::class)
-    suspend fun findAll(): Iterable<CategoryResponseDTO>
+    suspend fun findAll(): List<CategoryResponseDTO>
 
     /**
      * Retrieves a category by its ID.

@@ -16,7 +16,7 @@ interface IEpgChannelProgrammeService {
         channelId: String,   // ID of the channel for which to retrieve programs
         startAt: LocalDateTime,   // Start date and time of the date range
         endAt: LocalDateTime   // End date and time of the date range
-    ): Iterable<EpgChannelProgrammeResponseDTO>
+    ): List<EpgChannelProgrammeResponseDTO>
 
     // Retrieve EPG programs for multiple channels in a country within a date range
     @Throws(AppException.InternalServerError::class)

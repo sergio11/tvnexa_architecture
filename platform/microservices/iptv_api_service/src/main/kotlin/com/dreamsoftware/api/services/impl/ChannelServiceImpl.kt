@@ -18,12 +18,13 @@ class ChannelServiceImpl(
     private val log = LoggerFactory.getLogger(this::class.java)
 
     @Throws(AppException.InternalServerError::class)
-    override suspend fun findAll(): Iterable<ChannelResponseDTO> = withContext(Dispatchers.IO) {
+    override suspend fun findAll(): List<ChannelResponseDTO> = withContext(Dispatchers.IO) {
         try {
             channelRepository
                 .findAll()
                 .map(channelMapper::map)
         } catch (e: Exception) {
+            e.printStackTrace()
             log.debug("CHS (findAll) An exception occurred: ${e.message ?: "Unknown error"}")
             throw AppException.InternalServerError("An error occurred while fetching all channels.")
         }
@@ -39,19 +40,21 @@ class ChannelServiceImpl(
                 throw AppException.NotFoundException.ChannelNotFoundException("Channel with ID '$channelId' not found.")
             }
         } catch (e: Exception) {
+            e.printStackTrace()
             log.debug("CS (findById) An exception occurred: ${e.message ?: "Unknown error"}")
             throw AppException.InternalServerError("An error occurred while finding channel by ID.")
         }
     }
 
     @Throws(AppException.InternalServerError::class)
-    override suspend fun filterByCategoryAndCountry(category: String?, country: String?): Iterable<ChannelResponseDTO> =
+    override suspend fun filterByCategoryAndCountry(category: String?, country: String?): List<ChannelResponseDTO> =
         withContext(Dispatchers.IO) {
             try {
                 channelRepository
                     .filterByCategoryAndCountry(category, country)
                     .map(channelMapper::map)
             } catch (e: Exception) {
+                e.printStackTrace()
                 log.debug("CS (findById) An exception occurred: ${e.message ?: "Unknown error"}")
                 throw AppException.InternalServerError("An error occurred while finding channel by category and country.")
             }
