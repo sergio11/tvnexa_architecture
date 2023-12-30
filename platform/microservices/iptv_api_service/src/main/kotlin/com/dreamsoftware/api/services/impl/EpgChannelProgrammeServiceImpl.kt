@@ -30,13 +30,14 @@ class EpgChannelProgrammeServiceImpl(
         channelId: String,
         startAt: LocalDateTime,
         endAt: LocalDateTime
-    ): Iterable<EpgChannelProgrammeResponseDTO> = withContext(Dispatchers.IO) {
+    ): List<EpgChannelProgrammeResponseDTO> = withContext(Dispatchers.IO) {
         try {
             // Fetch EPG programs from the repository, map them, and return as a list
             epgChannelProgrammeRepository
                 .findByChannelIdAndDateRange(channelId, startAt, endAt)
                 .map(epgChannelProgrammeMapper::map)
         } catch (e: Exception) {
+            e.printStackTrace()
             log.debug("EPGS (findByChannelIdAndDateRange) An exception occurred: ${e.message ?: "Unknown error"}")
             // Handle exceptions and throw a custom service exception
             throw AppException.InternalServerError("An error occurred while finding EPG information by channel id and date range.")
@@ -62,6 +63,7 @@ class EpgChannelProgrammeServiceImpl(
                 }
             }.awaitAll().toMap()
         } catch (e: Exception) {
+            e.printStackTrace()
             log.debug("EPGS (findByChannelIdAndDateRange) An exception occurred: ${e.message ?: "Unknown error"}")
             throw AppException.InternalServerError("An error occurred while finding EPG information by country and date.")
         }

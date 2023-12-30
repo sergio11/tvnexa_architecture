@@ -3,6 +3,8 @@ package com.dreamsoftware.api.repository.impl
 import com.dreamsoftware.api.repository.IRegionRepository
 import com.dreamsoftware.data.database.datasource.region.IRegionDatabaseDataSource
 import com.dreamsoftware.data.database.entity.RegionEntity
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 
 /**
  * Implementation of the [IRegionRepository] interface that provides access to region data
@@ -10,7 +12,7 @@ import com.dreamsoftware.data.database.entity.RegionEntity
  *
  * @property regionDatabaseDataSource The data source responsible for retrieving region data.
  */
-class RegionRepositoryImpl(
+internal class RegionRepositoryImpl(
     private val regionDatabaseDataSource: IRegionDatabaseDataSource
 ) : IRegionRepository {
 
@@ -19,8 +21,9 @@ class RegionRepositoryImpl(
      *
      * @return An iterable collection of all region entities.
      */
-    override suspend fun findAll(): Iterable<RegionEntity> =
-        regionDatabaseDataSource.findAll()
+    override suspend fun findAll(): List<RegionEntity> = withContext(Dispatchers.IO) {
+        regionDatabaseDataSource.findAll().toList()
+    }
 
     /**
      * Retrieve a region by its unique code.
@@ -28,6 +31,13 @@ class RegionRepositoryImpl(
      * @param code The unique code of the region to retrieve.
      * @return The region entity matching the specified code.
      */
-    override suspend fun findByCode(code: String): RegionEntity? =
+    /**
+     * Retrieve a region by its unique code.
+     *
+     * @param code The unique code of the region to retrieve.
+     * @return The region entity matching the specified code.
+     */
+    override suspend fun findByCode(code: String): RegionEntity? = withContext(Dispatchers.IO) {
         regionDatabaseDataSource.findByKey(code)
+    }
 }

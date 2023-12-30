@@ -6,7 +6,7 @@ import com.dreamsoftware.api.rest.dto.RegionResponseDTO
 interface IRegionService {
 
     @Throws(AppException.InternalServerError::class)
-    suspend fun findAll(): Iterable<RegionResponseDTO>
+    suspend fun findAll(): List<RegionResponseDTO>
 
     @Throws(
         AppException.InternalServerError::class,

@@ -19,12 +19,13 @@ class CountryServiceImpl(
     private val log = LoggerFactory.getLogger(this::class.java)
 
     @Throws(AppException.InternalServerError::class)
-    override suspend fun findAll(): Iterable<CountryResponseDTO> = withContext(Dispatchers.IO) {
+    override suspend fun findAll(): List<CountryResponseDTO> = withContext(Dispatchers.IO) {
         try {
             countryRepository
                 .findAll()
                 .map(mapper::map)
         } catch (e: Exception) {
+            e.printStackTrace()
             log.debug("COS (findAll) An exception occurred: ${e.message ?: "Unknown error"}")
             throw AppException.InternalServerError("An error occurred while fetching all countries.")
         }
@@ -40,6 +41,7 @@ class CountryServiceImpl(
                 throw AppException.NotFoundException.CountryNotFoundException("Country with code '$code' not found.")
             }
         } catch (e: Exception) {
+            e.printStackTrace()
             log.debug("COS (findByCode) An exception occurred: ${e.message ?: "Unknown error"}")
             throw AppException.InternalServerError("An error occurred while finding country by code.")
         }

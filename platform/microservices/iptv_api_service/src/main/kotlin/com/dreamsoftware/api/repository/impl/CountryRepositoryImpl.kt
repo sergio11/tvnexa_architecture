@@ -3,6 +3,8 @@ package com.dreamsoftware.api.repository.impl
 import com.dreamsoftware.api.repository.ICountryRepository
 import com.dreamsoftware.data.database.datasource.country.ICountryDatabaseDataSource
 import com.dreamsoftware.data.database.entity.CountryEntity
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 
 /**
  * Implementation of the [ICountryRepository] interface that provides access to country data
@@ -10,7 +12,7 @@ import com.dreamsoftware.data.database.entity.CountryEntity
  *
  * @property countryDatabaseDataSource The data source responsible for retrieving country data.
  */
-class CountryRepositoryImpl(
+internal class CountryRepositoryImpl(
     private val countryDatabaseDataSource: ICountryDatabaseDataSource
 ) : ICountryRepository {
 
@@ -19,8 +21,9 @@ class CountryRepositoryImpl(
      *
      * @return An iterable collection of all country entities.
      */
-    override suspend fun findAll(): Iterable<CountryEntity> =
-        countryDatabaseDataSource.findAll()
+    override suspend fun findAll(): List<CountryEntity> = withContext(Dispatchers.IO) {
+        countryDatabaseDataSource.findAll().toList()
+    }
 
     /**
      * Retrieve a country by its unique code.
@@ -28,6 +31,13 @@ class CountryRepositoryImpl(
      * @param code The unique code of the country to retrieve.
      * @return The country entity matching the specified code.
      */
-    override suspend fun findByCode(code: String): CountryEntity? =
+    /**
+     * Retrieve a country by its unique code.
+     *
+     * @param code The unique code of the country to retrieve.
+     * @return The country entity matching the specified code.
+     */
+    override suspend fun findByCode(code: String): CountryEntity? = withContext(Dispatchers.IO) {
         countryDatabaseDataSource.findByKey(code)
+    }
 }

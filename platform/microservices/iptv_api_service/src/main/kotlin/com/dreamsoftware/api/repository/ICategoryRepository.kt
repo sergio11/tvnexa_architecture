@@ -12,7 +12,7 @@ interface ICategoryRepository {
      *
      * @return An iterable collection of all category entities.
      */
-    suspend fun findAll(): Iterable<CategoryEntity>
+    suspend fun findAll(): List<CategoryEntity>
 
     /**
      * Retrieve a category by its unique identifier.

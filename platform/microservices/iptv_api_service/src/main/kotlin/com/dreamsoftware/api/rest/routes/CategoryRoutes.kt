@@ -1,9 +1,10 @@
 package com.dreamsoftware.api.rest.routes
 
+import com.dreamsoftware.api.model.ErrorType
+import com.dreamsoftware.api.rest.utils.generateErrorResponse
+import com.dreamsoftware.api.rest.utils.generateSuccessResponse
 import com.dreamsoftware.api.services.ICategoryService
-import io.ktor.http.*
 import io.ktor.server.application.*
-import io.ktor.server.response.*
 import io.ktor.server.routing.*
 import org.koin.ktor.ext.inject
 
@@ -13,19 +14,24 @@ fun Route.categoriesRoutes() {
     route("/categories") {
         // Endpoint to retrieve all categories
         get("/") {
-            val categories = categoryService.findAll()
-            call.respond(categories)
+            call.generateSuccessResponse(
+                code = 1001,
+                message = "Categories retrieved successfully.",
+                data = categoryService.findAll()
+            )
         }
 
         // Endpoint to retrieve a category by its ID
         get("/{categoryId}") {
             with(call) {
-                val categoryId = parameters["categoryId"]
-                if (categoryId != null) {
-                    val category = categoryService.findById(categoryId)
-                    respond(category)
-                } else {
-                    respond(HttpStatusCode.BadRequest, "Invalid category ID")
+                parameters["categoryId"]?.let { categoryId ->
+                    generateSuccessResponse(
+                        code = 1002,
+                        message = "Category found.",
+                        data = categoryService.findById(categoryId)
+                    )
+                } ?: run {
+                    generateErrorResponse(ErrorType.BAD_REQUEST)
                 }
             }
         }

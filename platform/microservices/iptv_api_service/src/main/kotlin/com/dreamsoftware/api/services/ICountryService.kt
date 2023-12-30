@@ -16,7 +16,7 @@ interface ICountryService {
      * @throws AppException.InternalServerError if there's an internal server error.
      */
     @Throws(AppException.InternalServerError::class)
-    suspend fun findAll(): Iterable<CountryResponseDTO>
+    suspend fun findAll(): List<CountryResponseDTO>
 
     /**
      * Retrieves a country by its code.
