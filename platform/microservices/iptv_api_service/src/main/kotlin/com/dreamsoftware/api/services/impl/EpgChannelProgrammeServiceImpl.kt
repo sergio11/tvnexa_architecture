@@ -11,6 +11,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.withContext
+import org.slf4j.LoggerFactory
 import java.time.LocalDateTime
 
 class EpgChannelProgrammeServiceImpl(
@@ -19,7 +20,12 @@ class EpgChannelProgrammeServiceImpl(
     private val epgChannelProgrammeMapper: ISimpleMapper<EpgChannelProgrammeEntity, EpgChannelProgrammeResponseDTO>
 ) : IEpgChannelProgrammeService {
 
-    // Retrieve EPG programs by channel ID and date range
+    private val log = LoggerFactory.getLogger(this::class.java)
+
+    @Throws(
+        AppException.InternalServerError::class,
+        AppException.NotFoundException.EpgChannelNotFoundException::class
+    )
     override suspend fun findByChannelIdAndDateRange(
         channelId: String,
         startAt: LocalDateTime,
@@ -27,16 +33,17 @@ class EpgChannelProgrammeServiceImpl(
     ): Iterable<EpgChannelProgrammeResponseDTO> = withContext(Dispatchers.IO) {
         try {
             // Fetch EPG programs from the repository, map them, and return as a list
-            return@withContext epgChannelProgrammeRepository
+            epgChannelProgrammeRepository
                 .findByChannelIdAndDateRange(channelId, startAt, endAt)
                 .map(epgChannelProgrammeMapper::map)
         } catch (e: Exception) {
+            log.debug("EPGS (findByChannelIdAndDateRange) An exception occurred: ${e.message ?: "Unknown error"}")
             // Handle exceptions and throw a custom service exception
-            throw AppException.InternalServerError(e.message ?: "Unknown error")
+            throw AppException.InternalServerError("An error occurred while finding EPG information by channel id and date range.")
         }
     }
 
-    // Retrieve EPG programs for multiple channels in a country and date range
+    @Throws(AppException.InternalServerError::class)
     override suspend fun findByCountryAndDate(
         countryCode: String,
         startAt: LocalDateTime,
@@ -46,19 +53,17 @@ class EpgChannelProgrammeServiceImpl(
             // Fetch a list of channels for the given country
             val channels = channelRepository.filterByCountry(countryCode)
             // Use async/await to fetch programs for multiple channels concurrently
-            val deferredProgrammes = channels.map { channel ->
+            channels.map { channel ->
                 async {
                     // Fetch EPG programs for a channel, map them, and return as a list
                     channel.channelId to epgChannelProgrammeRepository.findByChannelIdAndDateRange(
                         channel.channelId, startAt, endAt
                     ).map(epgChannelProgrammeMapper::map)
                 }
-            }
-            // Convert the list of deferred results to a map of channel IDs and their respective programs
-            return@withContext deferredProgrammes.awaitAll().toMap()
+            }.awaitAll().toMap()
         } catch (e: Exception) {
-            // Handle exceptions and throw a custom service exception
-            throw AppException.InternalServerError(e.message ?: "Unknown error")
+            log.debug("EPGS (findByChannelIdAndDateRange) An exception occurred: ${e.message ?: "Unknown error"}")
+            throw AppException.InternalServerError("An error occurred while finding EPG information by country and date.")
         }
     }
 }

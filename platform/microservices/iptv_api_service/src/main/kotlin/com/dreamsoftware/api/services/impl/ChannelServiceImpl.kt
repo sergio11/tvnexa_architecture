@@ -24,7 +24,7 @@ class ChannelServiceImpl(
                 .findAll()
                 .map(channelMapper::map)
         } catch (e: Exception) {
-            log.debug("CS (findAll) An exception occurred: ${e.message ?: "Unknown error"}")
+            log.debug("CHS (findAll) An exception occurred: ${e.message ?: "Unknown error"}")
             throw AppException.InternalServerError("An error occurred while fetching all channels.")
         }
     }
