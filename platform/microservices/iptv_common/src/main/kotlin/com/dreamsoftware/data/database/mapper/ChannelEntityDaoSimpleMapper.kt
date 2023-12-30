@@ -47,7 +47,7 @@ class ChannelEntityDaoSimpleMapper(
             replacedBy = replacedBy?.let(::map),
             languages = languageMapper.mapList(languages),
             categories = categoryMapper.mapList(categories),
-            stream = stream?.let(streamMapper::map)
+            stream = null
         )
     }
 

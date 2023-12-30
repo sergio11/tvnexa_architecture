@@ -15,6 +15,15 @@ interface IChannelRepository {
     suspend fun findAll(): List<ChannelEntity>
 
     /**
+     * Retrieves a paginated list of all available channel entities.
+     *
+     * @param offset The offset indicating the starting point from where channels should be fetched.
+     * @param limit The maximum number of channel entities to be retrieved in a single request.
+     * @return List of ChannelEntity containing a paginated list of channel entities.
+     */
+    suspend fun findPaginated(offset: Long, limit: Long): List<ChannelEntity>
+
+    /**
      * Retrieve a channel by its unique identifier.
      *
      * @param id The unique identifier of the channel to retrieve.

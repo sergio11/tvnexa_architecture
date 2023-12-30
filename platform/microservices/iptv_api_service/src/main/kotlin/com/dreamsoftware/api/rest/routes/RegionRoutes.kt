@@ -1,9 +1,9 @@
 package com.dreamsoftware.api.rest.routes
 
+import com.dreamsoftware.api.rest.utils.doIfParamExists
+import com.dreamsoftware.api.rest.utils.generateSuccessResponse
 import com.dreamsoftware.api.services.IRegionService
-import io.ktor.http.*
 import io.ktor.server.application.*
-import io.ktor.server.response.*
 import io.ktor.server.routing.*
 import org.koin.ktor.ext.inject
 
@@ -13,17 +13,22 @@ fun Route.regionsRoutes() {
     route("/regions") {
         // Endpoint to retrieve all regions
         get("/") {
-            val regions = regionService.findAll()
-            call.respond(regions)
+            call.generateSuccessResponse(
+                code = 5001,
+                message = "Regions retrieved successfully.",
+                data = regionService.findAll()
+            )
         }
 
         // Endpoint to retrieve a region by its code
         get("/{regionCode}") {
             with(call) {
-                parameters["regionCode"]?.let { regionCode ->
-                    respond(regionService.findByCode(regionCode))
-                } ?: run {
-                    respond(HttpStatusCode.BadRequest, "Invalid region code")
+                doIfParamExists("regionCode") { regionCode ->
+                    generateSuccessResponse(
+                        code = 5002,
+                        message = "Region found.",
+                        data = regionService.findByCode(regionCode)
+                    )
                 }
             }
         }

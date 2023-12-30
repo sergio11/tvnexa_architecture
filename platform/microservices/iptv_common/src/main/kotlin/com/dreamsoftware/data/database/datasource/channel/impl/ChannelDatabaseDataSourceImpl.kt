@@ -10,6 +10,7 @@ import com.dreamsoftware.data.database.entity.SaveChannelEntity
 import org.jetbrains.exposed.sql.Transaction
 import org.jetbrains.exposed.sql.and
 import org.jetbrains.exposed.sql.statements.UpdateBuilder
+import kotlin.reflect.KProperty1
 
 /**
  * Implementation of the [IChannelDatabaseDataSource] interface for managing channel-related database operations.
@@ -28,6 +29,15 @@ internal class ChannelDatabaseDataSourceImpl(
 
     override val disableFkValidationsOnBatchOperation: Boolean
         get() = true
+
+    override val eagerRelationships: List<KProperty1<ChannelEntityDAO, Any?>>
+        get() = listOf(
+            ChannelEntityDAO::languages,
+            ChannelEntityDAO::categories,
+            ChannelEntityDAO::subdivision,
+            ChannelEntityDAO::country,
+            ChannelEntityDAO::replacedBy
+        )
 
     /**
      * Retrieves a list of channels filtered by category and country.

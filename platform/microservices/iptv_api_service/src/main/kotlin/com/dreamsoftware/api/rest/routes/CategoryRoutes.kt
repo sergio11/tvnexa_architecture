@@ -1,7 +1,6 @@
 package com.dreamsoftware.api.rest.routes
 
-import com.dreamsoftware.api.model.ErrorType
-import com.dreamsoftware.api.rest.utils.generateErrorResponse
+import com.dreamsoftware.api.rest.utils.doIfParamExists
 import com.dreamsoftware.api.rest.utils.generateSuccessResponse
 import com.dreamsoftware.api.services.ICategoryService
 import io.ktor.server.application.*
@@ -24,14 +23,12 @@ fun Route.categoriesRoutes() {
         // Endpoint to retrieve a category by its ID
         get("/{categoryId}") {
             with(call) {
-                parameters["categoryId"]?.let { categoryId ->
+                doIfParamExists("categoryId") { categoryId ->
                     generateSuccessResponse(
                         code = 1002,
                         message = "Category found.",
                         data = categoryService.findById(categoryId)
                     )
-                } ?: run {
-                    generateErrorResponse(ErrorType.BAD_REQUEST)
                 }
             }
         }

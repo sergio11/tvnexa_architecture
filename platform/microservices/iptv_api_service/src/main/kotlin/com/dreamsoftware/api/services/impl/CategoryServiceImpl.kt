@@ -10,6 +10,12 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import org.slf4j.LoggerFactory
 
+/**
+ * Implementation of [ICategoryService] responsible for handling category-related operations.
+ *
+ * @property categoryRepository The repository handling data access for categories.
+ * @property mapper The mapper responsible for converting entities to DTOs.
+ */
 class CategoryServiceImpl(
     private val categoryRepository: ICategoryRepository,
     private val mapper: ISimpleMapper<CategoryEntity, CategoryResponseDTO>
@@ -17,6 +23,12 @@ class CategoryServiceImpl(
 
     private val log = LoggerFactory.getLogger(this::class.java)
 
+    /**
+     * Retrieves all categories.
+     *
+     * @return A list of [CategoryResponseDTO] representing all categories.
+     * @throws AppException.InternalServerError If an error occurs during the retrieval process.
+     */
     @Throws(AppException.InternalServerError::class)
     override suspend fun findAll(): List<CategoryResponseDTO> = withContext(Dispatchers.IO) {
         try {
@@ -28,6 +40,14 @@ class CategoryServiceImpl(
         }
     }
 
+    /**
+     * Retrieves a category by its ID.
+     *
+     * @param id The ID of the category to retrieve.
+     * @return A [CategoryResponseDTO] representing the category.
+     * @throws AppException.InternalServerError If an error occurs during the retrieval process.
+     * @throws AppException.NotFoundException.CategoryNotFoundException If the category with the given ID is not found.
+     */
     @Throws(
         AppException.InternalServerError::class,
         AppException.NotFoundException.CategoryNotFoundException::class

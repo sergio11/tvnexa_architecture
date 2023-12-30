@@ -27,5 +27,5 @@ data class CountryResponseDTO(
      * The list of languages spoken in the country.
      */
     @SerialName("languages")
-    val languages: Iterable<LanguageResponseDTO>
+    val languages: List<LanguageResponseDTO>
 )

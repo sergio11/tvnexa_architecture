@@ -34,5 +34,5 @@ class CountryEntityDAO(id: EntityID<String>) : Entity<String>(id) {
     var code by CountryTable.code
     var name by CountryTable.name
     var flag by CountryTable.flag
-    val languages by LanguageEntityDAO referrersOn CountryLanguageTable.country
+    val languages by LanguageEntityDAO via CountryLanguageTable
 }
