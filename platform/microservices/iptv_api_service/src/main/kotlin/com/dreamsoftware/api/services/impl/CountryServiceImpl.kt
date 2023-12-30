@@ -8,6 +8,7 @@ import com.dreamsoftware.core.ISimpleMapper
 import com.dreamsoftware.data.database.entity.CountryEntity
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
+import org.slf4j.LoggerFactory
 import kotlin.jvm.Throws
 
 class CountryServiceImpl(
@@ -15,12 +16,17 @@ class CountryServiceImpl(
     private val mapper: ISimpleMapper<CountryEntity, CountryResponseDTO>
 ): ICountryService {
 
+    private val log = LoggerFactory.getLogger(this::class.java)
+
     @Throws(AppException.InternalServerError::class)
     override suspend fun findAll(): Iterable<CountryResponseDTO> = withContext(Dispatchers.IO) {
         try {
-            countryRepository.findAll().map(mapper::map)
+            countryRepository
+                .findAll()
+                .map(mapper::map)
         } catch (e: Exception) {
-            throw AppException.InternalServerError(e.message ?: "Unknown error")
+            log.debug("COS (findAll) An exception occurred: ${e.message ?: "Unknown error"}")
+            throw AppException.InternalServerError("An error occurred while fetching all countries.")
         }
     }
 
@@ -30,14 +36,12 @@ class CountryServiceImpl(
     )
     override suspend fun findByCode(code: String): CountryResponseDTO = withContext(Dispatchers.IO) {
         try {
-            val country = countryRepository.findByCode(code)
-            if (country != null) {
-                mapper.map(country)
-            } else {
-                throw AppException.NotFoundException.CountryNotFoundException(code)
+            countryRepository.findByCode(code)?.let(mapper::map) ?: run {
+                throw AppException.NotFoundException.CountryNotFoundException("Country with code '$code' not found.")
             }
         } catch (e: Exception) {
-            throw AppException.InternalServerError(e.message ?: "Unknown error")
+            log.debug("COS (findByCode) An exception occurred: ${e.message ?: "Unknown error"}")
+            throw AppException.InternalServerError("An error occurred while finding country by code.")
         }
     }
 }
