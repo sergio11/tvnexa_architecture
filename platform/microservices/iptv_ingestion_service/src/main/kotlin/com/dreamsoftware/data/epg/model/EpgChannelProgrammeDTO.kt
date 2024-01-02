@@ -26,7 +26,7 @@ internal data class EpgChannelProgrammeDTO(
     @field:JacksonXmlProperty(localName = "stop", isAttribute = true)
     val stop: Date,
     @field:JacksonXmlProperty(localName = "channel", isAttribute = true)
-    val channelId: String,
+    val channelId: String?,
     @field:JacksonXmlProperty(localName = "title")
     val title: String,
     @field:JacksonXmlProperty(localName = "category")
