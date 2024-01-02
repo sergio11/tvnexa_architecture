@@ -22,6 +22,7 @@ RUN apt-get install -y netcat && which nc
 RUN curl -sL https://deb.nodesource.com/setup_18.x | bash -
 RUN apt-get install -y nodejs
 RUN npm install -g epg-grabber
+RUN npm install -g cheerio
 COPY --from=build /home/gradle/iptv_ingestion_service/build/libs/iptv_ingestion_service.jar /opt/app/iptv_ingestion_service.jar
 COPY --from=build /home/gradle/iptv_ingestion_service/epg-master/sites /opt/app/iptv_org/sites
 COPY --from=build /home/gradle/iptv_ingestion_service/resources/wait-for-it.sh /opt/app/wait-for-it.sh
