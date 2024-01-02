@@ -4,11 +4,10 @@ import com.dreamsoftware.data.epg.datasource.IEpgGrabbingDataSource
 import com.dreamsoftware.data.epg.model.EpgDTO
 import com.dreamsoftware.data.epg.model.EpgDataDTO
 import com.dreamsoftware.model.EpgGrabbingConfig
+import com.dreamsoftware.utils.getFinalOutputGuidesPath
 import com.fasterxml.jackson.databind.ObjectMapper
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.async
-import kotlinx.coroutines.awaitAll
-import kotlinx.coroutines.withContext
+import kotlinx.coroutines.*
+import org.slf4j.LoggerFactory
 import java.io.File
 import java.util.*
 
@@ -16,13 +15,15 @@ import java.util.*
  * Implementation of [IEpgGrabbingDataSource] for fetching Electronic Program Guide (EPG) data.
  * This class retrieves EPG data for specified sites and language using an external EPG grabber tool.
  *
- * @param kotlinXmlMapper An instance of ObjectMapper for handling XML data.
+ * @param xmlMapper An instance of ObjectMapper for handling XML data.
  * @param epgGrabbingConfig Configuration settings for EPG grabbing.
  */
 internal class EpgGrabbingDataSourceImpl(
-    private val kotlinXmlMapper: ObjectMapper,
+    private val xmlMapper: ObjectMapper,
     private val epgGrabbingConfig: EpgGrabbingConfig
 ) : IEpgGrabbingDataSource {
+
+    private val log = LoggerFactory.getLogger(this::class.java)
 
     /**
      * Fetches EPG data for specified sites and language.
@@ -34,23 +35,25 @@ internal class EpgGrabbingDataSourceImpl(
     override suspend fun fetchEpgForSites(languageId: String, sites: Iterable<String>): Iterable<EpgDataDTO> =
         // Coroutine context switched to IO dispatcher for IO-bound operations
         withContext(Dispatchers.IO) {
-            sites.map { async { Pair(it, runEpgGrabberAsync(it)) } }.awaitAll()
-                .filter { it.second != EPG_GRABBER_FAILED }
-                .let { grabberResults ->
-                    with(grabberResults) {
-                        if (isEmpty()) {
-                            throw RuntimeException("EPG Grabber FAILED for language $languageId")
-                        } else {
-                            map {
-                                with(epgGrabbingConfig) {
-                                    sitesBaseFolder + File.separator + outputGuidesPath.replace("{lang}", languageId)
-                                        .replace("{site}", it.first)
-                                }
-                            }
-                        }
+            log.debug("fetchEpgForSites - languageId: $languageId - sites: ${sites.count()}")
+            val epgResults = sites.map { site ->
+                async {
+                    val finalOutputGuidesPath = epgGrabbingConfig.getFinalOutputGuidesPath(languageId, site)
+                    if (!File(finalOutputGuidesPath).exists()) {
+                        log.debug("fetchEpgForSites - Output guide file does not exist for site: $site. Running EPG Grabber.")
+                        runEpgGrabberAsync(site)
+                    } else {
+                        log.debug("fetchEpgForSites - Output guide file exists for site: $site. Skipping EPG Grabber.")
+                        Pair(site, EPG_GRABBER_SUCCESS)
                     }
-                }.map { guidePath ->
-                    kotlinXmlMapper.readValue(File(guidePath), EpgDTO::class.java)
+                }
+            }.awaitAll().filter { it.second != EPG_GRABBER_FAILED }
+            log.debug("fetchEpgForSites - completed")
+            epgResults
+                .map { epgGrabbingConfig.getFinalOutputGuidesPath(languageId, it.first) }
+                .map { guidePath ->
+                    log.debug("fetchEpgForSites - guidePath: $guidePath")
+                    xmlMapper.readValue(File(guidePath), EpgDTO::class.java)
                 }.fold(listOf()) { items, guideEpg ->
                     guideEpg.programmes.filterNot { programme ->
                         items.any {
@@ -81,7 +84,7 @@ internal class EpgGrabbingDataSourceImpl(
      */
     private suspend fun runEpgGrabberAsync(site: String) = withContext(Dispatchers.IO) {
         with(epgGrabbingConfig) {
-            ProcessBuilder(
+            val process = ProcessBuilder(
                 npmCmd,
                 "epg-grabber",
                 "--config=${jsConfigPath.replace("{site}", site)}",
@@ -92,10 +95,10 @@ internal class EpgGrabbingDataSourceImpl(
                 .redirectOutput(ProcessBuilder.Redirect.INHERIT)
                 .redirectError(ProcessBuilder.Redirect.INHERIT)
                 .start()
-                .waitFor()
+
+            Pair(site, process.waitFor())
         }
     }
-
     /**
      * Checks if the operating system is Windows.
      *
@@ -116,5 +119,6 @@ internal class EpgGrabbingDataSourceImpl(
      */
     companion object {
         private const val EPG_GRABBER_FAILED = 1
+        private const val EPG_GRABBER_SUCCESS = 0
     }
 }
