@@ -1,8 +1,6 @@
 package com.dreamsoftware.data.database.di
 
 import com.dreamsoftware.core.getMapper
-import com.dreamsoftware.data.database.datasource.catchup.ICatchupDatabaseDataSource
-import com.dreamsoftware.data.database.datasource.catchup.impl.CatchupDatabaseDataSourceImpl
 import com.dreamsoftware.data.database.datasource.category.ICategoryDatabaseDataSource
 import com.dreamsoftware.data.database.datasource.category.impl.CategoryDatabaseDataSourceImpl
 import com.dreamsoftware.data.database.datasource.channel.IChannelDatabaseDataSource
@@ -34,5 +32,4 @@ val databaseDataSourcesModule = module {
     single<IStreamDatabaseDataSource> { StreamDatabaseDataSourceImpl(get(), getMapper())  }
     single<IChannelGuideDatabaseDataSource> { ChannelGuideDatabaseDataSourceImpl(get(), getMapper())  }
     single<IEpgChannelProgrammeDatabaseDataSource> { EpgChannelProgrammeDatabaseDataSourceImpl(get(), getMapper())  }
-    single<ICatchupDatabaseDataSource> { CatchupDatabaseDataSourceImpl(get(), getMapper()) }
 }
