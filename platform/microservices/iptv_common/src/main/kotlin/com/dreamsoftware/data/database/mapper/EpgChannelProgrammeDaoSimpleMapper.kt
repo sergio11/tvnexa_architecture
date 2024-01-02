@@ -32,7 +32,7 @@ class EpgChannelProgrammeDaoSimpleMapper(
         EpgChannelProgrammeEntity(
             id = id.value,
             title = title,
-            channel = channelMapper.map(channel),
+            channel = channel?.let(channelMapper::map),
             category = category?.let(categoryMapper::map),
             date = date,
             start = start,

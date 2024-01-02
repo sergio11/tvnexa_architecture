@@ -9,7 +9,7 @@ import org.jetbrains.exposed.sql.javatime.datetime
 object EpgChannelProgrammeTable : LongIdTable(name = "epg_channel_programmes") {
 
     // Channel ID
-    val channelId = varchar(name = "channel", length = 50).references(ChannelTable.channelId)
+    val channelId = varchar(name = "channel", length = 50).references(ChannelTable.channelId).nullable()
 
     // Program title
     val title = varchar(name = "title", length = 200)
@@ -31,7 +31,7 @@ object EpgChannelProgrammeTable : LongIdTable(name = "epg_channel_programmes") {
 class EpgChannelProgrammeEntityDAO(id: EntityID<Long>) : Entity<Long>(id) {
     companion object : EntityClass<Long, EpgChannelProgrammeEntityDAO>(EpgChannelProgrammeTable)
 
-    val channel by ChannelEntityDAO referencedOn EpgChannelProgrammeTable.channelId
+    val channel by ChannelEntityDAO optionalReferencedOn EpgChannelProgrammeTable.channelId
     val category by CategoryEntityDAO optionalReferencedOn EpgChannelProgrammeTable.category
     var title by EpgChannelProgrammeTable.title
     var date by EpgChannelProgrammeTable.date

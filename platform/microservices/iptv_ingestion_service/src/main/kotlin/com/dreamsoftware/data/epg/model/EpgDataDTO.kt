@@ -13,7 +13,7 @@ import java.util.*
  * @property category The category or genre of the program (optional).
  */
 data class EpgDataDTO(
-    val channelId: String,
+    val channelId: String? = null,
     val title: String,
     val start: Date,
     val stop: Date,
