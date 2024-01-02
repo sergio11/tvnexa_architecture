@@ -15,5 +15,4 @@ val databaseMapperModule = module {
     mapper { ChannelStreamEntityDaoSimpleMapper() }
     mapper { ChannelGuideEntityDaoSimpleMapper() }
     mapper { EpgChannelProgrammeDaoSimpleMapper(getMapper(), getMapper()) }
-    mapper { CatchupEntityDaoSimpleMapper() }
 }
