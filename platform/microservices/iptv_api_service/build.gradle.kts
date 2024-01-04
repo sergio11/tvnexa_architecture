@@ -1,5 +1,6 @@
 val ktor_version: String by project
 val kotlin_version: String by project
+val jedis_client_version: String by project
 
 plugins {
     kotlin("jvm") version "1.8.21"
@@ -58,6 +59,9 @@ dependencies {
     implementation("io.ktor:ktor-server-request-validation:$ktor_version")
     // Import common module
     implementation(project(":iptv_common"))
+
+    // Redis Java client designed for performance and ease of use.
+    implementation("redis.clients:jedis:$jedis_client_version")
 
     testImplementation("io.ktor:ktor-server-tests-jvm:$ktor_version")
     testImplementation("org.jetbrains.kotlin:kotlin-test-junit:$kotlin_version")
