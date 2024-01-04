@@ -1,7 +1,7 @@
 package com.dreamsoftware.api.mapper
 
 import com.dreamsoftware.api.rest.dto.ChannelGuideResponseDTO
-import com.dreamsoftware.api.rest.dto.ChannelResponseDTO
+import com.dreamsoftware.api.rest.dto.ChannelDetailResponseDTO
 import com.dreamsoftware.core.ISimpleMapper
 import com.dreamsoftware.data.database.entity.ChannelEntity
 import com.dreamsoftware.data.database.entity.ChannelGuideEntity
@@ -9,10 +9,10 @@ import com.dreamsoftware.data.database.entity.ChannelGuideEntity
 /**
  * Mapper class that maps [ChannelGuideEntity] objects to [ChannelGuideResponseDTO] objects.
  *
- * @property channelMapper The mapper for mapping [ChannelEntity] objects to [ChannelResponseDTO] objects.
+ * @property channelMapper The mapper for mapping [ChannelEntity] objects to [ChannelDetailResponseDTO] objects.
  */
 class ChannelGuideResponseDtoMapper(
-    private val channelMapper: ISimpleMapper<ChannelEntity, ChannelResponseDTO>
+    private val channelMapper: ISimpleMapper<ChannelEntity, ChannelDetailResponseDTO>
 ) : ISimpleMapper<ChannelGuideEntity, ChannelGuideResponseDTO> {
 
     /**

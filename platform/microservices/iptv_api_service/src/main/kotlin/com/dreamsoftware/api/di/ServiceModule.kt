@@ -9,6 +9,6 @@ val serviceModule = module {
     single<ICategoryService> { CategoryServiceImpl(get(), getMapper()) }
     single<ICountryService> { CountryServiceImpl(get(), getMapper()) }
     single<IRegionService> {  RegionServiceImpl(get(), getMapper()) }
-    single<IChannelService> { ChannelServiceImpl(get(), getMapper())}
+    single<IChannelService> { ChannelServiceImpl(get(), getMapper(), getMapper())}
     single<IEpgChannelProgrammeService> { EpgChannelProgrammeServiceImpl(get(), get(), getMapper()) }
 }
