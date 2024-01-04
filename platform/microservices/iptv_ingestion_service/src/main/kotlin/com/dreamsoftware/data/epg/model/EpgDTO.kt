@@ -20,5 +20,5 @@ internal data class EpgDTO(
     @field:JacksonXmlProperty(localName = "channel")
     val channels: List<EpgChannelDTO>,
     @field:JacksonXmlProperty(localName = "programme")
-    val programmes: List<EpgChannelProgrammeDTO>
+    val programmes: List<EpgChannelProgrammeDTO>?
 )
