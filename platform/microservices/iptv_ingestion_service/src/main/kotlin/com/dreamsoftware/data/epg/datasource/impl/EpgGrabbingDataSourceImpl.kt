@@ -55,7 +55,7 @@ internal class EpgGrabbingDataSourceImpl(
                     log.debug("fetchEpgForSites - guidePath: $guidePath")
                     xmlMapper.readValue(File(guidePath), EpgDTO::class.java)
                 }.fold(listOf()) { items, guideEpg ->
-                    guideEpg.programmes.filterNot { programme ->
+                    guideEpg.programmes.orEmpty().filterNot { programme ->
                         items.any {
                             it.channelId == programme.channelId &&
                                     programme.start.after(it.start) &&
