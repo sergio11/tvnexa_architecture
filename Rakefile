@@ -50,26 +50,50 @@ namespace :iptv do
     ## Deploy MariaDB Galera Cluster with ProxySQL
 	namespace :galera do
 
-	        desc "Check Platform Deployment File"
-    		task :check_deployment_file do
-    			puts "Check Platform Deployment File ..."
-    			raise "Deployment file not found, please check availability" unless File.file?("./mariadb_galera_cluster/docker-compose.yml")
-    			puts "Platform Deployment File OK!"
-    		end
+	    desc "Check Platform Deployment File"
+    	task :check_deployment_file do
+    		puts "Check Platform Deployment File ..."
+    		raise "Deployment file not found, please check availability" unless File.file?("./mariadb_galera_cluster/docker-compose.yml")
+    		puts "Platform Deployment File OK!"
+    	end
 
-    		desc "Start MariaDB Galera Cluster and ProxySQL containers"
-            task :start => [ :check_docker_task, :login, :check_deployment_file ] do
-                puts "Start MariaDB Galera Cluster and ProxySQL containers"
-            	puts `docker-compose -f ./mariadb_galera_cluster/docker-compose.yml up -d`
-            end
+    	desc "Start MariaDB Galera Cluster and ProxySQL containers"
+    	task :start => [ :check_docker_task, :login, :check_deployment_file ] do
+    	    puts "Start MariaDB Galera Cluster and ProxySQL containers"
+            puts `docker-compose -f ./mariadb_galera_cluster/docker-compose.yml up -d`
+        end
 
-            desc "Stop MariaDB Galera Cluster and ProxySQL containers"
-            task :stop => [ :check_docker_task, :login, :check_deployment_file  ] do
-            	puts "Stop Platform Containers"
-            	puts `docker-compose -f ./mariadb_galera_cluster/docker-compose.yml stop 2>&1`
-            end
-
+        desc "Stop MariaDB Galera Cluster and ProxySQL containers"
+        task :stop => [ :check_docker_task, :login, :check_deployment_file  ] do
+            puts "Stop Platform Containers"
+            puts `docker-compose -f ./mariadb_galera_cluster/docker-compose.yml stop 2>&1`
+        end
 	end
+
+	# Redis Cluster
+    namespace :redis do
+
+    	desc "Check Redis Cluster Deployment File"
+    	task :check_deployment_file do
+    		puts "Check Redis Cluster Deployment File ..."
+    		raise "Deployment file not found, please check availability" unless File.file?("./redis_cluster/docker-compose.yml")
+    		puts "Platform Deployment File OK!"
+    	end
+
+    	desc "Start and configure Cluster Containers"
+    	task :start => [ :check_docker_task, :login, :check_deployment_file ] do
+    		puts "Start Cluster Containers"
+    		puts `docker-compose -f ./redis_cluster/docker-compose.yml up -d`
+    		puts `docker run -it --rm --network=redis_cluster_redis_cluster_network redislabs/rejson:latest redis-cli --cluster create 192.168.0.30:6379 192.168.0.35:6380 192.168.0.40:6381 192.168.0.45:6382 192.168.0.50:6383 192.168.0.55:6384 192.168.0.60:6385 192.168.0.65:6386 --cluster-replicas 1 --cluster-yes`
+    	end
+
+    	desc "Stop Cluster Containers"
+    	task :stop => [ :check_docker_task, :login, :check_deployment_file  ] do
+    		puts "Stop Cluster Containers"
+    		puts `docker-compose -f ./redis_cluster/docker-compose.yml stop 2>&1`
+    	end
+
+    end
 
 	## Deploy Platform
 	namespace :platform do
@@ -94,15 +118,15 @@ namespace :iptv do
 		end
 
 		task :build_hotspot_image => [:check_docker_task, :login] do
-        			dockerImageName = "ssanchez11/otp_service_hotspot:0.0.1"
-        			microserviceFolder = "./platform/microservice"
-        			dockerFile = "#{microserviceFolder}/Dockerfile_hotspot"
-        			puts "Build Docker Image based on Hotspot at #{microserviceFolder}"
-        			puts `docker build -t #{dockerImageName} -f #{dockerFile} #{microserviceFolder}`
-        			puts `docker images`
-        			puts "Docker image #{dockerImageName} has been created! trying to upload it!"
-        			puts `docker push #{dockerImageName}`
-        		end
+		    dockerImageName = "ssanchez11/otp_service_hotspot:0.0.1"
+        	microserviceFolder = "./platform/microservice"
+        	dockerFile = "#{microserviceFolder}/Dockerfile_hotspot"
+        	puts "Build Docker Image based on Hotspot at #{microserviceFolder}"
+        	puts `docker build -t #{dockerImageName} -f #{dockerFile} #{microserviceFolder}`
+        	puts `docker images`
+            puts "Docker image #{dockerImageName} has been created! trying to upload it!"
+        	puts `docker push #{dockerImageName}`
+        end
 
 		desc "Build Docker Image based on Hotspot JVM"
 		task :build_image => [:check_docker_task, :login] do
