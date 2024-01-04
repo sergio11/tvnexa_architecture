@@ -16,23 +16,17 @@ internal class ChannelRepositoryImpl(
     private val channelDataSource: IChannelDatabaseDataSource
 ) : IChannelRepository {
 
-    /**
-     * Retrieve all channels available in the repository.
-     *
-     * @return An iterable collection of all channel entities.
-     */
-    override suspend fun findAll(): List<ChannelEntity> = withContext(Dispatchers.IO) {
-        channelDataSource.findAll().toList()
-    }
 
     /**
      * Retrieves a paginated list of all available channel entities.
      *
      * @param offset The offset indicating the starting point from where channels should be fetched.
      * @param limit The maximum number of channel entities to be retrieved in a single request.
+     * @param categoryId The unique identifier of the category to filter by (null for all categories).
+     * @param countryId The unique identifier of the country to filter by (null for all countries).
      * @return List of ChannelEntity containing a paginated list of channel entities.
      */
-    override suspend fun findPaginated(offset: Long, limit: Long): List<ChannelEntity>  = withContext(Dispatchers.IO) {
+    override suspend fun findByCategoryAndCountryPaginated(categoryId: String?, countryId: String?, offset: Long, limit: Long): List<ChannelEntity>  = withContext(Dispatchers.IO) {
         channelDataSource.findPaginated(offset, limit.toInt()).toList()
     }
 
@@ -47,23 +41,13 @@ internal class ChannelRepositoryImpl(
     }
 
     /**
-     * Filter channels by category and country.
+     *  Filter channels by country.
      *
-     * @param categoryId The unique identifier of the category to filter by (null for all categories).
-     * @param countryId The unique identifier of the country to filter by (null for all countries).
-     * @return An iterable collection of channel entities matching the specified category and country filters.
-     */
-    override suspend fun filterByCategoryAndCountry(categoryId: String?, countryId: String?): List<ChannelEntity> = withContext(Dispatchers.IO) {
-        channelDataSource.filterByCategoryAndCountry(categoryId, countryId).toList()
-    }
-
-    /**
-     * Filter channels by country.
-     *
-     * @param countryId The unique identifier of the country to filter by.
-     * @return An iterable collection of channel entities matching the specified country filter.
+     *  @param countryId The unique identifier of the country to filter by.
+     *  @return An iterable collection of channel entities matching the specified country filter.
      */
     override suspend fun filterByCountry(countryId: String): List<ChannelEntity> = withContext(Dispatchers.IO) {
         channelDataSource.findByCountry(countryId).toList()
     }
+
 }
