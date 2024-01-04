@@ -18,15 +18,16 @@ fun Route.channelRoutes() {
         // Endpoint to retrieve all channels
         get("/") {
             with(call) {
+                val category = parameters["category"]
+                val country = parameters["country"]
                 val offset = getLongParamOrDefault(paramName = "offset", defaultValue = DEFAULT_OFFSET)
                 val limit = getLongParamOrDefault(paramName = "limit", defaultValue = DEFAULT_PAGE_SIZE)
                 generateSuccessResponse(
                     code = 2001,
                     message = "Channels retrieved successfully.",
-                    data = channelService.findPaginated(offset, limit)
+                    data = channelService.findByCategoryAndCountryPaginated(category, country, offset, limit)
                 )
             }
-
         }
 
         // Endpoint to retrieve a channel by its ID
@@ -41,19 +42,6 @@ fun Route.channelRoutes() {
                 } ?: run {
                     generateErrorResponse(ErrorType.BAD_REQUEST)
                 }
-            }
-        }
-
-        // Endpoint to filter channels by category and/or country
-        get("/filter") {
-            with(call) {
-                val category = parameters["category"]
-                val country = parameters["country"]
-                generateSuccessResponse(
-                    code = 2003,
-                    message = "Channels filtered successfully by category '${category ?: "all"}' and country '${country ?: "all"}'.",
-                    data =  channelService.filterByCategoryAndCountry(category, country)
-                )
             }
         }
     }

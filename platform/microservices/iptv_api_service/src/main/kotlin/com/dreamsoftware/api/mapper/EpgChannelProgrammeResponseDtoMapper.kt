@@ -36,8 +36,8 @@ class EpgChannelProgrammeResponseDtoMapper(
     override fun map(input: EpgChannelProgrammeEntity): EpgChannelProgrammeResponseDTO = EpgChannelProgrammeResponseDTO(
         id = input.id,
         title = input.title,
-        channel = channelMapper.map(input.channel),
-        category = input.category?.let { categoryMapper.map(it) },
+        channel = input.channel?.let(channelMapper::map),
+        category = input.category?.let(categoryMapper::map),
         start = input.start.toString(),
         end = input.end.toString(),
         date = input.date.toString()

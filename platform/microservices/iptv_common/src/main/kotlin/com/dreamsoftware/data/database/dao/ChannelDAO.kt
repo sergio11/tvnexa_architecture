@@ -1,6 +1,5 @@
 package com.dreamsoftware.data.database.dao
 
-
 import org.jetbrains.exposed.dao.Entity
 import org.jetbrains.exposed.dao.EntityClass
 import org.jetbrains.exposed.dao.id.EntityID

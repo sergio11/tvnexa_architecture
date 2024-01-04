@@ -18,16 +18,16 @@ class ChannelServiceImpl(
     private val log = LoggerFactory.getLogger(this::class.java)
 
     @Throws(AppException.InternalServerError::class)
-    override suspend fun findPaginated(offset: Long, limit: Long): List<ChannelResponseDTO> = withContext(Dispatchers.IO) {
+    override suspend fun findByCategoryAndCountryPaginated(category: String?, country: String?, offset: Long, limit: Long): List<ChannelResponseDTO> = withContext(Dispatchers.IO) {
         try {
-            log.debug("CHS (findPaginated) offset: $offset - limit: $limit")
+            log.debug("CHS (findByCategoryAndCountryPaginated) category: $category, country: $country, offset: $offset - limit: $limit")
             channelRepository
-                .findPaginated(offset, limit)
+                .findByCategoryAndCountryPaginated(category, country, offset, limit)
                 .map(channelMapper::map)
         } catch (e: Exception) {
             e.printStackTrace()
-            log.debug("CHS (findPaginated) An exception occurred: ${e.message ?: "Unknown error"}")
-            throw AppException.InternalServerError("An error occurred while fetching all channels.")
+            log.debug("CHS (findByCategoryAndCountryPaginated) An exception occurred: ${e.message ?: "Unknown error"}")
+            throw AppException.InternalServerError("An error occurred while fetching channels.")
         }
     }
 
@@ -46,18 +46,4 @@ class ChannelServiceImpl(
             throw AppException.InternalServerError("An error occurred while finding channel by ID.")
         }
     }
-
-    @Throws(AppException.InternalServerError::class)
-    override suspend fun filterByCategoryAndCountry(category: String?, country: String?): List<ChannelResponseDTO> =
-        withContext(Dispatchers.IO) {
-            try {
-                channelRepository
-                    .filterByCategoryAndCountry(category, country)
-                    .map(channelMapper::map)
-            } catch (e: Exception) {
-                e.printStackTrace()
-                log.debug("CS (findById) An exception occurred: ${e.message ?: "Unknown error"}")
-                throw AppException.InternalServerError("An error occurred while finding channel by category and country.")
-            }
-        }
 }
