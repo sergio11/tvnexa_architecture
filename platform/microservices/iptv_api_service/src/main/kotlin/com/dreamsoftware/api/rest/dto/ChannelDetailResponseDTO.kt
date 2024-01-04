@@ -4,7 +4,7 @@ import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
 @Serializable
-data class ChannelResponseDTO(
+data class ChannelDetailResponseDTO(
     @SerialName("channel_id")
     val channelId: String,
 
@@ -72,7 +72,7 @@ data class ChannelResponseDTO(
      * The channel that replaced this channel (if applicable).
      */
     @SerialName("replaced_by")
-    val replacedBy: ChannelResponseDTO? = null,
+    val replacedBy: ChannelDetailResponseDTO? = null,
 
     /**
      * The stream data for the channel

@@ -6,6 +6,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import org.jetbrains.exposed.dao.Entity
 import org.jetbrains.exposed.dao.EntityClass
+import org.jetbrains.exposed.dao.load
 import org.jetbrains.exposed.dao.with
 import org.jetbrains.exposed.sql.*
 import org.jetbrains.exposed.sql.SqlExpressionBuilder.eq
@@ -47,7 +48,10 @@ internal abstract class SupportDatabaseDataSource<KEY : Comparable<KEY>, DAO : E
     protected open val disableFkValidationsOnBatchOperation: Boolean
         get() = false
 
-    protected open val eagerRelationships: List<KProperty1<DAO, Any?>>
+    protected open val findByEagerRelationships: List<KProperty1<DAO, Any?>>
+        get() = emptyList()
+
+    protected open val findAllEagerRelationships: List<KProperty1<DAO, Any?>>
         get() = emptyList()
 
     /**
@@ -57,7 +61,7 @@ internal abstract class SupportDatabaseDataSource<KEY : Comparable<KEY>, DAO : E
      */
     override suspend fun findAll(): Iterable<OUTPUT> = execQuery {
         entityDAO.all()
-            .with(*eagerRelationships.toTypedArray())
+            .with(*findAllEagerRelationships.toTypedArray())
             .sortedByDescending { it.id }
             .map(mapper::map)
     }
@@ -72,7 +76,7 @@ internal abstract class SupportDatabaseDataSource<KEY : Comparable<KEY>, DAO : E
     override suspend fun findPaginated(offset: Long, limit: Int): Iterable<OUTPUT> = execQuery {
         entityDAO.all()
             .limit(limit, offset = offset)
-            .with(*eagerRelationships.toTypedArray())
+            .with(*findAllEagerRelationships.toTypedArray())
             .sortedByDescending { it.id }
             .map(mapper::map)
     }
@@ -84,7 +88,7 @@ internal abstract class SupportDatabaseDataSource<KEY : Comparable<KEY>, DAO : E
      * @return The retrieved record as OUTPUT.
      */
     override suspend fun findByKey(key: KEY): OUTPUT? = execQuery {
-        entityDAO.findById(key)?.let(mapper::map)
+        entityDAO.findById(key)?.load(*findByEagerRelationships.toTypedArray())?.let(mapper::map)
     }
 
     /**

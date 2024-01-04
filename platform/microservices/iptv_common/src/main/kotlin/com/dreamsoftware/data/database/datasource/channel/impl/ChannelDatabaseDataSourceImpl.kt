@@ -30,7 +30,7 @@ internal class ChannelDatabaseDataSourceImpl(
     override val disableFkValidationsOnBatchOperation: Boolean
         get() = true
 
-    override val eagerRelationships: List<KProperty1<ChannelEntityDAO, Any?>>
+    override val findByEagerRelationships: List<KProperty1<ChannelEntityDAO, Any?>>
         get() = listOf(
             ChannelEntityDAO::languages,
             ChannelEntityDAO::categories,

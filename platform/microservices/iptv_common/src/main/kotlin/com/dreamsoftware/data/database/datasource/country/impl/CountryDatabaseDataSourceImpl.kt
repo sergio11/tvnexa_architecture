@@ -29,7 +29,7 @@ internal class CountryDatabaseDataSourceImpl(
     CountryEntityDAO
 ), ICountryDatabaseDataSource {
 
-    override val eagerRelationships: List<KProperty1<CountryEntityDAO, Any?>>
+    override val findAllEagerRelationships: List<KProperty1<CountryEntityDAO, Any?>>
         get() = listOf(CountryEntityDAO::languages)
 
     /**

@@ -1,7 +1,8 @@
 package com.dreamsoftware.api.services
 
 import com.dreamsoftware.api.model.exceptions.AppException
-import com.dreamsoftware.api.rest.dto.ChannelResponseDTO
+import com.dreamsoftware.api.rest.dto.ChannelDetailResponseDTO
+import com.dreamsoftware.api.rest.dto.SimpleChannelResponseDTO
 
 /**
  * Interface for managing channels.
@@ -19,7 +20,7 @@ interface IChannelService {
      * @throws AppException.InternalServerError if there's an internal server error during retrieval.
      */
     @Throws(AppException.InternalServerError::class)
-    suspend fun findByCategoryAndCountryPaginated(category: String?, country: String?, offset: Long, limit: Long): List<ChannelResponseDTO>
+    suspend fun findByCategoryAndCountryPaginated(category: String?, country: String?, offset: Long, limit: Long): List<SimpleChannelResponseDTO>
 
     /**
      * Retrieves a channel by its ID.
@@ -33,5 +34,5 @@ interface IChannelService {
         AppException.InternalServerError::class,
         AppException.NotFoundException.ChannelNotFoundException::class
     )
-    suspend fun findById(channelId: String): ChannelResponseDTO
+    suspend fun findById(channelId: String): ChannelDetailResponseDTO
 }
