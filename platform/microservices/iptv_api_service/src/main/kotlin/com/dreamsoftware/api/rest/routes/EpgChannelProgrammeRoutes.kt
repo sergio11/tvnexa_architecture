@@ -1,10 +1,10 @@
 package com.dreamsoftware.api.rest.routes
 
-import com.dreamsoftware.api.model.ErrorType
+import com.dreamsoftware.api.domain.model.ErrorType
 import com.dreamsoftware.api.rest.utils.generateErrorResponse
 import com.dreamsoftware.api.rest.utils.generateSuccessResponse
 import com.dreamsoftware.api.rest.utils.getLocalDateTimeQueryParamOrNull
-import com.dreamsoftware.api.services.IEpgChannelProgrammeService
+import com.dreamsoftware.api.domain.services.IEpgChannelProgrammeService
 import io.ktor.server.application.*
 import io.ktor.server.routing.*
 import org.koin.ktor.ext.inject

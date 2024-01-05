@@ -27,9 +27,9 @@ class CountryEntityDaoSimpleMapper(
     override fun map(input: CountryEntityDAO): CountryEntity = with(input) {
         CountryEntity(
             code = code,
-            name = name.orEmpty(),
+            name = name,
             flag = flag,
-            languages = languageMapper.mapList(languages)
+            languages = languageMapper.mapList(languages).toList()
         )
     }
 

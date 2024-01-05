@@ -45,8 +45,8 @@ class ChannelEntityDaoSimpleMapper(
             closed = closed,
             catchupEnabled = catchupEnabled,
             replacedBy = replacedBy?.let(::map),
-            languages = languageMapper.mapList(languages),
-            categories = categoryMapper.mapList(categories),
+            languages = languageMapper.mapList(languages).toList(),
+            categories = categoryMapper.mapList(categories).toList(),
             stream = null
         )
     }
