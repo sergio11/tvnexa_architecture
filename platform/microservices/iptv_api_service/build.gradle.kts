@@ -1,6 +1,7 @@
 val ktor_version: String by project
 val kotlin_version: String by project
 val jedis_client_version: String by project
+val gson_version: String by project
 
 plugins {
     kotlin("jvm") version "1.8.21"
@@ -62,6 +63,7 @@ dependencies {
 
     // Redis Java client designed for performance and ease of use.
     implementation("redis.clients:jedis:$jedis_client_version")
+    implementation("com.google.code.gson:gson:$gson_version")
 
     testImplementation("io.ktor:ktor-server-tests-jvm:$ktor_version")
     testImplementation("org.jetbrains.kotlin:kotlin-test-junit:$kotlin_version")

@@ -1,12 +1,12 @@
 package com.dreamsoftware.api.rest.routes
 
-import com.dreamsoftware.api.model.ErrorType
+import com.dreamsoftware.api.domain.model.ErrorType
 import com.dreamsoftware.api.rest.utils.Constants.DEFAULT_OFFSET
 import com.dreamsoftware.api.rest.utils.Constants.DEFAULT_PAGE_SIZE
 import com.dreamsoftware.api.rest.utils.generateErrorResponse
 import com.dreamsoftware.api.rest.utils.generateSuccessResponse
 import com.dreamsoftware.api.rest.utils.getLongParamOrDefault
-import com.dreamsoftware.api.services.IChannelService
+import com.dreamsoftware.api.domain.services.IChannelService
 import io.ktor.server.application.*
 import io.ktor.server.routing.*
 import org.koin.ktor.ext.inject

@@ -16,8 +16,8 @@ data class ChannelEntity(
     val catchupEnabled: Boolean = false,
     val replacedBy: ChannelEntity? = null,
     val stream: ChannelStreamEntity? = null,
-    val languages: Iterable<LanguageEntity>,
-    val categories: Iterable<CategoryEntity>
+    val languages: List<LanguageEntity>,
+    val categories: List<CategoryEntity>
 )
 
 data class SaveChannelEntity(
@@ -35,24 +35,24 @@ data class SaveChannelEntity(
     val catchupEnabled: Boolean,
     val replacedBy: String? = null,
     val altNames: List<String>,
-    val languages: Iterable<String>,
-    val categories: Iterable<String>,
+    val languages: List<String>,
+    val categories: List<String>,
     val owners: List<String>,
     val broadcastArea: List<String>
 ) {
 
-    fun toLanguagesByChannel(): Iterable<Pair<String, String>> =
+    fun toLanguagesByChannel(): List<Pair<String, String>> =
         languages.map { Pair(channelId, it) }
 
-    fun toCategoriesByChannel(): Iterable<Pair<String, String>> =
+    fun toCategoriesByChannel(): List<Pair<String, String>> =
         categories.map { Pair(channelId, it) }
 
-    fun toAltNamesByChannel(): Iterable<Pair<String, String>> =
+    fun toAltNamesByChannel(): List<Pair<String, String>> =
         altNames.map { Pair(channelId, it) }
 
-    fun toOwnersByChannel(): Iterable<Pair<String, String>> =
+    fun toOwnersByChannel(): List<Pair<String, String>> =
         owners.map { Pair(channelId, it) }
 
-    fun toBroadcastAreaByChannel(): Iterable<Pair<String, String>> =
+    fun toBroadcastAreaByChannel(): List<Pair<String, String>> =
         broadcastArea.map { Pair(channelId, it) }
 }

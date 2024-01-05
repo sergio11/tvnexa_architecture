@@ -4,7 +4,7 @@ data class CountryEntity(
     val code: String,
     val name: String,
     val flag: String?,
-    val languages: Iterable<LanguageEntity>
+    val languages: List<LanguageEntity>
 )
 
 data class SaveCountryEntity(
@@ -14,6 +14,6 @@ data class SaveCountryEntity(
     val languages: List<String> = emptyList()
 ) {
 
-    fun toLanguagesByCountry(): Iterable<Pair<String, String>> =
+    fun toLanguagesByCountry(): List<Pair<String, String>> =
         languages.map { Pair(code, it) }
 }

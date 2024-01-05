@@ -2,7 +2,7 @@ package com.dreamsoftware.api.rest.routes
 
 import com.dreamsoftware.api.rest.utils.doIfParamExists
 import com.dreamsoftware.api.rest.utils.generateSuccessResponse
-import com.dreamsoftware.api.services.ICountryService
+import com.dreamsoftware.api.domain.services.ICountryService
 import io.ktor.server.application.*
 import io.ktor.server.routing.*
 import org.koin.ktor.ext.inject
