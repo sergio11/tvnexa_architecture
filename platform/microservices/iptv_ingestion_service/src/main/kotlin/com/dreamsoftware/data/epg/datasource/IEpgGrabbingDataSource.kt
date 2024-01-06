@@ -9,11 +9,11 @@ import com.dreamsoftware.data.epg.model.EpgDataDTO
 interface IEpgGrabbingDataSource {
 
     /**
-     * Fetches EPG data for a list of sites and a specified language.
+     * Fetches Electronic Program Guide (EPG) data for a specific site and language.
      *
-     * @param languageId The language identifier for which EPG data is to be fetched.
-     * @param sites An iterable collection of site names for which EPG data is to be retrieved.
-     * @return An iterable collection of [EpgDataDTO] objects representing the fetched EPG data.
+     * @param languageId The identifier for the desired language (e.g., ISO_639-1 code).
+     * @param site The specific site or source from which to retrieve EPG data.
+     * @return An iterable collection of [EpgDataDTO] containing EPG data for the given sites and language.
      */
-    suspend fun fetchEpgForSites(languageId: String, sites: Iterable<String>): Iterable<EpgDataDTO>
+    suspend fun fetchEpgByLanguageAndSite(languageId: String, site: String): Iterable<EpgDataDTO>
 }

@@ -34,20 +34,30 @@ class EpgGrabbingJob(
      */
     override suspend fun onStartExecution(jobData: JobDataMap?, scheduler: Scheduler?) {
         val languageId = jobData?.getString(LANGUAGE_ID_ARG).orEmpty()
+        val siteId = jobData?.getString(SITE_ID_ARG).orEmpty()
 
-        log.debug("Starting EpgGrabbingJob execution for language ID: $languageId")
+        log.debug("Starting EpgGrabbingJob execution for language ID: $languageId and Site: $siteId")
 
         if (languageId.isEmpty()) {
             log.error("Language ID is empty. Cannot fetch EPG data without language ID.")
             throw IllegalStateException("You must provide a language ID")
         }
 
-        // Fetch EPG data for specified language and channel sites
-        val channelSites = channelGuideDatabaseDataSource.findByLanguageId(languageId).map { it.site }
-        val epgData = epgGrabbingDataSource.fetchEpgForSites(languageId, channelSites)
+        if (siteId.isEmpty()) {
+            log.error("site is empty. Cannot fetch EPG data without site.")
+            throw IllegalStateException("You must provide a site")
+        }
 
-        // Map and save the fetched EPG data to the database
-        epgChannelProgrammeDatabaseDataSource.save(epgDataMapper.mapList(epgData))
+        if(channelGuideDatabaseDataSource.existsByLanguageIdAndSite(languageId, siteId)) {
+            log.debug("EpgGrabbingJob starting fetching Epg by language $languageId and site $siteId.")
+            // Fetch EPG data for specified language and channel sites
+            val epgData = epgGrabbingDataSource.fetchEpgByLanguageAndSite(languageId, siteId)
+            log.debug("EpgGrabbingJob trying to save EPG data into database ...")
+            // Map and save the fetched EPG data to the database
+            epgChannelProgrammeDatabaseDataSource.save(epgDataMapper.mapList(epgData))
+        } else {
+            scheduler?.deleteJob(getJobKey(buildKey(languageId, siteId)))
+        }
 
         log.debug("EpgGrabbingJob $languageId execution completed successfully.")
     }
@@ -56,6 +66,9 @@ class EpgGrabbingJob(
 
         const val LANGUAGE_ID_ARG = "LANGUAGE_ID_ARG"
         const val SITE_ID_ARG = "SITE_ID_ARG"
+
+        private const val EPG_GRABBING_JOB_ID = "epg_grabbing_{lang}_{site}_job"
+        private const val EPG_GRABBING_TRIGGER_ID = "epg_grabbing_{lang}_{site}_trigger"
 
         // Default job ID and interval for execution (in minutes)
         private const val DEFAULT_JOB_ID = "epg_grabbing_job"
@@ -96,5 +109,15 @@ class EpgGrabbingJob(
          * @return The execution interval in minutes.
          */
         override fun getIntervalInMinutes(): Int = INTERVAL_IN_MINUTES
+
+        fun buildKey(languageId: String, site: String): String =
+            EPG_GRABBING_JOB_ID
+                .replace("{lang}", languageId)
+                .replace("{site}", site)
+
+        fun buildTriggerKey(languageId: String, site: String): String =
+            EPG_GRABBING_TRIGGER_ID
+                .replace("{lang}", languageId)
+                .replace("{site}", site)
     }
 }

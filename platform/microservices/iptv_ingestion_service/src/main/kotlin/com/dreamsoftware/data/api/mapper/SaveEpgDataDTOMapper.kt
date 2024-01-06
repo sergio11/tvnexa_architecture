@@ -26,7 +26,9 @@ class SaveEpgDataDTOMapper : ISimpleMapper<EpgDataDTO, SaveEpgChannelProgrammeEn
             category = category,
             start = start.toLocalDateTime(), // Convert start time to LocalDateTime
             end = stop.toLocalDateTime(),    // Convert end time to LocalDateTime
-            date = date.toLocalDateTime()     // Convert date to LocalDateTime
+            date = date.toLocalDateTime(),   // Convert date to LocalDateTime,
+            site = site,
+            language = lang
         )
     }
 

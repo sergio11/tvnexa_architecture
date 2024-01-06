@@ -26,6 +26,12 @@ object EpgChannelProgrammeTable : LongIdTable(name = "epg_channel_programmes") {
     // Programme date
     val date = datetime(name = "date")
 
+    // Program source domain name
+    val site = varchar(name = "site", length = 100)
+
+    // Language of the guide (ISO_639-1 code)
+    val lang = char(name = "lang", length = 2)
+
 }
 
 class EpgChannelProgrammeEntityDAO(id: EntityID<Long>) : Entity<Long>(id) {
@@ -37,4 +43,6 @@ class EpgChannelProgrammeEntityDAO(id: EntityID<Long>) : Entity<Long>(id) {
     var date by EpgChannelProgrammeTable.date
     var start by EpgChannelProgrammeTable.start
     var end by EpgChannelProgrammeTable.end
+    var site by EpgChannelProgrammeTable.site
+    var lang by EpgChannelProgrammeTable.lang
 }
