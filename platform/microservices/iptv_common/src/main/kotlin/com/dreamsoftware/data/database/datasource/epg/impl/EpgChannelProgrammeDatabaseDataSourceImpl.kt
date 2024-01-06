@@ -42,6 +42,8 @@ internal class EpgChannelProgrammeDatabaseDataSourceImpl(
         this@onMapEntityToSave[EpgChannelProgrammeTable.start] = start
         this@onMapEntityToSave[EpgChannelProgrammeTable.end] = end
         this@onMapEntityToSave[EpgChannelProgrammeTable.date] = date
+        this@onMapEntityToSave[EpgChannelProgrammeTable.site] = site
+        this@onMapEntityToSave[EpgChannelProgrammeTable.lang] = language
     }
 
     /**
