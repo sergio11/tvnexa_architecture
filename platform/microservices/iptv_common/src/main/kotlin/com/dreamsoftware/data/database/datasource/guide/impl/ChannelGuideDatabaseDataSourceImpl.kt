@@ -6,8 +6,11 @@ import com.dreamsoftware.data.database.dao.ChannelGuideEntityDAO
 import com.dreamsoftware.data.database.dao.ChannelGuideTable
 import com.dreamsoftware.data.database.datasource.core.SupportDatabaseDataSource
 import com.dreamsoftware.data.database.datasource.guide.IChannelGuideDatabaseDataSource
+import com.dreamsoftware.data.database.entity.ChannelGuideAggregateEntity
 import com.dreamsoftware.data.database.entity.ChannelGuideEntity
 import com.dreamsoftware.data.database.entity.SaveChannelGuideEntity
+import org.jetbrains.exposed.sql.count
+import org.jetbrains.exposed.sql.selectAll
 import org.jetbrains.exposed.sql.statements.UpdateBuilder
 
 internal class ChannelGuideDatabaseDataSourceImpl(
@@ -30,4 +33,19 @@ internal class ChannelGuideDatabaseDataSourceImpl(
     override suspend fun findByLanguageId(languageId: String): Iterable<ChannelGuideEntity> = execQuery {
         entityDAO.find { ChannelGuideTable.lang eq languageId }.distinctBy { ChannelGuideTable.site }.map(mapper::map)
     }
+
+    override suspend fun findGroupBySiteAndLanguage(): Iterable<ChannelGuideAggregateEntity> = execQuery {
+        ChannelGuideTable.slice(
+            ChannelGuideTable.site,
+            ChannelGuideTable.lang,
+            ChannelGuideTable.channel.count()
+        ).selectAll().groupBy(ChannelGuideTable.site, ChannelGuideTable.lang).map { row ->
+            ChannelGuideAggregateEntity(
+                site = row[ChannelGuideTable.site],
+                lang = row[ChannelGuideTable.lang],
+                count = row[ChannelGuideTable.channel.count()]
+            )
+        }
+    }
 }
+
