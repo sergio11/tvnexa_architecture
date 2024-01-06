@@ -1,10 +1,10 @@
 package com.dreamsoftware.api.data.respository.impl
 
+import com.dreamsoftware.api.data.cache.datasource.ICacheDatasource
+import com.dreamsoftware.api.data.respository.impl.core.SupportRepository
 import com.dreamsoftware.api.domain.repository.IEpgChannelProgrammeRepository
 import com.dreamsoftware.data.database.datasource.epg.IEpgChannelProgrammeDatabaseDataSource
 import com.dreamsoftware.data.database.entity.EpgChannelProgrammeEntity
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.withContext
 import java.time.LocalDateTime
 
 /**
@@ -12,10 +12,12 @@ import java.time.LocalDateTime
  * Electronic Program Guide (EPG) channel program data from a database data source.
  *
  * @property epgChannelProgrammeDatabaseDataSource The data source responsible for retrieving EPG data.
+ * @property cacheDatasource The cache data source used for caching channel data.
  */
 internal class EpgChannelProgrammeRepositoryImpl(
-    private val epgChannelProgrammeDatabaseDataSource: IEpgChannelProgrammeDatabaseDataSource
-) : IEpgChannelProgrammeRepository {
+    private val epgChannelProgrammeDatabaseDataSource: IEpgChannelProgrammeDatabaseDataSource,
+    cacheDatasource: ICacheDatasource<String>
+) : SupportRepository(cacheDatasource), IEpgChannelProgrammeRepository {
 
     /**
      * Retrieve EPG programs for a specific channel within a date range.
@@ -29,8 +31,9 @@ internal class EpgChannelProgrammeRepositoryImpl(
         channelId: String,
         startAt: LocalDateTime,
         endAt: LocalDateTime
-    ): List<EpgChannelProgrammeEntity> = withContext(Dispatchers.IO) {
-        // Delegate the retrieval of EPG data to the database data source
-        epgChannelProgrammeDatabaseDataSource.findByChannelIdAndDateRange(channelId, startAt, endAt).toList()
-    }
+    ): List<EpgChannelProgrammeEntity> =
+        retrieveFromCacheOrElse(cacheKey = "${channelId}_${startAt}_${endAt}") {
+            // Delegate the retrieval of EPG data to the database data source
+            epgChannelProgrammeDatabaseDataSource.findByChannelIdAndDateRange(channelId, startAt, endAt).toList()
+        }
 }

@@ -9,9 +9,9 @@ import com.dreamsoftware.api.data.respository.impl.RegionRepositoryImpl
 import org.koin.dsl.module
 
 val repositoryModule = module {
-    single<ICategoryRepository> { CategoryRepositoryImpl(get()) }
-    single<ICountryRepository> { CountryRepositoryImpl(get()) }
-    single<IRegionRepository> {  RegionRepositoryImpl(get()) }
+    single<ICategoryRepository> { CategoryRepositoryImpl(get(), get()) }
+    single<ICountryRepository> { CountryRepositoryImpl(get(), get()) }
+    single<IRegionRepository> {  RegionRepositoryImpl(get(), get()) }
     single<IChannelRepository> { ChannelRepositoryImpl(get(), get()) }
-    single<IEpgChannelProgrammeRepository> { EpgChannelProgrammeRepositoryImpl(get()) }
+    single<IEpgChannelProgrammeRepository> { EpgChannelProgrammeRepositoryImpl(get(), get()) }
 }
