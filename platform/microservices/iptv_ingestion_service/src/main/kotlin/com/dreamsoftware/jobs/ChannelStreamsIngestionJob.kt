@@ -37,7 +37,7 @@ class ChannelStreamsIngestionJob(
 
         try {
             // Fetch channel stream data from an external source
-            val streams = streamsNetworkDataSource.fetchContent()
+            val streams = streamsNetworkDataSource.fetchContent().filter { it.channel != null }
 
             // Log the number of channel streams to be processed
             log.debug("${streams.count()} channel streams will be processed")
