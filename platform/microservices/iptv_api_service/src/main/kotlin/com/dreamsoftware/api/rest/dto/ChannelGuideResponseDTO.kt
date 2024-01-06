@@ -33,7 +33,7 @@ data class ChannelGuideResponseDTO(
      * The channel information associated with the guide entry.
      */
     @SerialName("channel")
-    val channel: String?,
+    val channel: SimpleChannelResponseDTO,
 
     /**
      * The language of the channel guide.

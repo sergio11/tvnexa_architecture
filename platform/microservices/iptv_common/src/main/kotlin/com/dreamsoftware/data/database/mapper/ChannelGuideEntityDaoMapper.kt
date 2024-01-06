@@ -1,8 +1,10 @@
 package com.dreamsoftware.data.database.mapper
 
 import com.dreamsoftware.core.ISimpleMapper
+import com.dreamsoftware.data.database.dao.ChannelEntityDAO
 import com.dreamsoftware.data.database.dao.ChannelGuideEntityDAO
 import com.dreamsoftware.data.database.entity.ChannelGuideEntity
+import com.dreamsoftware.data.database.entity.SimpleChannelEntity
 
 /**
  * Mapper for converting [ChannelGuideEntityDAO] objects to [ChannelGuideEntity] objects.
@@ -10,7 +12,9 @@ import com.dreamsoftware.data.database.entity.ChannelGuideEntity
  * This mapper is responsible for mapping the data from the database representation ([ChannelGuideEntityDAO])
  * to the domain representation ([ChannelGuideEntity]) of a channel guide.
  */
-class ChannelGuideEntityDaoMapper : ISimpleMapper<ChannelGuideEntityDAO, ChannelGuideEntity> {
+class ChannelGuideEntityDaoMapper(
+    private val channelMapper: ISimpleMapper<ChannelEntityDAO, SimpleChannelEntity>
+) : ISimpleMapper<ChannelGuideEntityDAO, ChannelGuideEntity> {
 
     /**
      * Maps a single [ChannelGuideEntityDAO] object to a [ChannelGuideEntity] object.
@@ -24,7 +28,7 @@ class ChannelGuideEntityDaoMapper : ISimpleMapper<ChannelGuideEntityDAO, Channel
             site = site,
             siteId = siteId,
             siteName = siteName,
-            channel = channel,
+            channel = channelMapper.map(channel),
             lang = lang
         )
     }

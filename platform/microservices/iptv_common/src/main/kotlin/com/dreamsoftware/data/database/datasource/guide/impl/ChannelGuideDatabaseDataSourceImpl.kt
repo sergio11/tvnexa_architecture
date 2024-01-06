@@ -9,6 +9,7 @@ import com.dreamsoftware.data.database.datasource.guide.IChannelGuideDatabaseDat
 import com.dreamsoftware.data.database.entity.ChannelGuideAggregateEntity
 import com.dreamsoftware.data.database.entity.ChannelGuideEntity
 import com.dreamsoftware.data.database.entity.SaveChannelGuideEntity
+import org.jetbrains.exposed.sql.and
 import org.jetbrains.exposed.sql.count
 import org.jetbrains.exposed.sql.selectAll
 import org.jetbrains.exposed.sql.statements.UpdateBuilder
@@ -17,6 +18,9 @@ internal class ChannelGuideDatabaseDataSourceImpl(
     database: IDatabaseFactory,
     mapper: ISimpleMapper<ChannelGuideEntityDAO, ChannelGuideEntity>
 ): SupportDatabaseDataSource<Long, ChannelGuideEntityDAO, SaveChannelGuideEntity, ChannelGuideEntity>(database, mapper, ChannelGuideEntityDAO), IChannelGuideDatabaseDataSource {
+
+    override val disableFkValidationsOnBatchOperation: Boolean
+        get() = true
 
     override fun UpdateBuilder<Int>.onMapEntityToSave(entityToSave: SaveChannelGuideEntity) = with(entityToSave) {
         this@onMapEntityToSave[ChannelGuideTable.channel] = channel
@@ -32,6 +36,10 @@ internal class ChannelGuideDatabaseDataSourceImpl(
 
     override suspend fun findByLanguageId(languageId: String): Iterable<ChannelGuideEntity> = execQuery {
         entityDAO.find { ChannelGuideTable.lang eq languageId }.distinctBy { ChannelGuideTable.site }.map(mapper::map)
+    }
+
+    override suspend fun existsByLanguageIdAndSite(languageId: String, site: String): Boolean = execQuery {
+        entityDAO.find { (ChannelGuideTable.lang eq languageId) and (ChannelGuideTable.site eq site) }.count() > 0
     }
 
     override suspend fun findGroupBySiteAndLanguage(): Iterable<ChannelGuideAggregateEntity> = execQuery {
