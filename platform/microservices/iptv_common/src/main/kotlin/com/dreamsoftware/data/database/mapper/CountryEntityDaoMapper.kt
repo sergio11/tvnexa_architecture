@@ -14,7 +14,7 @@ import com.dreamsoftware.data.database.entity.LanguageEntity
  *
  * @param languageMapper A mapper for converting [LanguageEntityDAO] to [LanguageEntity].
  */
-class CountryEntityDaoSimpleMapper(
+class CountryEntityDaoMapper(
     private val languageMapper: ISimpleMapper<LanguageEntityDAO, LanguageEntity>
 ) : ISimpleMapper<CountryEntityDAO, CountryEntity> {
 

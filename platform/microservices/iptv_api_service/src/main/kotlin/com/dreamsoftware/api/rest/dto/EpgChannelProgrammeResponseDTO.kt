@@ -21,7 +21,7 @@ data class EpgChannelProgrammeResponseDTO(
      * The channel where the program is broadcast.
      */
     @SerialName("channel")
-    val channel: ChannelDetailResponseDTO?,
+    val channel: SimpleChannelResponseDTO?,
 
     /**
      * The category or genre of the program (if available).

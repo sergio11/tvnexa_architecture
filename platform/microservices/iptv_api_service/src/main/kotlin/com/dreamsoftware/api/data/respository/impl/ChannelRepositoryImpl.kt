@@ -2,9 +2,11 @@ package com.dreamsoftware.api.data.respository.impl
 
 import com.dreamsoftware.api.data.cache.datasource.ICacheDatasource
 import com.dreamsoftware.api.domain.repository.IChannelRepository
-import com.dreamsoftware.core.TypeConverter
+import com.dreamsoftware.api.utils.fromJson
+import com.dreamsoftware.api.utils.toJSON
 import com.dreamsoftware.data.database.datasource.channel.IChannelDatabaseDataSource
-import com.dreamsoftware.data.database.entity.ChannelEntity
+import com.dreamsoftware.data.database.entity.ChannelDetailEntity
+import com.dreamsoftware.data.database.entity.SimpleChannelEntity
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 
@@ -33,7 +35,7 @@ internal class ChannelRepositoryImpl(
      * @param countryId The unique identifier of the country to filter by (null for all countries).
      * @return List of ChannelEntity containing a paginated list of channel entities.
      */
-    override suspend fun findByCategoryAndCountryPaginated(categoryId: String?, countryId: String?, offset: Long, limit: Long): List<ChannelEntity>  =
+    override suspend fun findByCategoryAndCountryPaginated(categoryId: String?, countryId: String?, offset: Long, limit: Long): List<SimpleChannelEntity>  =
         retrieveFromCacheOrElse(cacheKey = "${offset}_${limit}_${categoryId ?: "no_category"}_${countryId ?: "no_country"}") {
             channelDataSource.findPaginated(offset, limit.toInt()).toList()
         }
@@ -44,9 +46,9 @@ internal class ChannelRepositoryImpl(
      * @param id The unique identifier of the channel to retrieve.
      * @return The channel entity matching the specified ID.
      */
-    override suspend fun findById(id: String): ChannelEntity? =
+    override suspend fun findById(id: String): ChannelDetailEntity? =
         retrieveFromCacheOrElse(cacheKey = CHANNEL_DETAIL_CACHE_KEY_PREFIX + id) {
-            channelDataSource.findByKey(id)
+            channelDataSource.findDetailByKey(id)
         }
 
     /**
@@ -55,7 +57,7 @@ internal class ChannelRepositoryImpl(
      *  @param countryId The unique identifier of the country to filter by.
      *  @return An iterable collection of channel entities matching the specified country filter.
      */
-    override suspend fun filterByCountry(countryId: String): List<ChannelEntity> =
+    override suspend fun filterByCountry(countryId: String): List<SimpleChannelEntity> =
         retrieveFromCacheOrElse(cacheKey = CHANNELS_BY_COUNTRY_CACHE_KEY_PREFIX + countryId) {
             channelDataSource.findByCountry(countryId).toList()
         }
@@ -74,11 +76,11 @@ internal class ChannelRepositoryImpl(
     ): T = withContext(Dispatchers.IO) {
         with(cacheDatasource) {
             runCatching {
-                find(cacheKey, TypeConverter.toRawType<T>())
+                find(cacheKey).fromJson<T>()
             }.getOrElse {
                 onCacheEntryNotFound().also {
                     runCatching {
-                        save(cacheKey, it, TypeConverter.toRawType())
+                        save(cacheKey, it.toJSON())
                     }
                 }
             }

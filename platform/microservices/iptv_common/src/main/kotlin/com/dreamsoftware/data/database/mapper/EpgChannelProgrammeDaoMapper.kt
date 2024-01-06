@@ -5,8 +5,8 @@ import com.dreamsoftware.data.database.dao.CategoryEntityDAO
 import com.dreamsoftware.data.database.dao.ChannelEntityDAO
 import com.dreamsoftware.data.database.dao.EpgChannelProgrammeEntityDAO
 import com.dreamsoftware.data.database.entity.CategoryEntity
-import com.dreamsoftware.data.database.entity.ChannelEntity
 import com.dreamsoftware.data.database.entity.EpgChannelProgrammeEntity
+import com.dreamsoftware.data.database.entity.SimpleChannelEntity
 
 /**
  * Mapper for converting [EpgChannelProgrammeEntityDAO] objects to [EpgChannelProgrammeEntity] objects.
@@ -14,11 +14,11 @@ import com.dreamsoftware.data.database.entity.EpgChannelProgrammeEntity
  * This mapper is responsible for mapping the data from the database representation ([EpgChannelProgrammeEntityDAO])
  * to the domain representation ([EpgChannelProgrammeEntity]) of an EPG channel programme.
  *
- * @param channelMapper A mapper for converting [ChannelEntityDAO] to [ChannelEntity].
+ * @param channelMapper A mapper for converting [ChannelEntityDAO] to [SimpleChannelEntity].
  * @param categoryMapper A mapper for converting [CategoryEntityDAO] to [CategoryEntity].
  */
-class EpgChannelProgrammeDaoSimpleMapper(
-    private val channelMapper: ISimpleMapper<ChannelEntityDAO, ChannelEntity>,
+class EpgChannelProgrammeDaoMapper(
+    private val channelMapper: ISimpleMapper<ChannelEntityDAO, SimpleChannelEntity>,
     private val categoryMapper: ISimpleMapper<CategoryEntityDAO, CategoryEntity>
 ) : ISimpleMapper<EpgChannelProgrammeEntityDAO, EpgChannelProgrammeEntity> {
 

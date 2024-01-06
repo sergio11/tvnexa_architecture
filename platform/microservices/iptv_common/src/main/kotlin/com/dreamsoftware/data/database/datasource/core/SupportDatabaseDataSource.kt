@@ -60,10 +60,7 @@ internal abstract class SupportDatabaseDataSource<KEY : Comparable<KEY>, DAO : E
      * @return An iterable of OUTPUT containing all records.
      */
     override suspend fun findAll(): Iterable<OUTPUT> = execQuery {
-        entityDAO.all()
-            .with(*findAllEagerRelationships.toTypedArray())
-            .sortedByDescending { it.id }
-            .map(mapper::map)
+        onBuildFindAllQuery(eagerRelationships = findAllEagerRelationships).map(mapper::map)
     }
 
     /**
@@ -74,11 +71,7 @@ internal abstract class SupportDatabaseDataSource<KEY : Comparable<KEY>, DAO : E
      * @return An iterable of OUTPUT containing a paginated list of records.
      */
     override suspend fun findPaginated(offset: Long, limit: Int): Iterable<OUTPUT> = execQuery {
-        entityDAO.all()
-            .limit(limit, offset = offset)
-            .with(*findAllEagerRelationships.toTypedArray())
-            .sortedByDescending { it.id }
-            .map(mapper::map)
+        onBuildFindPaginatedQuery(limit, offset, eagerRelationships = findAllEagerRelationships).map(mapper::map)
     }
 
     /**
@@ -88,7 +81,7 @@ internal abstract class SupportDatabaseDataSource<KEY : Comparable<KEY>, DAO : E
      * @return The retrieved record as OUTPUT.
      */
     override suspend fun findByKey(key: KEY): OUTPUT? = execQuery {
-        entityDAO.findById(key)?.load(*findByEagerRelationships.toTypedArray())?.let(mapper::map)
+        onBuildFindByKeyQuery(key, eagerRelationships = findByEagerRelationships)?.let(mapper::map)
     }
 
     /**
@@ -147,6 +140,7 @@ internal abstract class SupportDatabaseDataSource<KEY : Comparable<KEY>, DAO : E
      */
     abstract fun UpdateBuilder<Int>.onMapEntityToSave(entityToSave: INPUT)
 
+
     /**
      * This method is called after a transaction for saving a single record finishes.
      *
@@ -185,6 +179,42 @@ internal abstract class SupportDatabaseDataSource<KEY : Comparable<KEY>, DAO : E
             dbExecution()
         }
     }
+
+    /**
+     * Constructs and retrieves a paginated query to find entities based on a specified [limit] and [offset],
+     * with specified [eagerRelationships] loaded.
+     *
+     * @param limit The maximum number of entities to retrieve.
+     * @param offset The starting point within the dataset to retrieve entities.
+     * @param eagerRelationships The list of eager relationships to load alongside the entities (default: empty list).
+     * @return A query for paginated retrieval of entities with eager relationships loaded.
+     */
+    protected fun onBuildFindPaginatedQuery(limit: Int, offset: Long, eagerRelationships: List<KProperty1<DAO, Any?>> = emptyList()) =
+        entityDAO.all()
+            .limit(limit, offset = offset)
+            .with(*eagerRelationships.toTypedArray())
+            .sortedByDescending { it.id }
+
+    /**
+     * Constructs and retrieves a query to find all entities with eager relationships loaded.
+     *
+     * @param eagerRelationships The list of eager relationships to load alongside the entities (default: empty list).
+     * @return A query for retrieval of all entities with eager relationships loaded.
+     */
+    protected fun onBuildFindAllQuery(eagerRelationships: List<KProperty1<DAO, Any?>> = emptyList()) =
+        entityDAO.all()
+            .with(*eagerRelationships.toTypedArray())
+            .sortedByDescending { it.id }
+
+    /**
+     * Constructs and retrieves a query to find an entity by its unique [key] with eager relationships loaded.
+     *
+     * @param key The unique identifier used to find the entity.
+     * @param eagerRelationships The list of eager relationships to load alongside the entity (default: empty list).
+     * @return A query to find an entity by its key with eager relationships loaded, or null if not found.
+     */
+    protected fun onBuildFindByKeyQuery(key: KEY, eagerRelationships: List<KProperty1<DAO, Any?>> = emptyList()) =
+        entityDAO.findById(key)?.load(*eagerRelationships.toTypedArray())
 
     /**
      * Inserts a record into the database table with an update on duplicate key.

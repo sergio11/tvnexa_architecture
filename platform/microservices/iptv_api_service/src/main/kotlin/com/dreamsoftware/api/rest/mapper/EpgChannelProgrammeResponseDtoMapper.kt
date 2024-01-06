@@ -1,12 +1,12 @@
 package com.dreamsoftware.api.rest.mapper
 
 import com.dreamsoftware.api.rest.dto.CategoryResponseDTO
-import com.dreamsoftware.api.rest.dto.ChannelDetailResponseDTO
 import com.dreamsoftware.api.rest.dto.EpgChannelProgrammeResponseDTO
+import com.dreamsoftware.api.rest.dto.SimpleChannelResponseDTO
 import com.dreamsoftware.core.ISimpleMapper
 import com.dreamsoftware.data.database.entity.CategoryEntity
-import com.dreamsoftware.data.database.entity.ChannelEntity
 import com.dreamsoftware.data.database.entity.EpgChannelProgrammeEntity
+import com.dreamsoftware.data.database.entity.SimpleChannelEntity
 
 /**
  * `EpgChannelProgrammeResponseDtoMapper` is a class responsible for mapping instances of `EpgChannelProgrammeEntity`
@@ -23,7 +23,7 @@ import com.dreamsoftware.data.database.entity.EpgChannelProgrammeEntity
  * @version 1.0
  */
 class EpgChannelProgrammeResponseDtoMapper(
-    private val channelMapper: ISimpleMapper<ChannelEntity, ChannelDetailResponseDTO>,
+    private val channelMapper: ISimpleMapper<SimpleChannelEntity, SimpleChannelResponseDTO>,
     private val categoryMapper: ISimpleMapper<CategoryEntity, CategoryResponseDTO>
 ) : ISimpleMapper<EpgChannelProgrammeEntity, EpgChannelProgrammeResponseDTO> {
 

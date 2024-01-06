@@ -1,8 +1,7 @@
 package com.dreamsoftware.api.domain.repository
 
-import com.dreamsoftware.data.database.entity.ChannelEntity
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.withContext
+import com.dreamsoftware.data.database.entity.ChannelDetailEntity
+import com.dreamsoftware.data.database.entity.SimpleChannelEntity
 
 /**
  * Interface for accessing channel data from a repository.
@@ -18,7 +17,7 @@ interface IChannelRepository {
      * @param countryId The unique identifier of the country to filter by (null for all countries).
      * @return List of ChannelEntity containing a paginated list of channel entities.
      */
-    suspend fun findByCategoryAndCountryPaginated(categoryId: String?, countryId: String?, offset: Long, limit: Long): List<ChannelEntity>
+    suspend fun findByCategoryAndCountryPaginated(categoryId: String?, countryId: String?, offset: Long, limit: Long): List<SimpleChannelEntity>
 
     /**
      * Retrieve a channel by its unique identifier.
@@ -26,7 +25,7 @@ interface IChannelRepository {
      * @param id The unique identifier of the channel to retrieve.
      * @return The channel entity matching the specified ID.
      */
-    suspend fun findById(id: String): ChannelEntity?
+    suspend fun findById(id: String): ChannelDetailEntity?
 
     /**
      *  Filter channels by country.
@@ -34,5 +33,5 @@ interface IChannelRepository {
      *  @param countryId The unique identifier of the country to filter by.
      *  @return An iterable collection of channel entities matching the specified country filter.
      */
-    suspend fun filterByCountry(countryId: String): List<ChannelEntity>
+    suspend fun filterByCountry(countryId: String): List<SimpleChannelEntity>
 }

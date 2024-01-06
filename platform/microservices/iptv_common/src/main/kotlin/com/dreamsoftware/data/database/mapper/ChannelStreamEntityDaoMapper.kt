@@ -11,7 +11,7 @@ import com.dreamsoftware.data.database.entity.ChannelStreamEntity
  * to the domain representation ([ChannelStreamEntity]) of a channel stream.
  *
  */
-class ChannelStreamEntityDaoSimpleMapper : ISimpleMapper<ChannelStreamEntityDAO, ChannelStreamEntity> {
+class ChannelStreamEntityDaoMapper : ISimpleMapper<ChannelStreamEntityDAO, ChannelStreamEntity> {
 
     /**
      * Maps a single [ChannelStreamEntityDAO] object to a [ChannelStreamEntity] object.

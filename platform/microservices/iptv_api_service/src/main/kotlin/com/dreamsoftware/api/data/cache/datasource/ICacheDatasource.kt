@@ -20,7 +20,7 @@ interface ICacheDatasource<K> {
      * @throws CacheException.InternalErrorException If an internal error occurs during the save operation.
      */
     @Throws(CacheException.InternalErrorException::class)
-    fun <E> save(key: K, payload: E, payloadClazz: Class<E>, ttlInSeconds: Long? = null)
+    fun save(key: K, payload: String, ttlInSeconds: Long? = null)
 
     /**
      * Retrieves data from the cache using the specified key.
@@ -34,7 +34,7 @@ interface ICacheDatasource<K> {
         CacheException.ItemNotFoundException::class,
         CacheException.InternalErrorException::class
     )
-    fun <E> find(key: K, payloadClazz: Class<E>): E
+    fun find(key: K): String
 
     /**
      * Deletes data from the cache using the specified key.
