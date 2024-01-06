@@ -8,7 +8,7 @@ import org.jetbrains.exposed.dao.id.LongIdTable
 object ChannelStreamTable: LongIdTable(name = "channel_streams") {
 
     // Channel ID
-    val channelId = varchar(name = "channel", length = 50)
+    val channelId = varchar(name = "channel", length = 50).references(ChannelTable.channelId)
     // Stream URL
     val url = varchar(name = "url", length = 1000)
     // The Referer request header for the stream
@@ -21,7 +21,7 @@ object ChannelStreamTable: LongIdTable(name = "channel_streams") {
 class ChannelStreamEntityDAO(id: EntityID<Long>) : Entity<Long>(id) {
     companion object : EntityClass<Long, ChannelStreamEntityDAO>(ChannelStreamTable)
 
-    var channelId by ChannelStreamTable.channelId
+    var channel by ChannelEntityDAO referencedOn ChannelStreamTable.channelId
     var url by ChannelStreamTable.url
     var httpReferrer by ChannelStreamTable.httpReferrer
     var userAgent by ChannelStreamTable.userAgent

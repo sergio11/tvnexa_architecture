@@ -22,6 +22,9 @@ internal class StreamDatabaseDataSourceImpl(
 ) : SupportDatabaseDataSource<Long, ChannelStreamEntityDAO, SaveChannelStreamEntity, ChannelStreamEntity>(database, mapper, ChannelStreamEntityDAO),
     IStreamDatabaseDataSource {
 
+    override val disableFkValidationsOnBatchOperation: Boolean
+        get() = true
+
     /**
      * Saves a single channel stream entity to the database.
      *
