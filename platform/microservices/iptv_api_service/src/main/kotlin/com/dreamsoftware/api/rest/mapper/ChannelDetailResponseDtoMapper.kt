@@ -5,7 +5,7 @@ import com.dreamsoftware.core.ISimpleMapper
 import com.dreamsoftware.data.database.entity.*
 
 /**
- * Mapper class that maps [ChannelEntity] objects to [ChannelDetailResponseDTO] objects.
+ * Mapper class that maps [ChannelDetailEntity] objects to [ChannelDetailResponseDTO] objects.
  *
  * @property countryMapper The mapper for mapping [CountryEntity] objects to [CountryResponseDTO] objects.
  * @property subdivisionMapper The mapper for mapping [SubdivisionEntity] objects to [SubdivisionResponseDTO] objects.
@@ -19,15 +19,15 @@ class ChannelDetailResponseDtoMapper(
     private val languageMapper: ISimpleMapper<LanguageEntity, LanguageResponseDTO>,
     private val categoryMapper: ISimpleMapper<CategoryEntity, CategoryResponseDTO>,
     private val channelStreamMapper: ISimpleMapper<ChannelStreamEntity, ChannelStreamResponseDTO>
-) : ISimpleMapper<ChannelEntity, ChannelDetailResponseDTO> {
+) : ISimpleMapper<ChannelDetailEntity, ChannelDetailResponseDTO> {
 
     /**
-     * Map a single [ChannelEntity] object to a [ChannelDetailResponseDTO] object.
+     * Map a single [ChannelDetailEntity] object to a [ChannelDetailResponseDTO] object.
      *
-     * @param input The [ChannelEntity] object to be mapped.
+     * @param input The [ChannelDetailEntity] object to be mapped.
      * @return A [ChannelDetailResponseDTO] object representing the mapped data.
      */
-    override fun map(input: ChannelEntity): ChannelDetailResponseDTO {
+    override fun map(input: ChannelDetailEntity): ChannelDetailResponseDTO {
         val countryDto = countryMapper.map(input.country)
         val subdivisionDto = input.subdivision?.let { subdivisionMapper.map(it) }
         val languagesDto = languageMapper.mapList(input.languages)
@@ -53,11 +53,11 @@ class ChannelDetailResponseDtoMapper(
     }
 
     /**
-     * Map a collection of [ChannelEntity] objects to a collection of [ChannelDetailResponseDTO] objects.
+     * Map a collection of [ChannelDetailEntity] objects to a collection of [ChannelDetailResponseDTO] objects.
      *
-     * @param input The collection of [ChannelEntity] objects to be mapped.
+     * @param input The collection of [ChannelDetailEntity] objects to be mapped.
      * @return A collection of [ChannelDetailResponseDTO] objects representing the mapped data.
      */
-    override fun mapList(input: Iterable<ChannelEntity>): Iterable<ChannelDetailResponseDTO> =
+    override fun mapList(input: Iterable<ChannelDetailEntity>): Iterable<ChannelDetailResponseDTO> =
         input.map(::map)
 }

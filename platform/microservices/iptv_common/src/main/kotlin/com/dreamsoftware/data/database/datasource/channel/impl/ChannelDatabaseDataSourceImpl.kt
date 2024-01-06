@@ -5,48 +5,41 @@ import com.dreamsoftware.data.database.core.IDatabaseFactory
 import com.dreamsoftware.data.database.dao.*
 import com.dreamsoftware.data.database.datasource.channel.IChannelDatabaseDataSource
 import com.dreamsoftware.data.database.datasource.core.SupportDatabaseDataSource
-import com.dreamsoftware.data.database.entity.ChannelEntity
+import com.dreamsoftware.data.database.entity.ChannelDetailEntity
 import com.dreamsoftware.data.database.entity.SaveChannelEntity
+import com.dreamsoftware.data.database.entity.SimpleChannelEntity
 import org.jetbrains.exposed.sql.Transaction
 import org.jetbrains.exposed.sql.and
 import org.jetbrains.exposed.sql.statements.UpdateBuilder
-import kotlin.reflect.KProperty1
 
 /**
  * Implementation of the [IChannelDatabaseDataSource] interface for managing channel-related database operations.
  *
  * @param database The database factory used for database interactions.
- * @param mapper The mapper used to convert database entities to domain entities.
+ * @param simpleMapper The mapper used to convert database entities to domain entities.
+ * @param detailMapper The mapper used to convert database entities to domain entities.
  */
 internal class ChannelDatabaseDataSourceImpl(
     database: IDatabaseFactory,
-    mapper: ISimpleMapper<ChannelEntityDAO, ChannelEntity>
-) : SupportDatabaseDataSource<String, ChannelEntityDAO, SaveChannelEntity, ChannelEntity>(
+    simpleMapper: ISimpleMapper<ChannelEntityDAO, SimpleChannelEntity>,
+    private val detailMapper: ISimpleMapper<ChannelEntityDAO, ChannelDetailEntity>
+) : SupportDatabaseDataSource<String, ChannelEntityDAO, SaveChannelEntity, SimpleChannelEntity>(
     database,
-    mapper,
+    simpleMapper,
     ChannelEntityDAO
 ), IChannelDatabaseDataSource {
 
     override val disableFkValidationsOnBatchOperation: Boolean
         get() = true
 
-    override val findByEagerRelationships: List<KProperty1<ChannelEntityDAO, Any?>>
-        get() = listOf(
-            ChannelEntityDAO::languages,
-            ChannelEntityDAO::categories,
-            ChannelEntityDAO::subdivision,
-            ChannelEntityDAO::country,
-            ChannelEntityDAO::replacedBy
-        )
-
     /**
      * Retrieves a list of channels filtered by category and country.
      *
      * @param categoryId The category ID to filter by. Pass null to exclude this filter.
      * @param countryId The country ID to filter by. Pass null to exclude this filter.
-     * @return An iterable collection of [ChannelEntity] objects matching the provided filters.
+     * @return An iterable collection of [SimpleChannelEntity] objects matching the provided filters.
      */
-    override suspend fun filterByCategoryAndCountry(categoryId: String?, countryId: String?): Iterable<ChannelEntity> = execQuery {
+    override suspend fun filterByCategoryAndCountry(categoryId: String?, countryId: String?): Iterable<SimpleChannelEntity> = execQuery {
         entityDAO.find {
             if (!categoryId.isNullOrBlank() && !countryId.isNullOrBlank()) {
                 (ChannelCategoryTable.category eq categoryId) and (ChannelTable.country eq countryId)
@@ -60,24 +53,17 @@ internal class ChannelDatabaseDataSourceImpl(
         }.map(mapper::map)
     }
 
-    /**
-     * Retrieves a list of channels that allow generating Catchup content.
-     *
-     * @return An iterable collection of [ChannelEntity] objects representing channels that permit Catchup content.
-     */
-    override suspend fun findChannelsAllowingCatchup(): Iterable<ChannelEntity> = execQuery {
-        entityDAO.find {
-            ChannelTable.catchupEnabled eq true
-        }.map(mapper::map)
+    override suspend fun findByKey(key: String): SimpleChannelEntity? {
+        return super.findByKey(key)
     }
 
     /**
      * Retrieves a list of channels based on the provided country ID.
      *
      * @param countryId The country ID to filter by. Pass null to exclude this filter.
-     * @return An iterable collection of [ChannelEntity] objects matching the provided country filter.
+     * @return An iterable collection of [ChannelDetailEntity] objects matching the provided country filter.
      */
-    override suspend fun findByCountry(countryId: String): Iterable<ChannelEntity> = execQuery {
+    override suspend fun findByCountry(countryId: String): Iterable<SimpleChannelEntity> = execQuery {
         entityDAO.find {
             if (countryId.isNotBlank()) {
                 ChannelTable.country eq countryId
@@ -85,6 +71,22 @@ internal class ChannelDatabaseDataSourceImpl(
                 ChannelTable.id.isNotNull()
             }
         }.map(mapper::map)
+    }
+
+    /**
+     * Suspended function to find a specific ChannelDetailEntity by its [key].
+     *
+     * @param key The unique identifier used to find the ChannelDetailEntity.
+     * @return The found ChannelDetailEntity if available, or null if not found.
+     */
+    override suspend fun findDetailByKey(key: String): ChannelDetailEntity? = execQuery {
+        onBuildFindByKeyQuery(key, eagerRelationships = listOf(
+            ChannelEntityDAO::languages,
+            ChannelEntityDAO::categories,
+            ChannelEntityDAO::subdivision,
+            ChannelEntityDAO::country,
+            ChannelEntityDAO::replacedBy
+        ))?.let(detailMapper::map)
     }
 
     /**

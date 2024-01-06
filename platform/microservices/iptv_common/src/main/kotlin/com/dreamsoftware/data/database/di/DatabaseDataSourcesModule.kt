@@ -28,7 +28,7 @@ val databaseDataSourcesModule = module {
     single<ICategoryDatabaseDataSource> { CategoryDatabaseDataSourceImpl(get(), getMapper()) }
     single<ISubdivisionDatabaseDataSource> { SubdivisionDatabaseDataSourceImpl(get(), getMapper()) }
     single<IRegionDatabaseDataSource> { RegionDatabaseDataSourceImpl(get(), getMapper()) }
-    single<IChannelDatabaseDataSource> { ChannelDatabaseDataSourceImpl(get(), getMapper())  }
+    single<IChannelDatabaseDataSource> { ChannelDatabaseDataSourceImpl(get(), getMapper(), getMapper())  }
     single<IStreamDatabaseDataSource> { StreamDatabaseDataSourceImpl(get(), getMapper())  }
     single<IChannelGuideDatabaseDataSource> { ChannelGuideDatabaseDataSourceImpl(get(), getMapper())  }
     single<IEpgChannelProgrammeDatabaseDataSource> { EpgChannelProgrammeDatabaseDataSourceImpl(get(), getMapper())  }

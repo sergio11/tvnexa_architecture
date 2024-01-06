@@ -5,18 +5,18 @@ import com.dreamsoftware.core.ISimpleMapper
 import com.dreamsoftware.data.database.entity.*
 
 /**
- * Mapper class that maps [ChannelEntity] objects to [SimpleChannelResponseDTO] objects.
+ * Mapper class that maps [SimpleChannelEntity] objects to [SimpleChannelResponseDTO] objects.
  *
  */
-class SimpleChannelResponseDtoMapper : ISimpleMapper<ChannelEntity, SimpleChannelResponseDTO> {
+class SimpleChannelResponseDtoMapper : ISimpleMapper<SimpleChannelEntity, SimpleChannelResponseDTO> {
 
     /**
-     * Map a single [ChannelEntity] object to a [SimpleChannelResponseDTO] object.
+     * Map a single [SimpleChannelEntity] object to a [SimpleChannelResponseDTO] object.
      *
-     * @param input The [ChannelEntity] object to be mapped.
+     * @param input The [SimpleChannelEntity] object to be mapped.
      * @return A [SimpleChannelResponseDTO] object representing the mapped data.
      */
-    override fun map(input: ChannelEntity): SimpleChannelResponseDTO = SimpleChannelResponseDTO(
+    override fun map(input: SimpleChannelEntity): SimpleChannelResponseDTO = SimpleChannelResponseDTO(
         channelId = input.channelId,
         name = input.name,
         city = input.city,
@@ -26,11 +26,11 @@ class SimpleChannelResponseDtoMapper : ISimpleMapper<ChannelEntity, SimpleChanne
     )
 
     /**
-     * Map a collection of [ChannelEntity] objects to a collection of [SimpleChannelResponseDTO] objects.
+     * Map a collection of [SimpleChannelEntity] objects to a collection of [SimpleChannelResponseDTO] objects.
      *
-     * @param input The collection of [ChannelEntity] objects to be mapped.
+     * @param input The collection of [SimpleChannelEntity] objects to be mapped.
      * @return A collection of [SimpleChannelResponseDTO] objects representing the mapped data.
      */
-    override fun mapList(input: Iterable<ChannelEntity>): Iterable<SimpleChannelResponseDTO> =
+    override fun mapList(input: Iterable<SimpleChannelEntity>): Iterable<SimpleChannelResponseDTO> =
         input.map(::map)
 }

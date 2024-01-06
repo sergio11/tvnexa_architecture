@@ -10,7 +10,7 @@ import com.dreamsoftware.data.database.entity.CategoryEntity
  * This mapper is responsible for mapping the data from the database representation ([CategoryEntityDAO])
  * to the domain representation ([CategoryEntity]) of a category.
  */
-class CategoryEntityDaoSimpleMapper : ISimpleMapper<CategoryEntityDAO, CategoryEntity> {
+class CategoryEntityDaoMapper : ISimpleMapper<CategoryEntityDAO, CategoryEntity> {
 
     /**
      * Maps a single [CategoryEntityDAO] object to a [CategoryEntity] object.

@@ -3,21 +3,19 @@ package com.dreamsoftware.api.data.cache.datasource.impl
 import com.dreamsoftware.api.data.cache.datasource.ICacheDatasource
 import com.dreamsoftware.api.data.cache.exception.CacheException
 import com.dreamsoftware.model.RedisStorageConfig
-import com.google.gson.Gson
 import redis.clients.jedis.JedisCluster
 import kotlin.jvm.Throws
 
 class RedisCacheDatasourceImpl(
     private val jedisCluster: JedisCluster,
-    private val redisStorageConfig: RedisStorageConfig,
-    private val gson: Gson
+    private val redisStorageConfig: RedisStorageConfig
 ): ICacheDatasource<String> {
 
-    override fun <E> save(key: String, payload: E, payloadClazz: Class<E>, ttlInSeconds: Long?) {
+    override fun save(key: String, payload: String, ttlInSeconds: Long?) {
         runCatching {
             with(jedisCluster) {
                 buildCacheKey(key).let {
-                    set(it, gson.toJson(payload, payloadClazz))
+                    set(it, payload)
                     expire(it, ttlInSeconds ?: redisStorageConfig.cacheTtlInSeconds)
                 }
             }
@@ -33,11 +31,10 @@ class RedisCacheDatasourceImpl(
         CacheException.ItemNotFoundException::class,
         CacheException.InternalErrorException::class
     )
-    override fun <E> find(key: String, payloadClazz: Class<E>): E =
-        jedisCluster.get(buildCacheKey(key)).let {
+    override fun find(key: String): String =
+        jedisCluster.get(buildCacheKey(key)).also {
             if(it == null)
                 throw CacheException.ItemNotFoundException("Cache entry not found")
-            gson.fromJson(it, payloadClazz)
         }
 
     @Throws(CacheException.InternalErrorException::class)

@@ -1,7 +1,15 @@
 package com.dreamsoftware.data.database.entity
 
+data class SimpleChannelEntity(
+    val channelId: String,
+    val name: String? = null,
+    val city: String? = null,
+    val isNsfw: Boolean? = null,
+    val website: String? = null,
+    val logo: String? = null
+)
 
-data class ChannelEntity(
+data class ChannelDetailEntity(
     val channelId: String,
     val name: String? = null,
     val network: String? = null,
@@ -14,7 +22,7 @@ data class ChannelEntity(
     val launched: String? = null,
     val closed: String? = null,
     val catchupEnabled: Boolean = false,
-    val replacedBy: ChannelEntity? = null,
+    val replacedBy: ChannelDetailEntity? = null,
     val stream: ChannelStreamEntity? = null,
     val languages: List<LanguageEntity>,
     val categories: List<CategoryEntity>

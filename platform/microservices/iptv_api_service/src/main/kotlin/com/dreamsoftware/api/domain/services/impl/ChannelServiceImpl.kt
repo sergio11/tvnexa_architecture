@@ -6,15 +6,16 @@ import com.dreamsoftware.api.domain.repository.IChannelRepository
 import com.dreamsoftware.api.rest.dto.SimpleChannelResponseDTO
 import com.dreamsoftware.api.domain.services.IChannelService
 import com.dreamsoftware.core.ISimpleMapper
-import com.dreamsoftware.data.database.entity.ChannelEntity
+import com.dreamsoftware.data.database.entity.ChannelDetailEntity
+import com.dreamsoftware.data.database.entity.SimpleChannelEntity
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import org.slf4j.LoggerFactory
 
 class ChannelServiceImpl(
     private val channelRepository: IChannelRepository,
-    private val channelDetailMapper: ISimpleMapper<ChannelEntity, ChannelDetailResponseDTO>,
-    private val simpleChannelMapper: ISimpleMapper<ChannelEntity, SimpleChannelResponseDTO>
+    private val channelDetailMapper: ISimpleMapper<ChannelDetailEntity, ChannelDetailResponseDTO>,
+    private val simpleChannelMapper: ISimpleMapper<SimpleChannelEntity, SimpleChannelResponseDTO>
 ): IChannelService {
 
     private val log = LoggerFactory.getLogger(this::class.java)

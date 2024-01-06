@@ -5,7 +5,7 @@ import java.time.LocalDateTime
 data class EpgChannelProgrammeEntity(
     val id: Long,
     val title: String,
-    val channel: ChannelEntity?,
+    val channel: SimpleChannelEntity?,
     val category: CategoryEntity?,
     val start: LocalDateTime,
     val end: LocalDateTime,

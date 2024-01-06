@@ -13,6 +13,6 @@ val cacheModule = module {
         JedisCluster(hashSetOf(*get<RedisClusterConfig>().nodes.map {
             HostAndPort(it.host, it.port) }.toTypedArray()) )
     }
-    factory<ICacheDatasource<String>> { RedisCacheDatasourceImpl(get(), get(), get()) }
+    factory<ICacheDatasource<String>> { RedisCacheDatasourceImpl(get(), get()) }
     single { Gson() }
 }

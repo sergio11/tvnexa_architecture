@@ -10,7 +10,7 @@ import com.dreamsoftware.data.database.entity.ChannelGuideEntity
  * This mapper is responsible for mapping the data from the database representation ([ChannelGuideEntityDAO])
  * to the domain representation ([ChannelGuideEntity]) of a channel guide.
  */
-class ChannelGuideEntityDaoSimpleMapper : ISimpleMapper<ChannelGuideEntityDAO, ChannelGuideEntity> {
+class ChannelGuideEntityDaoMapper : ISimpleMapper<ChannelGuideEntityDAO, ChannelGuideEntity> {
 
     /**
      * Maps a single [ChannelGuideEntityDAO] object to a [ChannelGuideEntity] object.
