@@ -23,31 +23,27 @@ class EpgGrabbingSchedulerIngestionJob(
                 val channelGuides = guidesDatabaseDataSource.findGroupBySiteAndLanguage()
                 channelGuides.forEach { guideGroup ->
                     log.debug("Schedule Epg Grabbing Job for Guide group: site: ${guideGroup.site}, lang: ${guideGroup.lang}, channel count: ${guideGroup.count}")
-                    val epgJobKey = EPG_GRABBING_JOB_ID
-                        .replace("{lang}", guideGroup.lang)
-                        .replace("{site}", guideGroup.site)
-                    if (!checkExists(EpgGrabbingJob.getJobKey(epgJobKey))) {
+                    val epgKey = EpgGrabbingJob.buildKey(languageId = guideGroup.lang, site = guideGroup.site)
+                    if (!checkExists(EpgGrabbingJob.getJobKey(epgKey))) {
                         // Build and schedule an EpgGrabbingJob for the language
                         scheduleJob(
                             EpgGrabbingJob.buildJob(
-                                jobId = epgJobKey,
+                                jobId = epgKey,
                                 data = mapOf(
                                     LANGUAGE_ID_ARG to guideGroup.lang,
                                     SITE_ID_ARG to guideGroup.site
                                 )
                             ).also {
-                                log.debug("JobDataMap For Job $epgJobKey")
+                                log.debug("JobDataMap For Job $epgKey")
                                 it.jobDataMap.forEach { item ->
                                     log.debug("JobDataMap key: ${item.key}, value: ${item.value}")
                                 }
                             },
                             EpgGrabbingJob.buildTrigger(
-                                EPG_GRABBING_TRIGGER_ID
-                                    .replace("{lang}", guideGroup.lang)
-                                    .replace("{site}", guideGroup.site)
+                                EpgGrabbingJob.buildTriggerKey(languageId = guideGroup.lang, site = guideGroup.site)
                             )
                         )
-                        log.debug("Scheduled job $epgJobKey completed!")
+                        log.debug("Scheduled job $epgKey completed!")
                     }
                 }
             }
@@ -56,8 +52,7 @@ class EpgGrabbingSchedulerIngestionJob(
     }
 
     companion object : IJobBuilder {
-        private const val EPG_GRABBING_JOB_ID = "epg_grabbing_{lang}_{site}_job"
-        private const val EPG_GRABBING_TRIGGER_ID = "epg_grabbing_{lang}_{site}_trigger"
+
         private const val DEFAULT_JOB_ID = "epg_grabbing_scheduler_ingestion_job"
         private const val INTERVAL_IN_MINUTES = 5
 

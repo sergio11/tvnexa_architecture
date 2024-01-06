@@ -53,10 +53,6 @@ internal class ChannelDatabaseDataSourceImpl(
         }.map(mapper::map)
     }
 
-    override suspend fun findByKey(key: String): SimpleChannelEntity? {
-        return super.findByKey(key)
-    }
-
     /**
      * Retrieves a list of channels based on the provided country ID.
      *

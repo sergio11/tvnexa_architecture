@@ -18,5 +18,7 @@ data class SaveEpgChannelProgrammeEntity(
     val category: String?,
     val start: LocalDateTime,
     val end: LocalDateTime,
-    val date: LocalDateTime
+    val date: LocalDateTime,
+    val site: String,
+    val language: String
 )

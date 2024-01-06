@@ -11,6 +11,8 @@ import java.util.*
  * @property stop The end date and time of the program.
  * @property date The date when the program's EPG data is available.
  * @property category The category or genre of the program (optional).
+ * @property site The site for which EPG data is retrieved.
+ * @property lang The language for which EPG data is retrieved.
  */
 data class EpgDataDTO(
     val channelId: String? = null,
@@ -18,5 +20,7 @@ data class EpgDataDTO(
     val start: Date,
     val stop: Date,
     val date: Date,
-    val category: String? = null
+    val category: String? = null,
+    val site: String,
+    val lang: String
 )
