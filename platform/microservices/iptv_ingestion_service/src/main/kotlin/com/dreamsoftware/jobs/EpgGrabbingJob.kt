@@ -55,6 +55,7 @@ class EpgGrabbingJob(
     companion object : IJobBuilder {
 
         const val LANGUAGE_ID_ARG = "LANGUAGE_ID_ARG"
+        const val SITE_ID_ARG = "SITE_ID_ARG"
 
         // Default job ID and interval for execution (in minutes)
         private const val DEFAULT_JOB_ID = "epg_grabbing_job"
