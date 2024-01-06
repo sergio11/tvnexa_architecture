@@ -23,7 +23,7 @@ class SaveChannelGuideDTOMapper : ISimpleMapper<ChannelGuideDTO, SaveChannelGuid
             site = site,
             siteId = siteId,
             siteName = siteName,
-            channel = channel,
+            channel = channel.orEmpty(),
             lang = lang
         )
     }
