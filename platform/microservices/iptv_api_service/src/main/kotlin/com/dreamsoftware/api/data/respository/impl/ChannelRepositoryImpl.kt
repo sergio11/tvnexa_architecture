@@ -1,25 +1,23 @@
 package com.dreamsoftware.api.data.respository.impl
 
 import com.dreamsoftware.api.data.cache.datasource.ICacheDatasource
+import com.dreamsoftware.api.data.respository.impl.core.SupportRepository
 import com.dreamsoftware.api.domain.repository.IChannelRepository
-import com.dreamsoftware.api.utils.fromJson
-import com.dreamsoftware.api.utils.toJSON
 import com.dreamsoftware.data.database.datasource.channel.IChannelDatabaseDataSource
 import com.dreamsoftware.data.database.entity.ChannelDetailEntity
 import com.dreamsoftware.data.database.entity.SimpleChannelEntity
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.withContext
 
 /**
  * Implementation of the [IChannelRepository] interface that provides access to channel data
  * from a database data source.
  *
  * @property channelDataSource The data source responsible for retrieving channel data.
+ * @property cacheDatasource The cache data source used for caching channel data.
  */
 internal class ChannelRepositoryImpl(
     private val channelDataSource: IChannelDatabaseDataSource,
-    private val cacheDatasource: ICacheDatasource<String>
-) : IChannelRepository {
+    cacheDatasource: ICacheDatasource<String>
+) : SupportRepository(cacheDatasource), IChannelRepository {
 
     private companion object {
         const val CHANNEL_DETAIL_CACHE_KEY_PREFIX = "channel:detail:"
@@ -61,29 +59,4 @@ internal class ChannelRepositoryImpl(
         retrieveFromCacheOrElse(cacheKey = CHANNELS_BY_COUNTRY_CACHE_KEY_PREFIX + countryId) {
             channelDataSource.findByCountry(countryId).toList()
         }
-
-    /**
-     * Retrieves a value from the cache based on the specified [cacheKey]. If the cache entry
-     * is not found, performs the [onCacheEntryNotFound] operation and saves the result to the cache.
-     *
-     * @param cacheKey The key used to retrieve the value from the cache.
-     * @param onCacheEntryNotFound The suspendable operation to execute when the cache entry is not found.
-     * @return The retrieved value from the cache or the result of [onCacheEntryNotFound].
-     */
-    private suspend inline fun <reified T> retrieveFromCacheOrElse(
-        cacheKey: String,
-        crossinline onCacheEntryNotFound: suspend () -> T
-    ): T = withContext(Dispatchers.IO) {
-        with(cacheDatasource) {
-            runCatching {
-                find(cacheKey).fromJson<T>()
-            }.getOrElse {
-                onCacheEntryNotFound().also {
-                    runCatching {
-                        save(cacheKey, it.toJSON())
-                    }
-                }
-            }
-        }
-    }
 }
