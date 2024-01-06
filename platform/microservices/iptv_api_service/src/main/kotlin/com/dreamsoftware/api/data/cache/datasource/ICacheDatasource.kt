@@ -15,11 +15,12 @@ interface ICacheDatasource<K> {
      *
      * @param key The key used to save the data.
      * @param payload The data to be saved.
+     * @param ttlInSeconds The time-to-live (TTL) for the cache entry in seconds. If set to null, the entry will use the default TTL
      * @return Boolean indicating whether the save operation was successful.
      * @throws CacheException.InternalErrorException If an internal error occurs during the save operation.
      */
     @Throws(CacheException.InternalErrorException::class)
-    fun <E> save(key: K, payload: E)
+    fun <E> save(key: K, payload: E, payloadClazz: Class<E>, ttlInSeconds: Long? = null)
 
     /**
      * Retrieves data from the cache using the specified key.
