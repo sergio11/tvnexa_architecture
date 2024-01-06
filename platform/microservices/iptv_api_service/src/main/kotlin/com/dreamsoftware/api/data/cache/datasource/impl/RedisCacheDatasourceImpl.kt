@@ -9,13 +9,17 @@ import kotlin.jvm.Throws
 
 class RedisCacheDatasourceImpl(
     private val jedisCluster: JedisCluster,
-    private val redisStorageConfig: RedisStorageConfig
+    private val redisStorageConfig: RedisStorageConfig,
+    private val gson: Gson
 ): ICacheDatasource<String> {
 
-    override fun <E> save(key: String, payload: E) {
+    override fun <E> save(key: String, payload: E, payloadClazz: Class<E>, ttlInSeconds: Long?) {
         runCatching {
             with(jedisCluster) {
-                set(buildCacheKey(key), Gson().toJson(payload))
+                buildCacheKey(key).let {
+                    set(it, gson.toJson(payload, payloadClazz))
+                    expire(it, ttlInSeconds ?: redisStorageConfig.cacheTtlInSeconds)
+                }
             }
         }.getOrElse {
             throw CacheException.InternalErrorException(
@@ -33,7 +37,7 @@ class RedisCacheDatasourceImpl(
         jedisCluster.get(buildCacheKey(key)).let {
             if(it == null)
                 throw CacheException.ItemNotFoundException("Cache entry not found")
-            Gson().fromJson(it, payloadClazz)
+            gson.fromJson(it, payloadClazz)
         }
 
     @Throws(CacheException.InternalErrorException::class)

@@ -96,8 +96,9 @@ data class RedisClusterConfig(
  * Data class representing configuration for Redis storage.
  *
  * @property cachePrefix The prefix used for caching in Redis.
+ * @property cacheTtlInSeconds The default TTL in seconds
  */
-data class RedisStorageConfig(val cachePrefix: String)
+data class RedisStorageConfig(val cachePrefix: String, val cacheTtlInSeconds: Long)
 
 /**
  * Data class representing configuration for a Redis node.
