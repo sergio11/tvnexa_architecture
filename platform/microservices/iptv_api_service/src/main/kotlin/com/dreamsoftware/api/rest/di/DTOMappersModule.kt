@@ -7,8 +7,8 @@ import org.koin.dsl.module
 
 val dtoMappersModule = module {
     mapper { CategoryResponseDtoMapper() }
-    mapper { ChannelGuideResponseDtoMapper(getMapper()) }
-    mapper { ChannelDetailResponseDtoMapper(getMapper(), getMapper(), getMapper(), getMapper(), getMapper()) }
+    mapper { ChannelGuideResponseDtoMapper() }
+    mapper { ChannelDetailResponseDtoMapper(getMapper(), getMapper(), getMapper(), getMapper(), getMapper(), getMapper()) }
     mapper { SimpleChannelResponseDtoMapper() }
     mapper { ChannelStreamResponseDtoMapper() }
     mapper { CountryResponseDtoMapper(getMapper()) }

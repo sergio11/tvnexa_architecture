@@ -85,7 +85,8 @@ internal class ChannelDatabaseDataSourceImpl(
             ChannelEntityDAO::altNames,
             ChannelEntityDAO::owners,
             ChannelEntityDAO::broadcastAreas,
-            ChannelEntityDAO::streams
+            ChannelEntityDAO::streams,
+            ChannelEntityDAO::guides
         ))?.let(detailMapper::map)
     }
 
