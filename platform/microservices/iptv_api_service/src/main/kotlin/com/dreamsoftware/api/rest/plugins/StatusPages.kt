@@ -11,6 +11,7 @@ fun Application.configureStatusPages() {
         configureChannelStatusPages()
         configureCountryStatusPages()
         configureRegionStatusPages()
+        configureSubdivisionStatusPages()
         configureEpgChannelStatusPages()
     }
 }

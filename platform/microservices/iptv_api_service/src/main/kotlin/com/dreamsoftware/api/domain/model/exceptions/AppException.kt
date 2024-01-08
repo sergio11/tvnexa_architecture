@@ -7,6 +7,7 @@ sealed class AppException(message: String? = null, cause: Throwable? = null) : E
         class CountryNotFoundException(message: String? = null, cause: Throwable? = null) : NotFoundException(message, cause)
         class EpgChannelNotFoundException(message: String? = null, cause: Throwable? = null) : NotFoundException(message, cause)
         class RegionNotFoundException(message: String? = null, cause: Throwable? = null) : NotFoundException(message, cause)
+        class SubdivisionNotFoundException(message: String? = null, cause: Throwable? = null) : NotFoundException(message, cause)
     }
     class InternalServerError(message: String? = null, cause: Throwable? = null) : AppException(message, cause)
 }

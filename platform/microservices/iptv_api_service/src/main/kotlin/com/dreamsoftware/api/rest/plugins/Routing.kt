@@ -1,10 +1,6 @@
 package com.dreamsoftware.api.rest.plugins
 
-import com.dreamsoftware.api.rest.routes.channelRoutes
-import com.dreamsoftware.api.rest.routes.categoriesRoutes
-import com.dreamsoftware.api.rest.routes.countryRoutes
-import com.dreamsoftware.api.rest.routes.epgChannelProgrammeRoutes
-import com.dreamsoftware.api.rest.routes.regionsRoutes
+import com.dreamsoftware.api.rest.routes.*
 import io.ktor.server.routing.*
 import io.ktor.server.application.*
 
@@ -16,6 +12,7 @@ fun Application.configureRouting() {
             countryRoutes()
             channelRoutes()
             regionsRoutes()
+            subdivisionRoutes()
             epgChannelProgrammeRoutes()
         }
     }

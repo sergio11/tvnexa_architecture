@@ -10,7 +10,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import org.slf4j.LoggerFactory
 
-class RegionServiceImpl(
+internal class RegionServiceImpl(
     private val regionRepository: IRegionRepository,
     private val regionMapper: ISimpleMapper<RegionEntity, RegionResponseDTO>
 ) : IRegionService {

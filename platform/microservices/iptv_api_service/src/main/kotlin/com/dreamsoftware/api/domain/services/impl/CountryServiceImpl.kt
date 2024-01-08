@@ -11,7 +11,7 @@ import kotlinx.coroutines.withContext
 import org.slf4j.LoggerFactory
 import kotlin.jvm.Throws
 
-class CountryServiceImpl(
+internal class CountryServiceImpl(
     private val countryRepository: ICountryRepository,
     private val mapper: ISimpleMapper<CountryEntity, CountryResponseDTO>
 ): ICountryService {

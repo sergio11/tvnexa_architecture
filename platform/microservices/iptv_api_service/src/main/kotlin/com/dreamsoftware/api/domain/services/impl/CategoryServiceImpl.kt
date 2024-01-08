@@ -16,7 +16,7 @@ import org.slf4j.LoggerFactory
  * @property categoryRepository The repository handling data access for categories.
  * @property mapper The mapper responsible for converting entities to DTOs.
  */
-class CategoryServiceImpl(
+internal class CategoryServiceImpl(
     private val categoryRepository: ICategoryRepository,
     private val mapper: ISimpleMapper<CategoryEntity, CategoryResponseDTO>
 ): ICategoryService {

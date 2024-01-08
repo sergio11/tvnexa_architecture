@@ -14,7 +14,7 @@ import kotlinx.coroutines.withContext
 import org.slf4j.LoggerFactory
 import java.time.LocalDateTime
 
-class EpgChannelProgrammeServiceImpl(
+internal class EpgChannelProgrammeServiceImpl(
     private val epgChannelProgrammeRepository: IEpgChannelProgrammeRepository,
     private val channelRepository: IChannelRepository,
     private val epgChannelProgrammeMapper: ISimpleMapper<EpgChannelProgrammeEntity, EpgChannelProgrammeResponseDTO>
