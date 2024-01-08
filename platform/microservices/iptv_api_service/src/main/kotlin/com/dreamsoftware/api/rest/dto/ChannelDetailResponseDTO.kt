@@ -77,8 +77,8 @@ data class ChannelDetailResponseDTO(
     /**
      * The stream data for the channel
      */
-    @SerialName("stream")
-    val stream: ChannelStreamResponseDTO? = null,
+    @SerialName("streams")
+    val streams: List<ChannelStreamResponseDTO>,
 
     /**
      * The languages spoken or used by the channel.
@@ -90,5 +90,23 @@ data class ChannelDetailResponseDTO(
      * The categories or genres to which the channel belongs.
      */
     @SerialName("categories")
-    val categories: List<CategoryResponseDTO>
+    val categories: List<CategoryResponseDTO>,
+
+    /**
+     * List of alternative channel names.
+     */
+    @SerialName("alt_names")
+    val altNames: List<String>,
+
+    /**
+     * List of channel owners.
+     */
+    @SerialName("owners")
+    val owners: List<String>,
+
+    /**
+     * List of codes describing the broadcasting area (r/<region_code>, c/<country_code>, s/<subdivision_code>)
+     */
+    @SerialName("broadcast_areas")
+    val broadcastAreas: List<String>,
 )

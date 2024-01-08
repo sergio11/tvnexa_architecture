@@ -23,9 +23,12 @@ data class ChannelDetailEntity(
     val closed: String? = null,
     val catchupEnabled: Boolean = false,
     val replacedBy: ChannelDetailEntity? = null,
-    val stream: ChannelStreamEntity? = null,
+    val streams: List<ChannelStreamEntity>,
     val languages: List<LanguageEntity>,
-    val categories: List<CategoryEntity>
+    val categories: List<CategoryEntity>,
+    val altNames: List<String>,
+    val owners: List<String>,
+    val broadcastAreas: List<String>
 )
 
 data class SaveChannelEntity(

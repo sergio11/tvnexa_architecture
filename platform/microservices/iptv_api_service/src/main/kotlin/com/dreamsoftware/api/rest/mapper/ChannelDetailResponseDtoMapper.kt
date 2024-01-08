@@ -32,7 +32,6 @@ class ChannelDetailResponseDtoMapper(
         val subdivisionDto = input.subdivision?.let { subdivisionMapper.map(it) }
         val languagesDto = languageMapper.mapList(input.languages)
         val categoriesDto = categoryMapper.mapList(input.categories)
-        val channelStreamDto = input.stream?.let { channelStreamMapper.map(it) }
         return ChannelDetailResponseDTO(
             channelId = input.channelId,
             name = input.name,
@@ -47,8 +46,11 @@ class ChannelDetailResponseDtoMapper(
             closed = input.closed,
             replacedBy = input.replacedBy?.let { map(it) },
             languages = languagesDto.toList(),
-            stream = channelStreamDto,
-            categories = categoriesDto.toList()
+            streams = channelStreamMapper.mapList(input.streams).toList(),
+            categories = categoriesDto.toList(),
+            altNames = input.altNames,
+            owners = input.owners,
+            broadcastAreas = input.broadcastAreas
         )
     }
 
