@@ -80,3 +80,9 @@ TVNexa integrates data from various sources to provide a comprehensive televisio
 * **Categories, Languages, Countries, Subdivisions, Regions:** Access additional datasets for categories, languages, countries, subdivisions, and regions.
 
 For more information on the data sources, refer to the [GitHub repository](https://github.com/iptv-org/database).
+
+
+![picture](doc/images/picture_1.PNG)
+![picture](doc/images/picture_2.PNG)
+![picture](doc/images/picture_3.PNG)
+![picture](doc/images/picture_4.PNG)
