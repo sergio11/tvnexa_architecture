@@ -47,7 +47,10 @@ class ChannelDetailEntityDaoMapper(
             replacedBy = replacedBy?.let(::map),
             languages = languageMapper.mapList(languages).toList(),
             categories = categoryMapper.mapList(categories).toList(),
-            stream = null
+            streams = streamMapper.mapList(streams).toList(),
+            altNames = altNames.map { it.altName }.toList(),
+            owners = owners.map { it.owner }.toList(),
+            broadcastAreas = broadcastAreas.map { it.broadcastArea }.toList()
         )
     }
 

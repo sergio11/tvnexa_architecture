@@ -2,6 +2,8 @@ package com.dreamsoftware.data.database.dao
 
 import org.jetbrains.exposed.dao.Entity
 import org.jetbrains.exposed.dao.EntityClass
+import org.jetbrains.exposed.dao.LongEntity
+import org.jetbrains.exposed.dao.LongEntityClass
 import org.jetbrains.exposed.dao.id.EntityID
 import org.jetbrains.exposed.dao.id.IdTable
 import org.jetbrains.exposed.dao.id.LongIdTable
@@ -95,6 +97,26 @@ object ChannelCategoryTable: LongIdTable(name = "channels_categories") {
     }
 }
 
+class ChannelNameEntityDAO(id: EntityID<Long>) : LongEntity(id) {
+    companion object : LongEntityClass<ChannelNameEntityDAO>(ChannelNameTable)
+
+    var channel by ChannelEntityDAO referencedOn ChannelNameTable.channel
+    var altName by ChannelNameTable.altName
+}
+
+class ChannelOwnerEntityDAO(id: EntityID<Long>) : LongEntity(id) {
+    companion object : LongEntityClass<ChannelOwnerEntityDAO>(ChannelOwnerTable)
+
+    var channel by ChannelEntityDAO referencedOn ChannelOwnerTable.channel
+    var owner by ChannelOwnerTable.owner
+}
+
+class ChannelBroadcastAreaEntityDAO(id: EntityID<Long>) : LongEntity(id) {
+    companion object : LongEntityClass<ChannelBroadcastAreaEntityDAO>(ChannelBroadcastAreaTable)
+
+    var channel by ChannelEntityDAO referencedOn ChannelBroadcastAreaTable.channel
+    var broadcastArea by ChannelBroadcastAreaTable.broadcastArea
+}
 
 class ChannelEntityDAO(id: EntityID<String>) : Entity<String>(id) {
     companion object : EntityClass<String, ChannelEntityDAO>(ChannelTable)
@@ -114,4 +136,8 @@ class ChannelEntityDAO(id: EntityID<String>) : Entity<String>(id) {
     var replacedBy by ChannelEntityDAO optionalReferencedOn ChannelTable.replacedBy
     val languages by LanguageEntityDAO via ChannelLanguageTable
     val categories by CategoryEntityDAO via ChannelCategoryTable
+    val streams by ChannelStreamEntityDAO referrersOn ChannelStreamTable.channelId
+    val altNames by ChannelNameEntityDAO referrersOn ChannelNameTable.channel
+    val owners by ChannelOwnerEntityDAO referrersOn ChannelOwnerTable.channel
+    val broadcastAreas by ChannelBroadcastAreaEntityDAO referrersOn ChannelBroadcastAreaTable.channel
 }

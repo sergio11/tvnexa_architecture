@@ -81,7 +81,11 @@ internal class ChannelDatabaseDataSourceImpl(
             ChannelEntityDAO::categories,
             ChannelEntityDAO::subdivision,
             ChannelEntityDAO::country,
-            ChannelEntityDAO::replacedBy
+            ChannelEntityDAO::replacedBy,
+            ChannelEntityDAO::altNames,
+            ChannelEntityDAO::owners,
+            ChannelEntityDAO::broadcastAreas,
+            ChannelEntityDAO::streams
         ))?.let(detailMapper::map)
     }
 
