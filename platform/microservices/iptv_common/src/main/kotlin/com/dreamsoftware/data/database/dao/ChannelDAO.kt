@@ -136,7 +136,8 @@ class ChannelEntityDAO(id: EntityID<String>) : Entity<String>(id) {
     var replacedBy by ChannelEntityDAO optionalReferencedOn ChannelTable.replacedBy
     val languages by LanguageEntityDAO via ChannelLanguageTable
     val categories by CategoryEntityDAO via ChannelCategoryTable
-    val streams by ChannelStreamEntityDAO referrersOn ChannelStreamTable.channelId
+    val streams by ChannelStreamEntityDAO referrersOn ChannelStreamTable.channel
+    val guides by ChannelGuideEntityDAO referrersOn ChannelGuideTable.channel
     val altNames by ChannelNameEntityDAO referrersOn ChannelNameTable.channel
     val owners by ChannelOwnerEntityDAO referrersOn ChannelOwnerTable.channel
     val broadcastAreas by ChannelBroadcastAreaEntityDAO referrersOn ChannelBroadcastAreaTable.channel

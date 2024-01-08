@@ -81,6 +81,12 @@ data class ChannelDetailResponseDTO(
     val streams: List<ChannelStreamResponseDTO>,
 
     /**
+     * Guides of the channel
+     */
+    @SerialName("guides")
+    val guides: List<ChannelGuideResponseDTO>,
+
+    /**
      * The languages spoken or used by the channel.
      */
     @SerialName("languages")

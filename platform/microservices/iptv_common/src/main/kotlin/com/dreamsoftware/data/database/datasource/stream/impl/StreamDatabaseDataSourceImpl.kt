@@ -54,6 +54,6 @@ internal class StreamDatabaseDataSourceImpl(
         this@onMapEntityToSave[ChannelStreamTable.url] = url
         this@onMapEntityToSave[ChannelStreamTable.userAgent] = userAgent
         this@onMapEntityToSave[ChannelStreamTable.httpReferrer] = httpReferrer
-        this@onMapEntityToSave[ChannelStreamTable.channelId] = channelId
+        this@onMapEntityToSave[ChannelStreamTable.channel] = channelId
     }
 }

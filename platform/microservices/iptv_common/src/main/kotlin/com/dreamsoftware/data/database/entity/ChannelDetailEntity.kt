@@ -24,6 +24,7 @@ data class ChannelDetailEntity(
     val catchupEnabled: Boolean = false,
     val replacedBy: ChannelDetailEntity? = null,
     val streams: List<ChannelStreamEntity>,
+    val guides: List<ChannelGuideEntity>,
     val languages: List<LanguageEntity>,
     val categories: List<CategoryEntity>,
     val altNames: List<String>,

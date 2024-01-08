@@ -15,13 +15,15 @@ import com.dreamsoftware.data.database.entity.*
  * @param languageMapper Mapper for converting [LanguageEntityDAO] to [LanguageEntity].
  * @param categoryMapper Mapper for converting [CategoryEntityDAO] to [CategoryEntity].
  * @param streamMapper Mapper for converting [ChannelStreamEntityDAO] to [ChannelStreamEntity].
+ * @param guidesMapper Mapper for converting [ChannelGuideEntityDAO] to [ChannelGuideEntity].
  */
 class ChannelDetailEntityDaoMapper(
     private val countryMapper: ISimpleMapper<CountryEntityDAO, CountryEntity>,
     private val subdivisionMapper: ISimpleMapper<SubdivisionEntityDAO, SubdivisionEntity>,
     private val languageMapper: ISimpleMapper<LanguageEntityDAO, LanguageEntity>,
     private val categoryMapper: ISimpleMapper<CategoryEntityDAO, CategoryEntity>,
-    private val streamMapper: ISimpleMapper<ChannelStreamEntityDAO, ChannelStreamEntity>
+    private val streamMapper: ISimpleMapper<ChannelStreamEntityDAO, ChannelStreamEntity>,
+    private val guidesMapper: ISimpleMapper<ChannelGuideEntityDAO, ChannelGuideEntity>
 ) : ISimpleMapper<ChannelEntityDAO, ChannelDetailEntity> {
 
     /**
@@ -48,6 +50,7 @@ class ChannelDetailEntityDaoMapper(
             languages = languageMapper.mapList(languages).toList(),
             categories = categoryMapper.mapList(categories).toList(),
             streams = streamMapper.mapList(streams).toList(),
+            guides = guidesMapper.mapList(guides).toList(),
             altNames = altNames.map { it.altName }.toList(),
             owners = owners.map { it.owner }.toList(),
             broadcastAreas = broadcastAreas.map { it.broadcastArea }.toList()

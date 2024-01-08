@@ -12,13 +12,15 @@ import com.dreamsoftware.data.database.entity.*
  * @property languageMapper The mapper for mapping [LanguageEntity] objects to [LanguageResponseDTO] objects.
  * @property categoryMapper The mapper for mapping [CategoryEntity] objects to [CategoryResponseDTO] objects.
  * @property channelStreamMapper The mapper for mapping [ChannelStreamEntity] objects to [ChannelStreamResponseDTO] objects.
+ * @property channelGuidesMapper The mapper for mapping [ChannelGuideEntity] objects to [ChannelGuideResponseDTO] objects.
  */
 class ChannelDetailResponseDtoMapper(
     private val countryMapper: ISimpleMapper<CountryEntity, CountryResponseDTO>,
     private val subdivisionMapper: ISimpleMapper<SubdivisionEntity, SubdivisionResponseDTO>,
     private val languageMapper: ISimpleMapper<LanguageEntity, LanguageResponseDTO>,
     private val categoryMapper: ISimpleMapper<CategoryEntity, CategoryResponseDTO>,
-    private val channelStreamMapper: ISimpleMapper<ChannelStreamEntity, ChannelStreamResponseDTO>
+    private val channelStreamMapper: ISimpleMapper<ChannelStreamEntity, ChannelStreamResponseDTO>,
+    private val channelGuidesMapper: ISimpleMapper<ChannelGuideEntity, ChannelGuideResponseDTO>
 ) : ISimpleMapper<ChannelDetailEntity, ChannelDetailResponseDTO> {
 
     /**
@@ -47,6 +49,7 @@ class ChannelDetailResponseDtoMapper(
             replacedBy = input.replacedBy?.let { map(it) },
             languages = languagesDto.toList(),
             streams = channelStreamMapper.mapList(input.streams).toList(),
+            guides = channelGuidesMapper.mapList(input.guides).toList(),
             categories = categoriesDto.toList(),
             altNames = input.altNames,
             owners = input.owners,
