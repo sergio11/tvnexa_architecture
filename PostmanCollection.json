@@ -16,31 +16,31 @@
   },
   "item": [
     {
-    "name": "Categories",
-    "request": {
-      "method": "GET",
-      "header": [],
-      "body": {},
-      "url": {
-        "raw": "http://127.0.0.1:6969/api/v1/categories/",
-        "protocol": "http",
-        "host": [
-          "127",
-          "0",
-          "0",
-          "1"
-        ],
-        "port": "6969",
-        "path": [
-          "api",
-          "v1",
-          "categories"
-        ]
+      "name": "Categories",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "body": {},
+        "url": {
+          "raw": "http://127.0.0.1:6969/api/v1/categories/",
+          "protocol": "http",
+          "host": [
+            "127",
+            "0",
+            "0",
+            "1"
+          ],
+          "port": "6969",
+          "path": [
+            "api",
+            "v1",
+            "categories/"
+          ]
+        },
+        "description": "Retrieve all categories"
       },
-      "description": "Retrieve all categories"
+      "response": []
     },
-    "response": []
-  },
     {
       "name": "Category by ID",
       "request": {
@@ -84,7 +84,7 @@
           "path": [
             "api",
             "v1",
-            "regions"
+            "regions/"
           ]
         },
         "description": "Retrieve all regions"
@@ -131,7 +131,7 @@
           "path": [
             "api",
             "v1",
-            "countries"
+            "countries/"
           ]
         },
         "description": "Retrieve all countries"
@@ -178,7 +178,7 @@
           "path": [
             "api",
             "v1",
-            "channels"
+            "channels/"
           ]
         },
         "description": "Retrieve all channels"
@@ -276,6 +276,59 @@
           ]
         },
         "description": "Retrieve EPG data by country code within a date range"
+      },
+      "response": []
+    },
+    {
+      "name": "Subdivisions",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "body": {},
+        "url": {
+          "raw": "http://127.0.0.1:6969/api/v1/subdivisions/",
+          "protocol": "http",
+          "host": [
+            "127",
+            "0",
+            "0",
+            "1"
+          ],
+          "port": "6969",
+          "path": [
+            "api",
+            "v1",
+            "subdivisions/"
+          ]
+        },
+        "description": "Retrieve all subdivisions"
+      },
+      "response": []
+    },
+    {
+      "name": "Subdivision by Code",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "body": {},
+        "url": {
+          "raw": "http://127.0.0.1:6969/api/v1/subdivisions/{subdivisionCode}",
+          "protocol": "http",
+          "host": [
+            "127",
+            "0",
+            "0",
+            "1"
+          ],
+          "port": "6969",
+          "path": [
+            "api",
+            "v1",
+            "subdivisions",
+            "{subdivisionCode}"
+          ]
+        },
+        "description": "Retrieve a subdivision by its code"
       },
       "response": []
     }
