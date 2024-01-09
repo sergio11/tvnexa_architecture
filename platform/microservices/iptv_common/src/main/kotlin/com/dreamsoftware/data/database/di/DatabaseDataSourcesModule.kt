@@ -19,6 +19,8 @@ import com.dreamsoftware.data.database.datasource.stream.IStreamDatabaseDataSour
 import com.dreamsoftware.data.database.datasource.stream.impl.StreamDatabaseDataSourceImpl
 import com.dreamsoftware.data.database.datasource.subdivision.ISubdivisionDatabaseDataSource
 import com.dreamsoftware.data.database.datasource.subdivision.impl.SubdivisionDatabaseDataSourceImpl
+import com.dreamsoftware.data.database.datasource.user.IUserDatabaseDataSource
+import com.dreamsoftware.data.database.datasource.user.impl.UserDatabaseDataSourceImpl
 import org.koin.dsl.module
 
 val databaseDataSourcesModule = module {
@@ -32,4 +34,5 @@ val databaseDataSourcesModule = module {
     single<IStreamDatabaseDataSource> { StreamDatabaseDataSourceImpl(get(), getMapper())  }
     single<IChannelGuideDatabaseDataSource> { ChannelGuideDatabaseDataSourceImpl(get(), getMapper())  }
     single<IEpgChannelProgrammeDatabaseDataSource> { EpgChannelProgrammeDatabaseDataSourceImpl(get(), getMapper())  }
+    single<IUserDatabaseDataSource> { UserDatabaseDataSourceImpl(get(), getMapper()) }
 }
