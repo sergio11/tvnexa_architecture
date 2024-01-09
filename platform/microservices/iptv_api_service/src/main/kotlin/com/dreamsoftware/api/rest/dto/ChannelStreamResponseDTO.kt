@@ -5,6 +5,12 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 data class ChannelStreamResponseDTO(
+
+    /**
+     * The code of the channel stream.
+     */
+    @SerialName("code")
+    val code: String,
     /**
      * The URL of the channel stream.
      */

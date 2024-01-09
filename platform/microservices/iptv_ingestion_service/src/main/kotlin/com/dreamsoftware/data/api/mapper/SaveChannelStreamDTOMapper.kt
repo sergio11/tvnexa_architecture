@@ -3,6 +3,7 @@ package com.dreamsoftware.data.api.mapper
 import com.dreamsoftware.core.ISimpleMapper
 import com.dreamsoftware.data.database.entity.SaveChannelStreamEntity
 import com.dreamsoftware.data.iptvorg.model.ChannelStreamDTO
+import com.dreamsoftware.utils.hash256
 
 /**
  * Mapper class for converting [ChannelStreamDTO] objects to [SaveChannelStreamEntity] objects.
@@ -20,6 +21,7 @@ class SaveChannelStreamDTOMapper : ISimpleMapper<ChannelStreamDTO, SaveChannelSt
     override fun map(input: ChannelStreamDTO): SaveChannelStreamEntity = with(input) {
         // Create a new SaveChannelStreamEntity object using properties from ChannelStreamDTO.
         SaveChannelStreamEntity(
+            code = channel.orEmpty().plus(url).hash256(),
             url = url,
             channelId = channel.orEmpty(),
             httpReferrer = httpReferrer,

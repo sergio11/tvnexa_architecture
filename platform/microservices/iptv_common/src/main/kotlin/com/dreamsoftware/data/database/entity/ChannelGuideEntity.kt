@@ -1,7 +1,7 @@
 package com.dreamsoftware.data.database.entity
 
 data class ChannelGuideEntity(
-    val id: Long,
+    val code: String,
     val site: String,
     val siteId: String,
     val siteName: String,
@@ -16,6 +16,7 @@ data class ChannelGuideAggregateEntity(
 )
 
 data class SaveChannelGuideEntity(
+    val code: String,
     val site: String,
     val siteId: String,
     val siteName: String,

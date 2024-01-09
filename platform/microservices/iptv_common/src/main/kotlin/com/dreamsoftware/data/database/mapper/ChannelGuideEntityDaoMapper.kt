@@ -24,7 +24,7 @@ class ChannelGuideEntityDaoMapper(
      */
     override fun map(input: ChannelGuideEntityDAO): ChannelGuideEntity = with(input) {
         ChannelGuideEntity(
-            id = id.value,
+            code = id.value,
             site = site,
             siteId = siteId,
             siteName = siteName,

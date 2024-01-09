@@ -17,12 +17,14 @@ import org.jetbrains.exposed.sql.statements.UpdateBuilder
 internal class ChannelGuideDatabaseDataSourceImpl(
     database: IDatabaseFactory,
     mapper: ISimpleMapper<ChannelGuideEntityDAO, ChannelGuideEntity>
-): SupportDatabaseDataSource<Long, ChannelGuideEntityDAO, SaveChannelGuideEntity, ChannelGuideEntity>(database, mapper, ChannelGuideEntityDAO), IChannelGuideDatabaseDataSource {
+): SupportDatabaseDataSource<String, ChannelGuideEntityDAO, SaveChannelGuideEntity, ChannelGuideEntity>(database, mapper, ChannelGuideEntityDAO),
+    IChannelGuideDatabaseDataSource {
 
     override val disableFkValidationsOnBatchOperation: Boolean
         get() = true
 
     override fun UpdateBuilder<Int>.onMapEntityToSave(entityToSave: SaveChannelGuideEntity) = with(entityToSave) {
+        this@onMapEntityToSave[ChannelGuideTable.id] = code
         this@onMapEntityToSave[ChannelGuideTable.channel] = channel
         this@onMapEntityToSave[ChannelGuideTable.site] = site
         this@onMapEntityToSave[ChannelGuideTable.siteId] = siteId
