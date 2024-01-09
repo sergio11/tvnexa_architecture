@@ -21,6 +21,7 @@ class ChannelStreamEntityDaoMapper : ISimpleMapper<ChannelStreamEntityDAO, Chann
      */
     override fun map(input: ChannelStreamEntityDAO): ChannelStreamEntity = with(input) {
         ChannelStreamEntity(
+            code = code,
             url = url,
             httpReferrer = httpReferrer,
             userAgent = userAgent

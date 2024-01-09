@@ -15,13 +15,15 @@ class ChannelGuideResponseDtoMapper : ISimpleMapper<ChannelGuideEntity, ChannelG
      * @param input The [ChannelGuideEntity] object to be mapped.
      * @return A [ChannelGuideResponseDTO] object representing the mapped data.
      */
-    override fun map(input: ChannelGuideEntity): ChannelGuideResponseDTO = ChannelGuideResponseDTO(
-        id = input.id,
-        site = input.site,
-        siteId = input.siteId,
-        siteName = input.siteName,
-        lang = input.lang
-    )
+    override fun map(input: ChannelGuideEntity): ChannelGuideResponseDTO = with(input) {
+        ChannelGuideResponseDTO(
+            code = code,
+            site = site,
+            siteId = siteId,
+            siteName = siteName,
+            lang = lang
+        )
+    }
 
     /**
      * Map a collection of [ChannelGuideEntity] objects to a collection of [ChannelGuideResponseDTO] objects.

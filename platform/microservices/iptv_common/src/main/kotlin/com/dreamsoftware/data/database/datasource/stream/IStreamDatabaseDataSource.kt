@@ -4,4 +4,4 @@ import com.dreamsoftware.data.database.datasource.core.ISupportDatabaseDataSourc
 import com.dreamsoftware.data.database.entity.SaveChannelStreamEntity
 import com.dreamsoftware.data.database.entity.ChannelStreamEntity
 
-interface IStreamDatabaseDataSource: ISupportDatabaseDataSource<Long, SaveChannelStreamEntity, ChannelStreamEntity>
+interface IStreamDatabaseDataSource: ISupportDatabaseDataSource<String, SaveChannelStreamEntity, ChannelStreamEntity>

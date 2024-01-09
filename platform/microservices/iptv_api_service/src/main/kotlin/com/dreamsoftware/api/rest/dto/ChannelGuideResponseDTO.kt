@@ -6,10 +6,10 @@ import kotlinx.serialization.Serializable
 @Serializable
 data class ChannelGuideResponseDTO(
     /**
-     * The unique identifier of the channel guide entry.
+     * The code of the channel stream.
      */
-    @SerialName("id")
-    val id: Long,
+    @SerialName("code")
+    val code: String,
 
     /**
      * The site or source of the channel guide information.

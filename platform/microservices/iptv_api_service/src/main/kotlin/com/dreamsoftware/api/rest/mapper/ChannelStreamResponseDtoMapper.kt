@@ -22,11 +22,14 @@ class ChannelStreamResponseDtoMapper : ISimpleMapper<ChannelStreamEntity, Channe
      * @param input The ChannelStreamEntity to be mapped.
      * @return A mapped ChannelStreamResponseDTO.
      */
-    override fun map(input: ChannelStreamEntity): ChannelStreamResponseDTO = ChannelStreamResponseDTO(
-        url = input.url,
-        httpReferrer = input.httpReferrer,
-        userAgent = input.userAgent
-    )
+    override fun map(input: ChannelStreamEntity): ChannelStreamResponseDTO = with(input) {
+        ChannelStreamResponseDTO(
+            code = code,
+            url = url,
+            httpReferrer = httpReferrer,
+            userAgent = userAgent
+        )
+    }
 
     /**
      * Maps a list of ChannelStreamEntity instances to a list of ChannelStreamResponseDTOs.

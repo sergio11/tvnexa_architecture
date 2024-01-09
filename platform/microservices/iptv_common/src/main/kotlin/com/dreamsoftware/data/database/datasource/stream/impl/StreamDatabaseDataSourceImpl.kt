@@ -19,7 +19,7 @@ import org.jetbrains.exposed.sql.statements.UpdateBuilder
 internal class StreamDatabaseDataSourceImpl(
     database: IDatabaseFactory,
     mapper: ISimpleMapper<ChannelStreamEntityDAO, ChannelStreamEntity>
-) : SupportDatabaseDataSource<Long, ChannelStreamEntityDAO, SaveChannelStreamEntity, ChannelStreamEntity>(database, mapper, ChannelStreamEntityDAO),
+) : SupportDatabaseDataSource<String, ChannelStreamEntityDAO, SaveChannelStreamEntity, ChannelStreamEntity>(database, mapper, ChannelStreamEntityDAO),
     IStreamDatabaseDataSource {
 
     override val disableFkValidationsOnBatchOperation: Boolean
@@ -51,6 +51,7 @@ internal class StreamDatabaseDataSourceImpl(
      * @param entityToSave The [SaveChannelStreamEntity] to be mapped.
      */
     override fun UpdateBuilder<Int>.onMapEntityToSave(entityToSave: SaveChannelStreamEntity) = with(entityToSave) {
+        this@onMapEntityToSave[ChannelStreamTable.code] = code
         this@onMapEntityToSave[ChannelStreamTable.url] = url
         this@onMapEntityToSave[ChannelStreamTable.userAgent] = userAgent
         this@onMapEntityToSave[ChannelStreamTable.httpReferrer] = httpReferrer

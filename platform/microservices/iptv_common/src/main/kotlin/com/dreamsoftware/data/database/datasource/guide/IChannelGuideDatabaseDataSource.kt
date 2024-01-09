@@ -9,7 +9,7 @@ import com.dreamsoftware.data.database.entity.SaveChannelGuideEntity
  * Interface representing a data source responsible for accessing channel guide data in a database.
  * This data source provides methods to interact with channel guide entities in the database.
  */
-interface IChannelGuideDatabaseDataSource : ISupportDatabaseDataSource<Long, SaveChannelGuideEntity, ChannelGuideEntity> {
+interface IChannelGuideDatabaseDataSource : ISupportDatabaseDataSource<String, SaveChannelGuideEntity, ChannelGuideEntity> {
 
     /**
      * Retrieves channel guide entities associated with a specific channel ID.

@@ -3,6 +3,7 @@ package com.dreamsoftware.data.api.mapper
 import com.dreamsoftware.core.ISimpleMapper
 import com.dreamsoftware.data.database.entity.SaveChannelGuideEntity
 import com.dreamsoftware.data.iptvorg.model.ChannelGuideDTO
+import com.dreamsoftware.utils.hash256
 
 /**
  * Mapper class for converting [ChannelGuideDTO] objects to [SaveChannelGuideEntity] objects.
@@ -20,6 +21,7 @@ class SaveChannelGuideDTOMapper : ISimpleMapper<ChannelGuideDTO, SaveChannelGuid
     override fun map(input: ChannelGuideDTO): SaveChannelGuideEntity = with(input) {
         // Create a new SaveChannelGuideEntity object using properties from ChannelGuideDTO.
         SaveChannelGuideEntity(
+            code = channel.orEmpty().plus(site).plus(siteId).hash256(),
             site = site,
             siteId = siteId,
             siteName = siteName,
