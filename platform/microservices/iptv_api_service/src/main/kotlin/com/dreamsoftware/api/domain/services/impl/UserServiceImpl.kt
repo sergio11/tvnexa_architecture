@@ -19,6 +19,14 @@ import kotlinx.coroutines.withContext
 import org.slf4j.LoggerFactory
 import java.util.*
 
+/**
+ * Implementation of the IUserService interface responsible for managing user-related operations.
+ *
+ * @property userRepository The repository responsible for user-related data operations.
+ * @property mapper The mapper used to map UserEntity objects to UserResponseDTO objects.
+ * @property environment The Ktor application environment for accessing configurations.
+ * @property saveUserMapper The mapper used to map SignUpRequestDTO to SaveUserEntity.
+ */
 internal class UserServiceImpl(
     private val userRepository: IUserRepository,
     private val mapper: ISimpleMapper<UserEntity, UserResponseDTO>,
@@ -28,6 +36,13 @@ internal class UserServiceImpl(
 
     private val log = LoggerFactory.getLogger(this::class.java)
 
+    /**
+     * Registers a new user based on the provided sign-up request.
+     *
+     * @param signUpRequest The sign-up request containing user information.
+     * @throws AppException.InternalServerError if an internal server error occurs during user registration.
+     * @throws AppException.UserAlreadyExistsException if the user already exists.
+     */
     @Throws(
         AppException.InternalServerError::class,
         AppException.UserAlreadyExistsException::class
@@ -36,6 +51,14 @@ internal class UserServiceImpl(
         userRepository.createUser(saveUserMapper.map(signUpRequest))
     }
 
+    /**
+     * Authenticates a user based on the provided sign-in credentials and generates an authentication token.
+     *
+     * @param signInRequest The sign-in request containing user credentials.
+     * @return An authentication response containing user details and a generated token.
+     * @throws AppException.InternalServerError if an internal server error occurs during user sign-in.
+     * @throws AppException.InvalidCredentialsException if the provided credentials are invalid.
+     */
     @Throws(
         AppException.InternalServerError::class,
         AppException.InvalidCredentialsException::class
@@ -66,6 +89,14 @@ internal class UserServiceImpl(
         }
     }
 
+    /**
+     * Retrieves a user's profile based on the provided UUID.
+     *
+     * @param uuid The UUID of the user to retrieve.
+     * @return The user's profile information.
+     * @throws AppException.InternalServerError if an internal server error occurs while fetching the user profile.
+     * @throws AppException.NotFoundException.UserNotFoundException if the user with the given UUID is not found.
+     */
     @Throws(
         AppException.InternalServerError::class,
         AppException.NotFoundException.UserNotFoundException::class
@@ -83,6 +114,13 @@ internal class UserServiceImpl(
         }
     }
 
+    /**
+     * Updates a user's profile based on the provided UUID and updated user information.
+     *
+     * @param uuid The UUID of the user to update.
+     * @param updatedUser The updated user information.
+     * @return The updated user profile information.
+     */
     override suspend fun updateUserProfile(uuid: UUID, updatedUser: UpdatedUserRequestDTO): UserResponseDTO = withContext(Dispatchers.IO) {
         TODO("Not yet implemented")
     }
