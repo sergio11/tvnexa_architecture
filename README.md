@@ -87,6 +87,33 @@ TVNexa integrates data from various sources to provide a comprehensive televisio
 
 For more information on the data sources, refer to the [GitHub repository](https://github.com/iptv-org/database).
 
+## Running Applications as Docker containers.
+
+### Rake Tasks
+
+The available tasks are detailed below (rake --task)
+
+
+| Task                                       | Description                                                                                                                                                              |
+|-------------------------------------------- |--------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| `tvnexa:login`                             | Authentication with existing credentials using Docker.                                                                                                                     |
+| `tvnexa:cleaning_environment_task`          | Environment cleaning: removes Docker images and volumes.                                                                                                                   |
+| `tvnexa:status`                            | Shows the status of containers using `docker-compose ps`.                                                                                                                  |
+| `tvnexa:deploy`                            | Deploys platform containers and launches all services and daemons necessary for proper functionality.                                                                      |
+| `tvnexa:undeploy`                          | Undeploys platform services using `docker-compose down -v`.                                                                                                                |
+| `tvnexa:check_docker_task`                 | Checks Docker and Docker Compose availability in the system PATH, showing their versions.                                                                                   |
+| `tvnexa:galera:check_deployment_file`      | Checks the existence of the MariaDB Galera Cluster deployment file.                                                                                                        |
+| `tvnexa:galera:start`                      | Starts MariaDB Galera Cluster and HAProxy containers.                                                                                                                       |
+| `tvnexa:galera:stop`                       | Stops MariaDB Galera Cluster and HAProxy containers.                                                                                                                        |
+| `tvnexa:redis:check_deployment_file`       | Checks the existence of the Redis Cluster deployment file.                                                                                                                  |
+| `tvnexa:redis:start`                       | Starts and configures Redis Cluster containers.                                                                                                                              |
+| `tvnexa:redis:stop`                        | Stops Redis Cluster containers.                                                                                                                                             |
+| `tvnexa:platform:check_deployment_file`    | Checks the existence of the platform deployment file.                                                                                                                        |
+| `tvnexa:platform:start`                    | Starts platform Hotspot JVM containers.                                                                                                                                     |
+| `tvnexa:platform:stop`                     | Stops platform Hotspot JVM containers.                                                                                                                                       |
+| `tvnexa:platform:build_image`              | Builds Docker images based on Hotspot JVM for specific microservices, uploads them to Docker Hub, and shows the list of available images.                                 |
+
+To start the platform make sure you have Ruby installed, go to the root directory of the project and run the rake deploy task, this task will carry out a series of preliminary checks, discard images and volumes that are no longer necessary and also proceed to download all the images and the initialization of the containers.
 
 ![picture](doc/images/picture_1.PNG)
 ![picture](doc/images/picture_2.PNG)
