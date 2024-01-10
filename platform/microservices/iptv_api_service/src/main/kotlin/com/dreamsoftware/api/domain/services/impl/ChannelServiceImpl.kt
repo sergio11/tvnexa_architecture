@@ -12,6 +12,13 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import org.slf4j.LoggerFactory
 
+/**
+ * Implementation of the IChannelService interface responsible for managing channel-related operations.
+ *
+ * @property channelRepository The repository responsible for channel-related data operations.
+ * @property channelDetailMapper The mapper used to map ChannelDetailEntity objects to ChannelDetailResponseDTO objects.
+ * @property simpleChannelMapper The mapper used to map SimpleChannelEntity objects to SimpleChannelResponseDTO objects.
+ */
 internal class ChannelServiceImpl(
     private val channelRepository: IChannelRepository,
     private val channelDetailMapper: ISimpleMapper<ChannelDetailEntity, ChannelDetailResponseDTO>,
@@ -20,6 +27,16 @@ internal class ChannelServiceImpl(
 
     private val log = LoggerFactory.getLogger(this::class.java)
 
+    /**
+     * Retrieves a list of simple channel responses by category, country, offset, and limit.
+     *
+     * @param category The category for channel filtering.
+     * @param country The country for channel filtering.
+     * @param offset The starting index for paginated results.
+     * @param limit The maximum number of channels to retrieve.
+     * @return A list of SimpleChannelResponseDTO objects matching the criteria.
+     * @throws AppException.InternalServerError if an internal server error occurs while fetching channels.
+     */
     @Throws(AppException.InternalServerError::class)
     override suspend fun findByCategoryAndCountryPaginated(category: String?, country: String?, offset: Long, limit: Long): List<SimpleChannelResponseDTO> = withContext(Dispatchers.IO) {
         try {
@@ -34,19 +51,30 @@ internal class ChannelServiceImpl(
         }
     }
 
+    /**
+     * Retrieves a channel's detailed information by ID.
+     *
+     * @param channelId The ID of the channel to retrieve.
+     * @return The detailed information of the channel.
+     * @throws AppException.InternalServerError if an internal server error occurs while finding the channel by ID.
+     * @throws AppException.NotFoundException.ChannelNotFoundException if the channel with the given ID is not found.
+     */
     @Throws(
         AppException.InternalServerError::class,
         AppException.NotFoundException.ChannelNotFoundException::class
     )
     override suspend fun findById(channelId: String): ChannelDetailResponseDTO = withContext(Dispatchers.IO) {
         try {
-            channelRepository.findById(channelId)?.let(channelDetailMapper::map) ?: run {
+            channelRepository.findById(channelId)?.let(channelDetailMapper::map) ?:
                 throw AppException.NotFoundException.ChannelNotFoundException("Channel with ID '$channelId' not found.")
-            }
         } catch (e: Exception) {
             e.printStackTrace()
-            log.debug("CS (findById) An exception occurred: ${e.message ?: "Unknown error"}")
-            throw AppException.InternalServerError("An error occurred while finding channel by ID.")
+            throw if (e !is AppException) {
+                log.debug("CS (findById) An exception occurred: ${e.message ?: "Unknown error"}")
+                throw AppException.InternalServerError("An error occurred while finding channel by ID.")
+            } else {
+                e
+            }
         }
     }
 }

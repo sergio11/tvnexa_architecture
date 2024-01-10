@@ -61,8 +61,12 @@ internal class SubdivisionServiceImpl(
                 )
         } catch (e: Exception) {
             e.printStackTrace()
-            log.debug("SUBS (findByCode) An exception occurred: ${e.message ?: "Unknown error"}")
-            throw AppException.InternalServerError("An error occurred while finding subdivision by code.")
+            throw if(e !is AppException) {
+                log.debug("SUBS (findByCode) An exception occurred: ${e.message ?: "Unknown error"}")
+                AppException.InternalServerError("An error occurred while finding subdivision by code.")
+            } else {
+                e
+            }
         }
     }
 }
