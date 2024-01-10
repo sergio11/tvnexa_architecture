@@ -15,7 +15,7 @@ TVNexa 🌐 is an innovative online television platform that allows you to explo
 </p>
 
 
-## Features
+## ✨ Features
 
 * **📺 Extensive Channel Library:** Explore an extensive collection of television channels from diverse countries and regions, offering an array of entertainment options.
 * **🌟 Diverse Content:** Immerse yourself in a rich array of programs encompassing various languages, genres, and categories, catering to diverse audience preferences.
@@ -31,7 +31,7 @@ TVNexa 🌐 is an innovative online television platform that allows you to explo
   <img width="350" height="auto" src="./doc/images/redis_picture.jpg" />
 </p>
 
-## Integration Process
+## 🔄 Integration Process
 
 TVNexa integrates comprehensive electronic program guide (EPG) data seamlessly into its platform. This integration process is handled by Jobs managed by Quartz, a robust job scheduling framework known for its reliability and scalability. These Quartz Jobs efficiently retrieve and store information in a MariaDB Galera cluster utilizing Jetbrains Exposed for streamlined data management.
 
@@ -41,23 +41,23 @@ Additionally, TVNexa has developed an API powered by the Ktor framework, ensurin
   <img width="350" height="auto" src="./doc/images/quartz_picture.jpg" />
 </p>
 
-## Data Ingestion in TVNexa
+## 📊 Data Ingestion in TVNexa
 
 The data ingestion process in TVNexa is a fundamental component designed to keep the platform updated and enriched with relevant information from various external sources. This operation is structured into a series of Jobs configured to fulfill specific responsibilities, ensuring the correct collection, integration, and storage of data.
 
-### Ingestion Architecture
+### 🏗️ Ingestion Architecture
 
-### Definition of Specialized Jobs
+#### 🎯 Definition of Specialized Jobs
 
 Each Job within the ingestion process has a clearly defined responsibility and sets logical constraints to ensure information coherence. For instance, the Job responsible for channel ingestion requires the successful execution of other specific Jobs.
 
 This guarantees that essential information, like languages, categories, and subdivisions, is previously stored before channel ingestion, ensuring data integrity and coherence.
 
-### Execution Regularity
+#### ⏰ Execution Regularity
 
 Ingestion Jobs are configured to run at different time intervals based on the criticality and update frequency of data from external endpoints. This strategy ensures that the platform's information stays up-to-date efficiently and timely.
 
-## Storage Environment
+## 🗄️ Storage Environment
 
 ### Usage of MariaDB Galera Clusters
 
@@ -71,7 +71,7 @@ The TVNexa platform features two distinct storage environments:
   <img width="350" height="auto" src="./doc/images/mariadb_galera_picture.png" />
 </p>
 
-## Benefits of the Ingestion Process
+## 🚀 Benefits of the Ingestion Process
 
 * **Maintaining Updated Data:** Ensures that the information provided to users is current, accurate, and comprehensive.
 * **Data Integrity:** Guarantees coherence and quality of stored data by setting dependencies between Jobs and verifying prerequisites before critical information ingestion.
@@ -79,21 +79,21 @@ The TVNexa platform features two distinct storage environments:
 
 The ingestion process in TVNexa is meticulously configured to ensure continuous information updates and provide an optimal and enriching user experience.
 
-## Technical Stack
+## 🛠️ Technical Stack
 
 * **Quartz Jobs:** Framework renowned for its reliability and scalability in managing job scheduling processes.
 * **MariaDB Galera with Jetbrains Exposed:** Utilizes Jetbrains Exposed, an SQL library, to manage data storage and retrieval within a MariaDB Galera cluster.
 * **Ktor Framework:** Empowers the highly optimized API for rapid and efficient data retrieval. 💡
 * **Redis Cluster:** Implements Redis Cluster as a caching system for optimizing data retrieval through the API. 🔄
 
-## Data Sources and APIs
+## 📊 Data Sources and APIs
 
 TVNexa integrates data from various sources to provide a comprehensive television viewing experience. The platform accesses and integrates detailed information from:
 
-* **Channels:** Access detailed channel information from IPTV sources.
-* **Streams:** Retrieve streaming URLs for channels and additional metadata.
-* **Guides:** Obtain guides for channels, including site domain, site ID, site name, and guide language.
-* **Categories, Languages, Countries, Subdivisions, Regions:** Access additional datasets for categories, languages, countries, subdivisions, and regions.
+* **📺 Channels:** Access detailed channel information from IPTV sources.
+* **📡 Streams:** Retrieve streaming URLs for channels and additional metadata.
+* **📋 Guides:** Obtain guides for channels, including site domain, site ID, site name, and guide language.
+* **🗂️ Categories, Languages, Countries, Subdivisions, Regions:** Access additional datasets for categories, languages, countries, subdivisions, and regions.
 
 For more information on the data sources, refer to the [GitHub repository](https://github.com/iptv-org/database).
 
