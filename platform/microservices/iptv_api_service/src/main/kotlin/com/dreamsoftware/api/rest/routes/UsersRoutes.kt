@@ -19,7 +19,7 @@ fun Route.usersRoutes() {
                 generateSuccessResponse(
                     code = 7002,
                     message = "User registered successfully.",
-                    data = ""
+                    data = "User registered"
                 )
             }
         }
