@@ -125,6 +125,10 @@ The available tasks are detailed below (rake --task)
 
 To start the platform make sure you have Ruby installed, go to the root directory of the project and run the rake deploy task, this task will carry out a series of preliminary checks, discard images and volumes that are no longer necessary and also proceed to download all the images and the initialization of the containers.
 
+## Some screenshots
+
+As follow, I include some images that help us to understand the performance of each part of system
+
 ![picture](doc/images/picture_1.PNG)
 ![picture](doc/images/picture_2.PNG)
 ![picture](doc/images/picture_3.PNG)
