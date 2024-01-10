@@ -1,7 +1,7 @@
 package com.dreamsoftware.api.domain.services.impl
 
 import com.dreamsoftware.api.domain.model.exceptions.AppException
-import com.dreamsoftware.api.rest.dto.CategoryResponseDTO
+import com.dreamsoftware.api.rest.dto.response.CategoryResponseDTO
 import com.dreamsoftware.api.domain.repository.ICategoryRepository
 import com.dreamsoftware.api.domain.services.ICategoryService
 import com.dreamsoftware.core.ISimpleMapper

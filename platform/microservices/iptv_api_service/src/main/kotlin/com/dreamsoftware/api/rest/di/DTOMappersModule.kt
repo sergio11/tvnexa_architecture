@@ -16,4 +16,6 @@ val dtoMappersModule = module {
     mapper { LanguageResponseDtoMapper() }
     mapper { RegionResponseDtoMapper(getMapper()) }
     mapper { SubdivisionResponseDtoMapper(getMapper()) }
+    mapper { UserResponseDtoMapper() }
+    mapper { SaveUserDtoMapper() }
 }

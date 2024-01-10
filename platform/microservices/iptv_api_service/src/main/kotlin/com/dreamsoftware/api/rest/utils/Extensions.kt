@@ -2,7 +2,7 @@ package com.dreamsoftware.api.rest.utils
 
 import com.dreamsoftware.api.domain.model.ErrorType
 import com.dreamsoftware.api.domain.model.toErrorResponseDTO
-import com.dreamsoftware.api.rest.dto.ApiResponseDTO
+import com.dreamsoftware.api.rest.dto.response.ApiResponseDTO
 import io.ktor.server.application.*
 import io.ktor.server.response.*
 import java.time.LocalDateTime

@@ -14,8 +14,8 @@ package com.dreamsoftware.api.rest.mapper
  * @version 1.0
  */
 
-import com.dreamsoftware.api.rest.dto.CountryResponseDTO
-import com.dreamsoftware.api.rest.dto.RegionResponseDTO
+import com.dreamsoftware.api.rest.dto.response.CountryResponseDTO
+import com.dreamsoftware.api.rest.dto.response.RegionResponseDTO
 import com.dreamsoftware.core.ISimpleMapper
 import com.dreamsoftware.data.database.entity.CountryEntity
 import com.dreamsoftware.data.database.entity.RegionEntity

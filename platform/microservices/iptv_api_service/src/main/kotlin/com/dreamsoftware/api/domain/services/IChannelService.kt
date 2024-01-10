@@ -1,8 +1,8 @@
 package com.dreamsoftware.api.domain.services
 
 import com.dreamsoftware.api.domain.model.exceptions.AppException
-import com.dreamsoftware.api.rest.dto.ChannelDetailResponseDTO
-import com.dreamsoftware.api.rest.dto.SimpleChannelResponseDTO
+import com.dreamsoftware.api.rest.dto.response.ChannelDetailResponseDTO
+import com.dreamsoftware.api.rest.dto.response.SimpleChannelResponseDTO
 
 /**
  * Interface for managing channels.

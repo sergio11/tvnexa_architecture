@@ -1,7 +1,7 @@
 package com.dreamsoftware.api.domain.services
 
 import com.dreamsoftware.api.domain.model.exceptions.AppException
-import com.dreamsoftware.api.rest.dto.EpgChannelProgrammeResponseDTO
+import com.dreamsoftware.api.rest.dto.response.EpgChannelProgrammeResponseDTO
 import java.time.LocalDateTime
 
 // Interface for EPG (Electronic Program Guide) channel program service

@@ -1,6 +1,6 @@
 package com.dreamsoftware.api.rest.mapper
 
-import com.dreamsoftware.api.rest.dto.ChannelGuideResponseDTO
+import com.dreamsoftware.api.rest.dto.response.ChannelGuideResponseDTO
 import com.dreamsoftware.core.ISimpleMapper
 import com.dreamsoftware.data.database.entity.ChannelGuideEntity
 
