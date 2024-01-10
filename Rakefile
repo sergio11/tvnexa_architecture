@@ -1,6 +1,6 @@
 task default: %w[iptv:deploy]
 
-namespace :iptv do
+namespace :tvnexa do
 
 	desc "Authenticating with existing credentials"
 	task :login do
@@ -34,7 +34,6 @@ namespace :iptv do
 		puts `docker-compose down -v 2>&1`
 	end
 
-
 	desc "Check Docker and Docker Compose Task"
 	task :check_docker_task do
 		puts "Check Docker and Docker Compose ..."
@@ -46,8 +45,7 @@ namespace :iptv do
 		end
 	end
 
-
-    ## Deploy MariaDB Galera Cluster with ProxySQL
+    ## Deploy MariaDB Galera Cluster with HAProxy
 	namespace :galera do
 
 	    desc "Check Platform Deployment File"
@@ -57,13 +55,13 @@ namespace :iptv do
     		puts "Platform Deployment File OK!"
     	end
 
-    	desc "Start MariaDB Galera Cluster and ProxySQL containers"
+    	desc "Start MariaDB Galera Cluster and HAProxy containers"
     	task :start => [ :check_docker_task, :login, :check_deployment_file ] do
-    	    puts "Start MariaDB Galera Cluster and ProxySQL containers"
+    	    puts "Start MariaDB Galera Cluster and HAProxy containers"
             puts `docker-compose -f ./mariadb_galera_cluster/docker-compose.yml up -d`
         end
 
-        desc "Stop MariaDB Galera Cluster and ProxySQL containers"
+        desc "Stop MariaDB Galera Cluster and HAProxy containers"
         task :stop => [ :check_docker_task, :login, :check_deployment_file  ] do
             puts "Stop Platform Containers"
             puts `docker-compose -f ./mariadb_galera_cluster/docker-compose.yml stop 2>&1`
@@ -116,17 +114,6 @@ namespace :iptv do
 			puts "Stop Platform Containers"
 			puts `docker-compose -f ./docker-compose.yml stop 2>&1`
 		end
-
-		task :build_hotspot_image => [:check_docker_task, :login] do
-		    dockerImageName = "ssanchez11/otp_service_hotspot:0.0.1"
-        	microserviceFolder = "./platform/microservice"
-        	dockerFile = "#{microserviceFolder}/Dockerfile_hotspot"
-        	puts "Build Docker Image based on Hotspot at #{microserviceFolder}"
-        	puts `docker build -t #{dockerImageName} -f #{dockerFile} #{microserviceFolder}`
-        	puts `docker images`
-            puts "Docker image #{dockerImageName} has been created! trying to upload it!"
-        	puts `docker push #{dockerImageName}`
-        end
 
 		desc "Build Docker Image based on Hotspot JVM"
 		task :build_image => [:check_docker_task, :login] do
