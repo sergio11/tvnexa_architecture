@@ -13,5 +13,6 @@ fun Application.configureStatusPages() {
         configureRegionStatusPages()
         configureSubdivisionStatusPages()
         configureEpgChannelStatusPages()
+        configureUsersStatusPages()
     }
 }
