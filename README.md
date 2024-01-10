@@ -17,13 +17,13 @@ TVNexa 🌐 is an innovative online television platform that allows you to explo
 
 ## Features
 
-* **Extensive Channel Library:** Explore a vast collection of television channels from various countries and regions.
-* **Diverse Content:** Dive into a rich array of programs, encompassing multiple languages, genres, and categories.
-* **Integration of Guide Information:** TVNexa integrates detailed program information from electronic program guides (EPG) for thousands of TV channels.
-* **Efficient Data Storage and Retrieval:**
-  * **Quartz Jobs:** Utilizes Quartz Jobs for seamless integration and management of data retrieval processes.
-  * **MariaDB Galera with Jetbrains Exposed:** Stores integrated data efficiently in a MariaDB Galera cluster using Jetbrains Exposed for robust data handling and management.
-  * **Optimized API with Ktor and Redis Cluster:** Develops a highly optimized API utilizing Ktor framework for rapid and efficient data retrieval, supported by Redis Cluster as a caching system. 🚀
+* **📺 Extensive Channel Library:** Explore an extensive collection of television channels from diverse countries and regions, offering an array of entertainment options.
+* **🌟 Diverse Content:** Immerse yourself in a rich array of programs encompassing various languages, genres, and categories, catering to diverse audience preferences.
+* **📋 Integration of Guide Information:** TVNexa seamlessly integrates detailed program information from electronic program guides (EPG) for thousands of TV channels, ensuring an enriched viewing experience.
+* **💾 Efficient Data Storage and Retrieval:**
+  * **⏰ Quartz Jobs:** Utilizes Quartz Jobs to seamlessly integrate and manage data retrieval processes, ensuring timely and accurate information updates.
+  * **🔒 MariaDB Galera with Jetbrains Exposed:** Stores integrated data efficiently in a secure MariaDB Galera cluster using Jetbrains Exposed for robust data handling and management.
+  * **🚀 Optimized API with Ktor and Redis Cluster:** Develops a highly optimized API utilizing the Ktor framework for rapid and efficient data retrieval, supported by Redis Cluster as a caching system to enhance performance.
 
 
 <p align="center">
