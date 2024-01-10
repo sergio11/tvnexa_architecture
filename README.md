@@ -25,7 +25,11 @@ TVNexa 🌐 is an innovative online television platform that allows you to explo
   * **MariaDB Galera with Jetbrains Exposed:** Stores integrated data efficiently in a MariaDB Galera cluster using Jetbrains Exposed for robust data handling and management.
   * **Optimized API with Ktor and Redis Cluster:** Develops a highly optimized API utilizing Ktor framework for rapid and efficient data retrieval, supported by Redis Cluster as a caching system. 🚀
 
-![picture](doc/images/ktor_picture.png)
+
+<p align="center">
+  <img width="350" height="auto" src="./doc/images/ktor_picture.png" />
+  <img width="350" height="auto" src="./doc/images/redis_picture.jpg" />
+</p>
 
 ## Integration Process
 
@@ -33,7 +37,9 @@ TVNexa integrates comprehensive electronic program guide (EPG) data seamlessly i
 
 Additionally, TVNexa has developed an API powered by the Ktor framework, ensuring high-performance and rapid access to stored information. This API utilizes Redis Cluster as a caching system, enabling lightning-fast data retrieval from the MariaDB Galera storage.
 
-![picture](doc/images/quartz_picture.jpg)
+<p align="center">
+  <img width="350" height="auto" src="./doc/images/quartz_picture.jpg" />
+</p>
 
 ## Data Ingestion in TVNexa
 
@@ -61,7 +67,9 @@ The TVNexa platform features two distinct storage environments:
 
 * **Write Cluster:** Employed by the ingestion component to store data from the Jobs. This part of the system handles write operations to update and enrich the database with the most recent information obtained from external endpoints.
 
-![picture](doc/images/mariadb_galera_picture.png)
+<p align="center">
+  <img width="350" height="auto" src="./doc/images/mariadb_galera_picture.png" />
+</p>
 
 ## Benefits of the Ingestion Process
 
