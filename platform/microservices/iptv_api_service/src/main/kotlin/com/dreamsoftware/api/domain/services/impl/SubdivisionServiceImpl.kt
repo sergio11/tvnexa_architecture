@@ -3,7 +3,7 @@ package com.dreamsoftware.api.domain.services.impl
 import com.dreamsoftware.api.domain.model.exceptions.AppException
 import com.dreamsoftware.api.domain.repository.ISubdivisionRepository
 import com.dreamsoftware.api.domain.services.ISubdivisionService
-import com.dreamsoftware.api.rest.dto.SubdivisionResponseDTO
+import com.dreamsoftware.api.rest.dto.response.SubdivisionResponseDTO
 import com.dreamsoftware.core.ISimpleMapper
 import com.dreamsoftware.data.database.entity.SubdivisionEntity
 import kotlinx.coroutines.Dispatchers

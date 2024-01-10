@@ -3,7 +3,8 @@ package com.dreamsoftware.data.database.dao
 import org.jetbrains.exposed.dao.Entity
 import org.jetbrains.exposed.dao.EntityClass
 import org.jetbrains.exposed.dao.id.EntityID
-import org.jetbrains.exposed.dao.id.LongIdTable
+import org.jetbrains.exposed.dao.id.UUIDTable
+import java.util.UUID
 
 /**
  * UserTable: Represents the table structure for storing user-related information.
@@ -12,7 +13,7 @@ import org.jetbrains.exposed.dao.id.LongIdTable
  * It includes fields like username, password, email, first name, last name,
  * creation date, and last update date.
  */
-object UserTable: LongIdTable(name = "users") {
+object UserTable: UUIDTable(name = "users") {
 
     // Unique username for each user
     val username = varchar("username", 50).uniqueIndex()
@@ -30,8 +31,8 @@ object UserTable: LongIdTable(name = "users") {
     val lastName = varchar("last_name", 50)
 }
 
-class UserEntityDAO(id: EntityID<Long>) : Entity<Long>(id) {
-    companion object : EntityClass<Long, UserEntityDAO>(UserTable)
+class UserEntityDAO(id: EntityID<UUID>) : Entity<UUID>(id) {
+    companion object : EntityClass<UUID, UserEntityDAO>(UserTable)
 
     var username by UserTable.username
     var password by UserTable.password

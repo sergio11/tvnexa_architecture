@@ -1,7 +1,7 @@
 package com.dreamsoftware.api.domain.services
 
 import com.dreamsoftware.api.domain.model.exceptions.AppException
-import com.dreamsoftware.api.rest.dto.CategoryResponseDTO
+import com.dreamsoftware.api.rest.dto.response.CategoryResponseDTO
 
 /**
  * Interface for managing categories.

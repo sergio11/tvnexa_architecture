@@ -1,7 +1,7 @@
 package com.dreamsoftware.api.domain.services.impl
 
 import com.dreamsoftware.api.domain.model.exceptions.AppException
-import com.dreamsoftware.api.rest.dto.CountryResponseDTO
+import com.dreamsoftware.api.rest.dto.response.CountryResponseDTO
 import com.dreamsoftware.api.domain.repository.ICountryRepository
 import com.dreamsoftware.api.domain.services.ICountryService
 import com.dreamsoftware.core.ISimpleMapper

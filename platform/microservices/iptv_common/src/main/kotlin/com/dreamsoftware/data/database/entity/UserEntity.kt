@@ -1,8 +1,10 @@
 package com.dreamsoftware.data.database.entity
 
+import java.util.UUID
+
 
 data class UserEntity(
-    val id: Long,
+    val uuid: UUID,
     val username: String,
     val password: String,
     val email: String,

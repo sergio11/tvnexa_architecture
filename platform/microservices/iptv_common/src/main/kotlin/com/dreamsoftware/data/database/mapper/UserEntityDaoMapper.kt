@@ -17,7 +17,7 @@ class UserEntityDaoMapper : ISimpleMapper<UserEntityDAO, UserEntity> {
      */
     override fun map(input: UserEntityDAO): UserEntity = with(input) {
         UserEntity(
-            id = id.value,
+            uuid = id.value,
             username = username,
             password = password,
             email = email,

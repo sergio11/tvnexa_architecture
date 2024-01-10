@@ -1,7 +1,7 @@
 package com.dreamsoftware.api.domain.services.impl
 
 import com.dreamsoftware.api.domain.model.exceptions.AppException
-import com.dreamsoftware.api.rest.dto.EpgChannelProgrammeResponseDTO
+import com.dreamsoftware.api.rest.dto.response.EpgChannelProgrammeResponseDTO
 import com.dreamsoftware.api.domain.repository.IChannelRepository
 import com.dreamsoftware.api.domain.repository.IEpgChannelProgrammeRepository
 import com.dreamsoftware.api.domain.services.IEpgChannelProgrammeService

@@ -1,7 +1,7 @@
 package com.dreamsoftware.api.rest.mapper
 
-import com.dreamsoftware.api.rest.dto.CountryResponseDTO
-import com.dreamsoftware.api.rest.dto.LanguageResponseDTO
+import com.dreamsoftware.api.rest.dto.response.CountryResponseDTO
+import com.dreamsoftware.api.rest.dto.response.LanguageResponseDTO
 import com.dreamsoftware.core.ISimpleMapper
 import com.dreamsoftware.data.database.entity.CountryEntity
 import com.dreamsoftware.data.database.entity.LanguageEntity

@@ -1,6 +1,6 @@
 package com.dreamsoftware.api.rest.mapper
 
-import com.dreamsoftware.api.rest.dto.ChannelStreamResponseDTO
+import com.dreamsoftware.api.rest.dto.response.ChannelStreamResponseDTO
 import com.dreamsoftware.core.ISimpleMapper
 import com.dreamsoftware.data.database.entity.ChannelStreamEntity
 

@@ -1,6 +1,6 @@
 package com.dreamsoftware.api.domain.model
 
-import com.dreamsoftware.api.rest.dto.ErrorResponseDTO
+import com.dreamsoftware.api.rest.dto.response.ErrorResponseDTO
 
 enum class ErrorType(val code: Int, val message: String) {
     CATEGORY_NOT_FOUND(100, "The requested category was not found in the system."),
