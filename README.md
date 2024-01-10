@@ -61,6 +61,8 @@ The TVNexa platform features two distinct storage environments:
 
 * **Write Cluster:** Employed by the ingestion component to store data from the Jobs. This part of the system handles write operations to update and enrich the database with the most recent information obtained from external endpoints.
 
+![picture](doc/images/mariadb_galera_picture.png)
+
 ## Benefits of the Ingestion Process
 
 * **Maintaining Updated Data:** Ensures that the information provided to users is current, accurate, and comprehensive.
