@@ -79,13 +79,16 @@ internal class UserServiceImpl(
                                 .withExpiresAt(Date(System.currentTimeMillis() + property("jwt.expiration").getString().toLong()))
                                 .sign(Algorithm.HMAC256(property("jwt.secret").getString()))
                         } )
-                }
-                    ?: throw AppException.InvalidCredentialsException("Invalid credentials!")
+                } ?: throw AppException.InvalidCredentialsException("Invalid credentials!")
             }
-        } catch (e: Exception) {
+        }  catch (e: Exception) {
             e.printStackTrace()
-            log.debug("USES (signIn) An exception occurred: ${e.message ?: "Unknown error"}")
-            throw AppException.InternalServerError("An error occurred while user signing.")
+            throw if (e !is AppException) {
+                log.debug("USES (signIn) An exception occurred: ${e.message ?: "Unknown error"}")
+                AppException.InternalServerError("An error occurred while user signing.")
+            } else {
+                e
+            }
         }
     }
 
@@ -104,13 +107,15 @@ internal class UserServiceImpl(
     override suspend fun getUserProfile(uuid: UUID): UserResponseDTO = withContext(Dispatchers.IO) {
         try {
             userRepository.getUserById(uuid)?.let(mapper::map)
-                ?: throw AppException.NotFoundException.UserNotFoundException(
-                    "User with code '$uuid' not found."
-                )
+                ?: throw AppException.NotFoundException.UserNotFoundException("User with code '$uuid' not found.")
         } catch (e: Exception) {
             e.printStackTrace()
-            log.debug("USES (getUserProfile) An exception occurred: ${e.message ?: "Unknown error"}")
-            throw AppException.InternalServerError("An error occurred while finding user by UUID.")
+            throw if (e !is AppException) {
+                log.debug("USES (getUserProfile) An exception occurred: ${e.message ?: "Unknown error"}")
+                AppException.InternalServerError("An error occurred while finding user by UUID.")
+            } else {
+                e
+            }
         }
     }
 

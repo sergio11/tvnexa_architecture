@@ -58,8 +58,12 @@ internal class CategoryServiceImpl(
                 throw AppException.NotFoundException.CategoryNotFoundException("Category with ID '$id' not found.")
         } catch (e: Exception) {
             e.printStackTrace()
-            log.debug("CS (findById) An exception occurred: ${e.message ?: "Unknown error"}")
-            throw AppException.InternalServerError("An error occurred while finding category by ID.")
+            throw if(e !is AppException) {
+                log.debug("CS (findById) An exception occurred: ${e.message ?: "Unknown error"}")
+                AppException.InternalServerError("An error occurred while finding category by ID.")
+            } else {
+                e
+            }
         }
     }
 }
