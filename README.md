@@ -133,3 +133,17 @@ As follow, I include some images that help us to understand the performance of e
 ![picture](doc/images/picture_2.PNG)
 ![picture](doc/images/picture_3.PNG)
 ![picture](doc/images/picture_4.PNG)
+
+
+## Contribution
+Contributions to TvNexa are highly encouraged! If you're interested in adding new features, resolving bugs, or enhancing the project's functionality, please feel free to submit pull requests.
+
+## Credits
+TvNexa Architecture is developed and maintained by Sergio Sánchez Sánchez (Dream Software). Special thanks to the open-source community and the contributors who have made this project possible. If you have any questions, feedback, or suggestions, feel free to reach out at dreamsoftware92@gmail.com.
+
+ ## Visitors Count
+ 
+ ## Please Share & Star the repository to keep me motivated.
+  <a href = "https://github.com/sergio11/tvnexa_architecture/stargazers">
+     <img src = "https://img.shields.io/github/stars/sergio11/tvnexa_architecture" />
+  </a>
