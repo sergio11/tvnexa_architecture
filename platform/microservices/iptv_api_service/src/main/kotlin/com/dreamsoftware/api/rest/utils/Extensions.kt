@@ -4,6 +4,7 @@ import com.dreamsoftware.api.domain.model.ErrorType
 import com.dreamsoftware.api.domain.model.toErrorResponseDTO
 import com.dreamsoftware.api.rest.dto.response.ApiResponseDTO
 import io.ktor.server.application.*
+import io.ktor.server.config.*
 import io.ktor.server.response.*
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
@@ -66,3 +67,14 @@ fun ApplicationCall.getLocalDateTimeQueryParamOrNull(paramName: String): LocalDa
             LocalDateTime.parse(it, DateTimeFormatter.ISO_DATE_TIME)
         }.getOrNull()
     }
+
+/**
+ * Extension function to retrieve a String property from the application configuration.
+ *
+ * This function is an extension on the `ApplicationConfig` class and is used to obtain a String property
+ * identified by the specified `name` from the application configuration.
+ *
+ * @param name The name of the property to retrieve.
+ * @return Returns the String value of the specified property.
+ */
+fun ApplicationConfig.getStringProperty(name: String): String = property(name).getString()

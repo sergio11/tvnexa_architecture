@@ -25,4 +25,9 @@ fun StatusPagesConfig.configureCommonStatusPages() {
             HttpStatusCode.BadRequest,
             ErrorType.INTERNAL_SERVER_ERROR.toErrorResponseDTO().copy(details = cause.message))
     }
+    exception<AppException.JwtAuthenticationException> { call, cause ->
+        call.respond(
+            HttpStatusCode.Forbidden,
+            ErrorType.UNAUTHORIZED_CLIENT_EXCEPTION.toErrorResponseDTO().copy(details = cause.message))
+    }
 }
