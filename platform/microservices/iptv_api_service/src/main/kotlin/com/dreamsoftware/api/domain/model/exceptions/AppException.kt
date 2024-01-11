@@ -13,4 +13,5 @@ sealed class AppException(message: String? = null, cause: Throwable? = null) : E
     class InvalidCredentialsException(message: String? = null, cause: Throwable? = null) : NotFoundException(message, cause)
     class UserAlreadyExistsException(message: String? = null, cause: Throwable? = null) : NotFoundException(message, cause)
     class InternalServerError(message: String? = null, cause: Throwable? = null) : AppException(message, cause)
+    class JwtAuthenticationException(message: String? = null, cause: Throwable? = null) : AppException(message, cause)
 }

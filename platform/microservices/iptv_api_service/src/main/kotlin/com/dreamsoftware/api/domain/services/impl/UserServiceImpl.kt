@@ -10,6 +10,7 @@ import com.dreamsoftware.api.rest.dto.request.SignUpRequestDTO
 import com.dreamsoftware.api.rest.dto.request.UpdatedUserRequestDTO
 import com.dreamsoftware.api.rest.dto.response.AuthResponseDTO
 import com.dreamsoftware.api.rest.dto.response.UserResponseDTO
+import com.dreamsoftware.api.rest.utils.getStringProperty
 import com.dreamsoftware.core.ISimpleMapper
 import com.dreamsoftware.data.database.entity.SaveUserEntity
 import com.dreamsoftware.data.database.entity.UserEntity
@@ -35,6 +36,10 @@ internal class UserServiceImpl(
 ): IUserService {
 
     private val log = LoggerFactory.getLogger(this::class.java)
+
+    private companion object {
+        val EXPIRATION_TIME_IN_MILLIS = 48 * 60 * 60 * 1000L
+    }
 
     /**
      * Registers a new user based on the provided sign-up request.
@@ -83,13 +88,13 @@ internal class UserServiceImpl(
                         user = userDTO,
                         token =  with(environment.config) {
                             JWT.create()
-                                .withAudience(property("jwt.audience").getString())
-                                .withIssuer(property("jwt.issuer").getString())
+                                .withAudience(getStringProperty("jwt.audience"))
+                                .withIssuer(getStringProperty("jwt.issuer"))
                                 .withClaim("username", userDTO.username)
                                 .withClaim("firstName", userDTO.firstName)
                                 .withClaim("lastName", userDTO.lastName)
-                                .withExpiresAt(Date(System.currentTimeMillis() + property("jwt.expiration").getString().toLong()))
-                                .sign(Algorithm.HMAC256(property("jwt.secret").getString()))
+                                .withExpiresAt(Date(System.currentTimeMillis() + EXPIRATION_TIME_IN_MILLIS))
+                                .sign(Algorithm.HMAC256(getStringProperty("jwt.secret")))
                         } )
                 } ?: throw AppException.InvalidCredentialsException("Invalid credentials!")
             }
