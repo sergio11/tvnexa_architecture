@@ -47,8 +47,20 @@ internal class UserServiceImpl(
         AppException.InternalServerError::class,
         AppException.UserAlreadyExistsException::class
     )
-    override suspend fun signUp(signUpRequest: SignUpRequestDTO) = withContext(Dispatchers.IO) {
-        userRepository.createUser(saveUserMapper.map(signUpRequest))
+    override suspend fun signUp(signUpRequest: SignUpRequestDTO): Unit = withContext(Dispatchers.IO) {
+        with(userRepository) {
+            if(with(signUpRequest) { existsByUsernameOrEmail(username, email) }) {
+                throw AppException.UserAlreadyExistsException("User already exists")
+            } else {
+                try {
+                    createUser(saveUserMapper.map(signUpRequest))
+                } catch (e: Exception) {
+                    e.printStackTrace()
+                    log.debug("USES (signUp) An exception occurred: ${e.message ?: "Unknown error"}")
+                    throw AppException.InternalServerError("An error occurred while user signUp.")
+                }
+            }
+        }
     }
 
     /**
