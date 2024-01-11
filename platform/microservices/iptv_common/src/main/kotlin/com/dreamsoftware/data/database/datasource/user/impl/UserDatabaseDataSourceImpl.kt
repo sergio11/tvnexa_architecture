@@ -10,6 +10,7 @@ import com.dreamsoftware.data.database.datasource.user.IUserDatabaseDataSource
 import com.dreamsoftware.data.database.entity.SaveUserEntity
 import com.dreamsoftware.data.database.entity.UserEntity
 import org.jetbrains.exposed.sql.and
+import org.jetbrains.exposed.sql.or
 import org.jetbrains.exposed.sql.statements.UpdateBuilder
 import java.util.UUID
 
@@ -58,5 +59,18 @@ internal class UserDatabaseDataSourceImpl(
      */
     override suspend fun findByEmailAndPassword(email: String, password: String): UserEntity? = execQuery {
         entityDAO.find { (UserTable.email eq email) and (UserTable.password eq password.hash256()) }.singleOrNull()?.let(mapper::map)
+    }
+
+    /**
+     * Checks if a user exists in the system based on the provided username and email.
+     *
+     * This method verifies the existence of a user by comparing both the username and email.
+     *
+     * @param username The username of the user to be checked.
+     * @param email The email of the user to be checked.
+     * @return Returns `true` if there is a user with the provided username and email; otherwise, returns `false`.
+     */
+    override suspend fun existsByUsernameOrEmail(username: String, email: String): Boolean = execQuery {
+        entityDAO.find { (UserTable.email eq email) or (UserTable.username eq username) }.count() > 0
     }
 }

@@ -30,6 +30,19 @@ internal class UserRepositoryImpl(
     }
 
     /**
+     * Checks if a user exists in the system based on the provided username and email.
+     *
+     * This method verifies the existence of a user by comparing both the username and email.
+     *
+     * @param username The username of the user to be checked.
+     * @param email The email of the user to be checked.
+     * @return Returns `true` if there is a user with the provided username and email; otherwise, returns `false`.
+     */
+    override suspend fun existsByUsernameOrEmail(username: String, email: String): Boolean = withContext(Dispatchers.IO) {
+        userDatabaseDataSource.existsByUsernameOrEmail(username, email)
+    }
+
+    /**
      * Creates a new user based on the provided user data.
      *
      * @param user The user data to be created.

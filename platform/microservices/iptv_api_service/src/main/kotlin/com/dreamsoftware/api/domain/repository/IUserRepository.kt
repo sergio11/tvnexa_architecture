@@ -10,10 +10,20 @@ import java.util.UUID
 interface IUserRepository {
 
     /**
+     * Checks if a user exists in the system based on the provided username and email.
+     *
+     * This method verifies the existence of a user by comparing both the username and email.
+     *
+     * @param username The username of the user to be checked.
+     * @param email The email of the user to be checked.
+     * @return Returns `true` if there is a user with the provided username and email; otherwise, returns `false`.
+     */
+    suspend fun existsByUsernameOrEmail(username: String, email: String): Boolean
+
+    /**
      * Creates a new user in the system.
      *
      * @param user User information to create.
-     * @return The ID of the newly created user.
      */
     suspend fun createUser(user: SaveUserEntity)
 

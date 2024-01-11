@@ -20,4 +20,10 @@ fun StatusPagesConfig.configureUsersStatusPages() {
             ErrorType.INVALID_CREDENTIALS.toErrorResponseDTO()
         )
     }
+    exception<AppException.UserAlreadyExistsException> { call, _ ->
+        call.respond(
+            HttpStatusCode.BadRequest,
+            ErrorType.USER_ALREADY_EXISTS.toErrorResponseDTO()
+        )
+    }
 }
