@@ -88,6 +88,7 @@ internal class UserServiceImpl(
                         user = userDTO,
                         token =  with(environment.config) {
                             JWT.create()
+                                .withSubject(userDTO.uuid)
                                 .withAudience(getStringProperty("jwt.audience"))
                                 .withIssuer(getStringProperty("jwt.issuer"))
                                 .withClaim("username", userDTO.username)

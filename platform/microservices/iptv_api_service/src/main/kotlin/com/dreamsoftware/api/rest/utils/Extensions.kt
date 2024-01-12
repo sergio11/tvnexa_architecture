@@ -4,10 +4,14 @@ import com.dreamsoftware.api.domain.model.ErrorType
 import com.dreamsoftware.api.domain.model.toErrorResponseDTO
 import com.dreamsoftware.api.rest.dto.response.ApiResponseDTO
 import io.ktor.server.application.*
+import io.ktor.server.auth.*
+import io.ktor.server.auth.jwt.*
 import io.ktor.server.config.*
+import io.ktor.server.plugins.*
 import io.ktor.server.response.*
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
+import java.util.UUID
 
 /**
  * Generates a success response for the API call.
@@ -78,3 +82,12 @@ fun ApplicationCall.getLocalDateTimeQueryParamOrNull(paramName: String): LocalDa
  * @return Returns the String value of the specified property.
  */
 fun ApplicationConfig.getStringProperty(name: String): String = property(name).getString()
+
+
+/**
+ * Extension function for [ApplicationCall] to fetch the authenticated user's UUID from a JWT token.
+ *
+ * @return The [UUID] of the authenticated user if present, or null if the user is not authenticated or the JWT subject is not a valid UUID.
+ */
+fun ApplicationCall.fetchAuthUserUuidOrThrow(): UUID = authentication.principal<JWTPrincipal>()?.subject?.let(UUID::fromString)
+    ?: throw BadRequestException("Authorization header can not be found")
