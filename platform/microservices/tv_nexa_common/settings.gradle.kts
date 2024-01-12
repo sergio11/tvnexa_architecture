@@ -1,0 +1,1 @@
+rootProject.name = "com.dreamsoftware.tvnexa.tv_nexa_common"

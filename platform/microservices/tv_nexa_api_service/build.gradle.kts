@@ -59,7 +59,7 @@ dependencies {
     implementation("io.ktor:ktor-server-status-pages-jvm:$ktor_version")
     implementation("io.ktor:ktor-server-request-validation:$ktor_version")
     // Import common module
-    implementation(project(":iptv_common"))
+    implementation(project(":tv_nexa_common"))
 
     // Redis Java client designed for performance and ease of use.
     implementation("redis.clients:jedis:$jedis_client_version")

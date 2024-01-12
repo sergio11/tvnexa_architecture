@@ -1,4 +1,4 @@
-task default: %w[iptv:deploy]
+task default: %w[tvnexa:deploy]
 
 namespace :tvnexa do
 

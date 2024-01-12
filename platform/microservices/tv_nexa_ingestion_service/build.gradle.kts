@@ -26,7 +26,7 @@ application {
 
 ktor {
     fatJar {
-        archiveFileName.set("iptv_ingestion_service.jar")
+        archiveFileName.set("tv_nexa_ingestion_service.jar")
     }
 }
 
@@ -59,7 +59,7 @@ dependencies {
     implementation("com.fasterxml.jackson.dataformat:jackson-dataformat-xml:2.14.2")
 
     // Import common module
-    implementation(project(":iptv_common"))
+    implementation(project(":tv_nexa_common"))
 
     // Quartz, for CRON
     implementation("org.quartz-scheduler:quartz:$quartz_version")
