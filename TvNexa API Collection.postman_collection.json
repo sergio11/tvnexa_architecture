@@ -1,0 +1,428 @@
+{
+	"info": {
+		"_postman_id": "ae17bf58-eea1-426b-b4d5-88177ee8e38e",
+		"name": "TvNexa API Collection",
+		"description": "Collection of endpoints for the TvNexa API",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "23656589"
+	},
+	"item": [
+		{
+			"name": "Categories",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://127.0.0.1:6969/api/v1/categories",
+					"protocol": "http",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "6969",
+					"path": [
+						"api",
+						"v1",
+						"categories"
+					]
+				},
+				"description": "Retrieve all categories"
+			},
+			"response": []
+		},
+		{
+			"name": "Category by ID",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://127.0.0.1:6969/api/v1/categories/{categoryId}",
+					"protocol": "http",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "6969",
+					"path": [
+						"api",
+						"v1",
+						"categories",
+						"{categoryId}"
+					]
+				},
+				"description": "Retrieve a category by its ID"
+			},
+			"response": []
+		},
+		{
+			"name": "Regions",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://127.0.0.1:6969/api/v1/regions/",
+					"protocol": "http",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "6969",
+					"path": [
+						"api",
+						"v1",
+						"regions",
+						""
+					]
+				},
+				"description": "Retrieve all regions"
+			},
+			"response": []
+		},
+		{
+			"name": "Region by Code",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://127.0.0.1:6969/api/v1/regions/{regionCode}",
+					"protocol": "http",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "6969",
+					"path": [
+						"api",
+						"v1",
+						"regions",
+						"{regionCode}"
+					]
+				},
+				"description": "Retrieve a region by its code"
+			},
+			"response": []
+		},
+		{
+			"name": "Countries",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://127.0.0.1:6969/api/v1/countries/",
+					"protocol": "http",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "6969",
+					"path": [
+						"api",
+						"v1",
+						"countries",
+						""
+					]
+				},
+				"description": "Retrieve all countries"
+			},
+			"response": []
+		},
+		{
+			"name": "Country by Code",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://127.0.0.1:6969/api/v1/countries/{countryCode}",
+					"protocol": "http",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "6969",
+					"path": [
+						"api",
+						"v1",
+						"countries",
+						"{countryCode}"
+					]
+				},
+				"description": "Retrieve a country by its code"
+			},
+			"response": []
+		},
+		{
+			"name": "Channels",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://127.0.0.1:6969/api/v1/channels/",
+					"protocol": "http",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "6969",
+					"path": [
+						"api",
+						"v1",
+						"channels",
+						""
+					]
+				},
+				"description": "Retrieve all channels"
+			},
+			"response": []
+		},
+		{
+			"name": "Channel by ID",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://127.0.0.1:6969/api/v1/channels/{channelId}",
+					"protocol": "http",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "6969",
+					"path": [
+						"api",
+						"v1",
+						"channels",
+						"{channelId}"
+					]
+				},
+				"description": "Retrieve a channel by its ID"
+			},
+			"response": []
+		},
+		{
+			"name": "EPG by Channel ID",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://127.0.0.1:6969/api/v1/epg/channel-programmes/{channelId}?startAt={{startAt}}&endAt={{endAt}}",
+					"protocol": "http",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "6969",
+					"path": [
+						"api",
+						"v1",
+						"epg",
+						"channel-programmes",
+						"{channelId}"
+					],
+					"query": [
+						{
+							"key": "startAt",
+							"value": "{{startAt}}"
+						},
+						{
+							"key": "endAt",
+							"value": "{{endAt}}"
+						}
+					]
+				},
+				"description": "Retrieve EPG data by channel ID within a date range"
+			},
+			"response": []
+		},
+		{
+			"name": "EPG by Country Code",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://127.0.0.1:6969/api/v1/epg/country-programmes/{countryCode}?startAt={{startAt}}&endAt={{endAt}}",
+					"protocol": "http",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "6969",
+					"path": [
+						"api",
+						"v1",
+						"epg",
+						"country-programmes",
+						"{countryCode}"
+					],
+					"query": [
+						{
+							"key": "startAt",
+							"value": "{{startAt}}"
+						},
+						{
+							"key": "endAt",
+							"value": "{{endAt}}"
+						}
+					]
+				},
+				"description": "Retrieve EPG data by country code within a date range"
+			},
+			"response": []
+		},
+		{
+			"name": "Subdivisions",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://127.0.0.1:6969/api/v1/subdivisions/",
+					"protocol": "http",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "6969",
+					"path": [
+						"api",
+						"v1",
+						"subdivisions",
+						""
+					]
+				},
+				"description": "Retrieve all subdivisions"
+			},
+			"response": []
+		},
+		{
+			"name": "Subdivision by Code",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://127.0.0.1:6969/api/v1/subdivisions/{subdivisionCode}",
+					"protocol": "http",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "6969",
+					"path": [
+						"api",
+						"v1",
+						"subdivisions",
+						"{subdivisionCode}"
+					]
+				},
+				"description": "Retrieve a subdivision by its code"
+			},
+			"response": []
+		},
+		{
+			"name": "SignIn Users",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n \"email\": \"ssanchez@tvnexa.com\",\r\n \"password\": 12345678\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://127.0.0.1:6969/api/v1/accounts/signin",
+					"protocol": "http",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "6969",
+					"path": [
+						"api",
+						"v1",
+						"accounts",
+						"signin"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "SignUp User",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"username\": \"Sergio11\",\r\n    \"password\": \"12345678\",\r\n    \"email\": \"ssanchez@tvnexa.com\",\r\n    \"firstName\": \"Sergio\",\r\n    \"lastName\": \"Sánchez\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://127.0.0.1:6969/api/v1/accounts/signup",
+					"protocol": "http",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "6969",
+					"path": [
+						"api",
+						"v1",
+						"accounts",
+						"signup"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get User Profile",
+			"request": {
+				"method": "GET",
+				"header": []
+			},
+			"response": []
+		},
+		{
+			"name": "Update User",
+			"request": {
+				"method": "GET",
+				"header": []
+			},
+			"response": []
+		}
+	]
+}
