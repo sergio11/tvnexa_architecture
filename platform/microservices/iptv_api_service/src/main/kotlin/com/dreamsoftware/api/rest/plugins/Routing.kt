@@ -16,8 +16,9 @@ fun Application.configureRouting() {
                 regionsRoutes()
                 subdivisionRoutes()
                 epgChannelProgrammeRoutes()
+                profileRoutes()
             }
-            usersRoutes()
+            accountsRoutes()
         }
     }
 }
