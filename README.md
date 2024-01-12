@@ -125,6 +125,34 @@ The available tasks are detailed below (rake --task)
 
 To start the platform make sure you have Ruby installed, go to the root directory of the project and run the rake deploy task, this task will carry out a series of preliminary checks, discard images and volumes that are no longer necessary and also proceed to download all the images and the initialization of the containers.
 
+## Containers Ports
+
+In this table, you can view the ports assigned to each service for accessing web tools or other monitoring purposes.
+
+| Service                | Port(s)                                      | Description                                      |
+|------------------------|----------------------------------------------|--------------------------------------------------|
+| haproxy                | 9090 (HAProxy stats), 8404                   | Load balancer for API services                   |
+| ftp_repository         | 20, 21, 22, 40000-40009 (passive mode range) | FTP configuration repository                    |
+| tv_nexa_api_service_1  | (No specific ports exposed)                  | API service #1                                   |
+| tv_nexa_api_service_2  | (No specific ports exposed)                  | API service #2                                   |
+| tv_nexa_api_service_3  | (No specific ports exposed)                  | API service #3                                   |
+| redis-node-1           | 6379 (6379), 16379                           | Redis Node 1                                    |
+| redis-node-2           | 6380 (6380), 16380                           | Redis Node 2                                    |
+| redis-node-3           | 6381 (6381), 16381                           | Redis Node 3                                    |
+| redis-node-4           | 6382 (6382), 16382                           | Redis Node 4                                    |
+| redis-node-5           | 6383 (6383), 16383                           | Redis Node 5                                    |
+| redis-node-6           | 6384 (6384), 16384                           | Redis Node 6                                    |
+| redis-node-7           | 6385 (6385), 16385                           | Redis Node 7                                    |
+| redis-node-8           | 6386 (6386), 16386                           | Redis Node 8                                    |
+| mariadb_master_1       | (No specific ports exposed)                  | MariaDB Master Node 1                           |
+| mariadb_master_2       | (No specific ports exposed)                  | MariaDB Master Node 2                           |
+| mariadb_master_3       | (No specific ports exposed)                  | MariaDB Master Node 3                           |
+| mariadb_slave_1        | (No specific ports exposed)                  | MariaDB Slave Node 1                            |
+| mariadb_slave_2        | (No specific ports exposed)                  | MariaDB Slave Node 2                            |
+| mariadb_slave_3        | (No specific ports exposed)                  | MariaDB Slave Node 3                            |
+| mariadb_haproxy        | 8404, 3306, 3307                             | HAProxy for MariaDB Cluster                     |
+| mariadb_web_admin      | 8081                                         | phpMyAdmin for MariaDB Cluster                  |
+
 ## Some screenshots
 
 As follow, I include some images that help us to understand the performance of each part of system
