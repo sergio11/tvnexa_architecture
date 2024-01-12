@@ -10,11 +10,35 @@ import io.ktor.server.routing.*
 import org.koin.ktor.ext.inject
 import java.time.LocalDateTime
 
+/**
+ * Class representing the routes related to Electronic Program Guide (EPG) channel programmes in the application.
+ * These routes include functionalities such as retrieving EPG data based on channel ID and date range,
+ * as well as retrieving EPG data based on country code and date range.
+ *
+ * @property epgChannelProgrammeService An instance of the [IEpgChannelProgrammeService] interface
+ * for handling EPG channel programme-related operations.
+ */
 fun Route.epgChannelProgrammeRoutes() {
     val epgChannelProgrammeService by inject<IEpgChannelProgrammeService>()
 
+    /**
+     * Defines the routes under the "/epg" endpoint for EPG channel programme-related operations.
+     */
     route("/epg") {
-        // Endpoint to retrieve programs by channel
+
+        /**
+         * Endpoint for retrieving EPG data based on channel ID and date range.
+         * Accepts GET requests to "/epg/channel-programmes/{channelId}" and retrieves EPG data
+         * using the [epgChannelProgrammeService.findByChannelIdAndDateRange] method.
+         * Generates a success response with a code of 4000, a message indicating successful EPG data retrieval by channel,
+         * and data containing the list of EPG programmes.
+         *
+         * Path Parameter:
+         * - channelId: The ID or code of the channel for which EPG data is to be retrieved.
+         * Query Parameters:
+         * - startAt: The start date and time of the date range for EPG data retrieval.
+         * - endAt: The end date and time of the date range for EPG data retrieval.
+         */
         get("/channel-programmes/{channelId}") {
             with(call) {
                 handleEpgProgrammesRequest { idOrCode, startAt, endAt ->
@@ -28,7 +52,19 @@ fun Route.epgChannelProgrammeRoutes() {
             }
         }
 
-        // Endpoint to retrieve programs by country
+        /**
+         * Endpoint for retrieving EPG data based on country code and date range.
+         * Accepts GET requests to "/epg/country-programmes/{countryCode}" and retrieves EPG data
+         * using the [epgChannelProgrammeService.findByCountryAndDate] method.
+         * Generates a success response with a code of 4001, a message indicating successful EPG data retrieval by country,
+         * and data containing the list of EPG programmes.
+         *
+         * Path Parameter:
+         * - countryCode: The code of the country for which EPG data is to be retrieved.
+         * Query Parameters:
+         * - startAt: The start date and time of the date range for EPG data retrieval.
+         * - endAt: The end date and time of the date range for EPG data retrieval.
+         */
         get("/country-programmes/{countryCode}") {
             with(call) {
                 handleEpgProgrammesRequest { idOrCode, startAt, endAt ->
