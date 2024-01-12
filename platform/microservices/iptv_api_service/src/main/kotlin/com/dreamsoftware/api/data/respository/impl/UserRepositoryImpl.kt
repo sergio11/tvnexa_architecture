@@ -5,7 +5,8 @@ import com.dreamsoftware.api.data.respository.impl.core.SupportRepository
 import com.dreamsoftware.api.domain.repository.IUserRepository
 import com.dreamsoftware.api.utils.toJSON
 import com.dreamsoftware.data.database.datasource.user.IUserDatabaseDataSource
-import com.dreamsoftware.data.database.entity.SaveUserEntity
+import com.dreamsoftware.data.database.entity.CreateUserEntity
+import com.dreamsoftware.data.database.entity.UpdateUserEntity
 import com.dreamsoftware.data.database.entity.UserEntity
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
@@ -43,12 +44,34 @@ internal class UserRepositoryImpl(
     }
 
     /**
+     * Asynchronously checks if a user with the specified [username] exists in the system.
+     *
+     * @param username The username to check for existence.
+     *
+     */
+    override suspend fun existsByUsername(username: String): Boolean = withContext(Dispatchers.IO) {
+        userDatabaseDataSource.existsByUsername(username)
+    }
+
+    /**
      * Creates a new user based on the provided user data.
      *
      * @param user The user data to be created.
      */
-    override suspend fun createUser(user: SaveUserEntity) = withContext(Dispatchers.IO) {
+    override suspend fun createUser(user: CreateUserEntity) = withContext(Dispatchers.IO) {
         userDatabaseDataSource.save(user)
+    }
+
+    /**
+     * Asynchronously updates a user based on the provided [UpdateUserEntity].
+     *
+     * @param uuid ID of the user to fetch.
+     * @param user The [UpdateUserEntity] containing the updated user information.
+     */
+    override suspend fun updateUser(uuid: UUID, user: UpdateUserEntity)  = withContext(Dispatchers.IO) {
+        userDatabaseDataSource.updateProfile(uuid, user).also {
+            cacheDatasource.delete(USER_CACHE_KEY_PREFIX + uuid.toString())
+        }
     }
 
     /**

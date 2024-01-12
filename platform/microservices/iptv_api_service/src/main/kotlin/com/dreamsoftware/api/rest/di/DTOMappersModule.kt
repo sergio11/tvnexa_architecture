@@ -18,4 +18,5 @@ val dtoMappersModule = module {
     mapper { SubdivisionResponseDtoMapper(getMapper()) }
     mapper { UserResponseDtoMapper() }
     mapper { SaveUserDtoMapper() }
+    mapper { UpdateUserDtoMapper() }
 }

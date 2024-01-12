@@ -1,7 +1,8 @@
 package com.dreamsoftware.data.database.datasource.user
 
 import com.dreamsoftware.data.database.datasource.core.ISupportDatabaseDataSource
-import com.dreamsoftware.data.database.entity.SaveUserEntity
+import com.dreamsoftware.data.database.entity.CreateUserEntity
+import com.dreamsoftware.data.database.entity.UpdateUserEntity
 import com.dreamsoftware.data.database.entity.UserEntity
 import java.util.*
 
@@ -9,7 +10,7 @@ import java.util.*
  * Interface representing a user database data source.
  * Extends ISupportDatabaseDataSource with types Long, SaveUserEntity, and UserEntity.
  */
-interface IUserDatabaseDataSource : ISupportDatabaseDataSource<UUID, SaveUserEntity, UserEntity> {
+interface IUserDatabaseDataSource : ISupportDatabaseDataSource<UUID, CreateUserEntity, UserEntity> {
 
     /**
      * Retrieves a user entity based on the provided username.
@@ -38,4 +39,19 @@ interface IUserDatabaseDataSource : ISupportDatabaseDataSource<UUID, SaveUserEnt
      * @return Returns `true` if there is a user with the provided username and email; otherwise, returns `false`.
      */
     suspend fun existsByUsernameOrEmail(username: String, email: String): Boolean
+
+    /**
+     * Asynchronously checks if a user with the specified [username] exists in the system.
+     *
+     * @param username The username to check for existence.
+     * **/
+    suspend fun existsByUsername(username: String): Boolean
+
+    /**
+     * Asynchronously updates the profile of the user with the specified [userId] based on the provided [UpdateUserEntity].
+     *
+     * @param userId The unique identifier (UUID) of the user whose profile is to be updated.
+     * @param data The [UpdateUserEntity] containing the updated profile information.
+     */
+    suspend fun updateProfile(userId: UUID, data: UpdateUserEntity)
 }

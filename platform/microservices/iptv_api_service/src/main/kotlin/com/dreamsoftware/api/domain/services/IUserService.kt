@@ -19,7 +19,13 @@ interface IUserService {
      *
      * @param signUpRequest Data representing sign-up request details.
      * @return An [AuthResponseDTO] containing user token and profile details upon successful sign-up.
+     * @throws AppException.InternalServerError if an internal server error occurs during user registration.
+     * @throws AppException.UserAlreadyExistsException if the user already exists.
      */
+    @Throws(
+        AppException.InternalServerError::class,
+        AppException.UserAlreadyExistsException::class
+    )
     suspend fun signUp(signUpRequest: SignUpRequestDTO)
 
     /**
@@ -27,6 +33,8 @@ interface IUserService {
      *
      * @param signInRequest Data representing sign-in request details.
      * @return An [AuthResponseDTO] containing user token and profile details upon successful sign-in.
+     * @throws AppException.InternalServerError if an internal server error occurs during user sign-in.
+     * @throws AppException.InvalidCredentialsException if the provided credentials are invalid.
      */
     @Throws(
         AppException.InternalServerError::class,
@@ -39,6 +47,8 @@ interface IUserService {
      *
      * @param uuid The unique identifier of the user.
      * @return A [UserResponseDTO] containing user profile details.
+     * @throws AppException.InternalServerError if an internal server error occurs while fetching the user profile.
+     * @throws AppException.NotFoundException.UserNotFoundException if the user with the given UUID is not found.
      */
     @Throws(
         AppException.InternalServerError::class,
@@ -53,5 +63,10 @@ interface IUserService {
      * @param updatedUser Data representing updated user profile details.
      * @return A [UserResponseDTO] containing updated user profile details.
      */
+    @Throws(
+        AppException.InternalServerError::class,
+        AppException.NotFoundException.UserNotFoundException::class,
+        AppException.UserAlreadyExistsException::class
+    )
     suspend fun updateUserProfile(uuid: UUID, updatedUser: UpdatedUserRequestDTO): UserResponseDTO
 }
