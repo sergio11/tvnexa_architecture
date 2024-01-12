@@ -7,11 +7,13 @@ import com.dreamsoftware.data.database.dao.UserEntityDAO
 import com.dreamsoftware.data.database.dao.UserTable
 import com.dreamsoftware.data.database.datasource.core.SupportDatabaseDataSource
 import com.dreamsoftware.data.database.datasource.user.IUserDatabaseDataSource
-import com.dreamsoftware.data.database.entity.SaveUserEntity
+import com.dreamsoftware.data.database.entity.CreateUserEntity
+import com.dreamsoftware.data.database.entity.UpdateUserEntity
 import com.dreamsoftware.data.database.entity.UserEntity
 import org.jetbrains.exposed.sql.and
 import org.jetbrains.exposed.sql.or
 import org.jetbrains.exposed.sql.statements.UpdateBuilder
+import org.jetbrains.exposed.sql.update
 import java.util.UUID
 
 /**
@@ -22,7 +24,7 @@ import java.util.UUID
 internal class UserDatabaseDataSourceImpl(
     database: IDatabaseFactory,
     mapper: ISimpleMapper<UserEntityDAO, UserEntity>
-) : SupportDatabaseDataSource<UUID, UserEntityDAO, SaveUserEntity, UserEntity>(
+) : SupportDatabaseDataSource<UUID, UserEntityDAO, CreateUserEntity, UserEntity>(
     database,
     mapper,
     UserEntityDAO
@@ -32,7 +34,7 @@ internal class UserDatabaseDataSourceImpl(
      * Overrides the mapping of entity fields to database columns for saving/updating entities.
      * @param entityToSave SaveUserEntity object to map to the database columns.
      */
-    override fun UpdateBuilder<Int>.onMapEntityToSave(entityToSave: SaveUserEntity) = with(entityToSave) {
+    override fun UpdateBuilder<Int>.onMapEntityToSave(entityToSave: CreateUserEntity) = with(entityToSave) {
         this@onMapEntityToSave[UserTable.firstName] = firstName
         this@onMapEntityToSave[UserTable.lastName] = lastName
         this@onMapEntityToSave[UserTable.email] = email
@@ -72,5 +74,30 @@ internal class UserDatabaseDataSourceImpl(
      */
     override suspend fun existsByUsernameOrEmail(username: String, email: String): Boolean = execQuery {
         entityDAO.find { (UserTable.email eq email) or (UserTable.username eq username) }.count() > 0
+    }
+
+    /**
+     * Asynchronously checks if a user with the specified [username] exists in the system.
+     *
+     * @param username The username to check for existence.
+     * */
+    override suspend fun existsByUsername(username: String): Boolean = execQuery {
+        entityDAO.find { UserTable.username eq username }.count() > 0
+    }
+
+    /**
+     * Asynchronously updates the profile of the user with the specified [userId] based on the provided [UpdateUserEntity].
+     *
+     * @param userId The unique identifier (UUID) of the user whose profile is to be updated.
+     * @param data The [UpdateUserEntity] containing the updated profile information.
+     */
+    override suspend fun updateProfile(userId: UUID, data: UpdateUserEntity): Unit = execWrite {
+        UserTable.update({ UserTable.id eq userId }) { statement ->
+            with(data) {
+                firstName?.let { statement[UserTable.firstName] = it }
+                lastName?.let { statement[UserTable.lastName] = it }
+                username?.let { statement[UserTable.username] = it }
+            }
+        }
     }
 }

@@ -12,7 +12,8 @@ import com.dreamsoftware.api.rest.dto.response.AuthResponseDTO
 import com.dreamsoftware.api.rest.dto.response.UserResponseDTO
 import com.dreamsoftware.api.rest.utils.getStringProperty
 import com.dreamsoftware.core.ISimpleMapper
-import com.dreamsoftware.data.database.entity.SaveUserEntity
+import com.dreamsoftware.data.database.entity.CreateUserEntity
+import com.dreamsoftware.data.database.entity.UpdateUserEntity
 import com.dreamsoftware.data.database.entity.UserEntity
 import io.ktor.server.application.*
 import kotlinx.coroutines.Dispatchers
@@ -26,19 +27,21 @@ import java.util.*
  * @property userRepository The repository responsible for user-related data operations.
  * @property mapper The mapper used to map UserEntity objects to UserResponseDTO objects.
  * @property environment The Ktor application environment for accessing configurations.
- * @property saveUserMapper The mapper used to map SignUpRequestDTO to SaveUserEntity.
+ * @property createUserMapper The mapper used to map SignUpRequestDTO to SaveUserEntity.
+ * @property updateUserMapper The mapper used to map UpdatedUserRequestDTO to UpdateUserEntity
  */
 internal class UserServiceImpl(
     private val userRepository: IUserRepository,
     private val mapper: ISimpleMapper<UserEntity, UserResponseDTO>,
     private val environment: ApplicationEnvironment,
-    private val saveUserMapper: ISimpleMapper<SignUpRequestDTO, SaveUserEntity>,
+    private val createUserMapper: ISimpleMapper<SignUpRequestDTO, CreateUserEntity>,
+    private val updateUserMapper: ISimpleMapper<UpdatedUserRequestDTO, UpdateUserEntity>,
 ): IUserService {
 
     private val log = LoggerFactory.getLogger(this::class.java)
 
     private companion object {
-        val EXPIRATION_TIME_IN_MILLIS = 48 * 60 * 60 * 1000L
+        const val EXPIRATION_TIME_IN_MILLIS = 48 * 60 * 60 * 1000L
     }
 
     /**
@@ -58,7 +61,7 @@ internal class UserServiceImpl(
                 throw AppException.UserAlreadyExistsException("User already exists")
             } else {
                 try {
-                    createUser(saveUserMapper.map(signUpRequest))
+                    createUser(createUserMapper.map(signUpRequest))
                 } catch (e: Exception) {
                     e.printStackTrace()
                     log.debug("USES (signUp) An exception occurred: ${e.message ?: "Unknown error"}")
@@ -144,7 +147,31 @@ internal class UserServiceImpl(
      * @param updatedUser The updated user information.
      * @return The updated user profile information.
      */
+    @Throws(
+        AppException.InternalServerError::class,
+        AppException.NotFoundException.UserNotFoundException::class,
+        AppException.UserAlreadyExistsException::class
+    )
     override suspend fun updateUserProfile(uuid: UUID, updatedUser: UpdatedUserRequestDTO): UserResponseDTO = withContext(Dispatchers.IO) {
-        TODO("Not yet implemented")
+        try {
+            with(userRepository) {
+                updatedUser.username?.let { newUsername ->
+                    if(existsByUsername(newUsername)) {
+                        throw AppException.UserAlreadyExistsException("User already exists")
+                    }
+                }
+                updateUser(uuid, updateUserMapper.map(updatedUser))
+                getUserById(uuid)?.let(mapper::map)
+                    ?: throw AppException.NotFoundException.UserNotFoundException("User with code '$uuid' not found.")
+            }
+        } catch (e: Exception) {
+            e.printStackTrace()
+            throw if (e !is AppException) {
+                log.debug("USES (updateUserProfile) An exception occurred: ${e.message ?: "Unknown error"}")
+                AppException.InternalServerError("An error occurred while finding user by UUID.")
+            } else {
+                e
+            }
+        }
     }
 }

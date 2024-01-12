@@ -26,12 +26,12 @@ data class UserResponseDTO(
     /**
      * The first name of the user.
      */
-    @SerialName("first_name")
+    @SerialName("firstName")
     val firstName: String,
 
     /**
      * The last name of the user.
      */
-    @SerialName("last_name")
+    @SerialName("lastName")
     val lastName: String
 )

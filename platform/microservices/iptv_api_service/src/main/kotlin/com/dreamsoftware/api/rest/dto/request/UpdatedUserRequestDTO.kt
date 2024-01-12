@@ -22,8 +22,8 @@ data class UpdatedUserRequestDTO(
     val lastName: String? = null,
 
     /**
-     * Updated email of the user.
+     * Updated username of the user.
      */
-    @SerialName("email")
-    val email: String? = null
+    @SerialName("username")
+    val username: String? = null
 )

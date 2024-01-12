@@ -1,6 +1,7 @@
 package com.dreamsoftware.api.domain.repository
 
-import com.dreamsoftware.data.database.entity.SaveUserEntity
+import com.dreamsoftware.data.database.entity.CreateUserEntity
+import com.dreamsoftware.data.database.entity.UpdateUserEntity
 import com.dreamsoftware.data.database.entity.UserEntity
 import java.util.UUID
 
@@ -21,11 +22,27 @@ interface IUserRepository {
     suspend fun existsByUsernameOrEmail(username: String, email: String): Boolean
 
     /**
+     * Asynchronously checks if a user with the specified [username] exists in the system.
+     *
+     * @param username The username to check for existence.
+     *
+     */
+    suspend fun existsByUsername(username: String): Boolean
+
+    /**
      * Creates a new user in the system.
      *
      * @param user User information to create.
      */
-    suspend fun createUser(user: SaveUserEntity)
+    suspend fun createUser(user: CreateUserEntity)
+
+    /**
+     * Asynchronously updates a user based on the provided [UpdateUserEntity].
+     *
+     * @param uuid ID of the user to fetch.
+     * @param user The [UpdateUserEntity] containing the updated user information.
+     */
+    suspend fun updateUser(uuid: UUID, user: UpdateUserEntity)
 
     /**
      * Gets a user based on their ID.

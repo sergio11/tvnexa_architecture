@@ -12,10 +12,16 @@ data class UserEntity(
     val lastName: String
 )
 
-data class SaveUserEntity(
+data class CreateUserEntity(
     val username: String,
     val password: String,
     val email: String,
     val firstName: String,
     val lastName: String
+)
+
+data class UpdateUserEntity(
+    val username: String?,
+    val firstName: String?,
+    val lastName: String?
 )
