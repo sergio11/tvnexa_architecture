@@ -30,6 +30,7 @@ epgGrabbingConfig: {
 redisClusterConfig:
   storageConfig:
     cachePrefix: "tvnexa:cache:"
+    cacheTtlInSeconds: 600
   nodes:
     - host: "192.168.1.39"
       port: 6379

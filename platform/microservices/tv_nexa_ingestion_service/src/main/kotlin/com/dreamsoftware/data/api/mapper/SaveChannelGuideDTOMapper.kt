@@ -1,9 +1,9 @@
 package com.dreamsoftware.data.api.mapper
 
 import com.dreamsoftware.core.ISimpleMapper
+import com.dreamsoftware.core.hash256
 import com.dreamsoftware.data.database.entity.SaveChannelGuideEntity
 import com.dreamsoftware.data.iptvorg.model.ChannelGuideDTO
-import com.dreamsoftware.utils.hash256
 
 /**
  * Mapper class for converting [ChannelGuideDTO] objects to [SaveChannelGuideEntity] objects.
