@@ -118,16 +118,16 @@ namespace :tvnexa do
 		desc "Build Docker Image based on Hotspot JVM"
 		task :build_image => [:check_docker_task, :login] do
 		    microservicesFolder = "./platform/microservices"
-			iptvApiServiceDockerImage = "ssanchez11/iptv_api_service:0.0.1"
-			iptvIngestionServiceDockerImage = "ssanchez11/iptv_ingestion_service:0.0.1"
-			puts "Build Docker Image #{iptvApiServiceDockerImage} based on Hotspot"
-			puts `docker build -t #{iptvApiServiceDockerImage} -f #{microservicesFolder}/iptv_api_service/Dockerfile #{microservicesFolder}`
-			puts "Docker image #{iptvApiServiceDockerImage} has been created! trying to upload it!"
-			puts `docker push #{iptvApiServiceDockerImage}`
-			puts "Build Docker Image #{iptvIngestionServiceDockerImage} based on Hotspot"
-            puts `docker build -t #{iptvIngestionServiceDockerImage} -f #{microservicesFolder}/iptv_ingestion_service/Dockerfile #{microservicesFolder}`
-            puts "Docker image #{iptvIngestionServiceDockerImage} has been created! trying to upload it!"
-            puts `docker push #{iptvIngestionServiceDockerImage}`
+			apiServiceDockerImage = "ssanchez11/tv_nexa_api_service:0.0.1"
+			ingestionServiceDockerImage = "ssanchez11/tv_nexa_ingestion_service:0.0.1"
+			puts "Build Docker Image #{apiServiceDockerImage} based on Hotspot"
+			puts `docker build -t #{apiServiceDockerImage} -f #{microservicesFolder}/tv_nexa_api_service/Dockerfile #{microservicesFolder}`
+			puts "Docker image #{apiServiceDockerImage} has been created! trying to upload it!"
+			puts `docker push #{apiServiceDockerImage}`
+			puts "Build Docker Image #{ingestionServiceDockerImage} based on Hotspot"
+            puts `docker build -t #{ingestionServiceDockerImage} -f #{microservicesFolder}/tv_nexa_ingestion_service/Dockerfile #{microservicesFolder}`
+            puts "Docker image #{ingestionServiceDockerImage} has been created! trying to upload it!"
+            puts `docker push #{ingestionServiceDockerImage}`
 			puts `docker images`
 		end
 	end
