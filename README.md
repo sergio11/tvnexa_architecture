@@ -60,19 +60,6 @@ The architecture of TVNexa is designed to provide a robust and efficient framewo
    - The Read Cluster is used primarily by the information reading component via the Ktor API, allowing quick and efficient access to data for end-users.
    - The Write Cluster is employed by the ingestion component to store data from Quartz Jobs, handling write operations to update and enrich the database.
 
-6. **Ingestion Process 🚀:**
-   - The data ingestion process is structured into specialized Jobs, each with a clearly defined responsibility.
-   - Specialized Jobs, like channel ingestion, have logical constraints to ensure information coherence, guaranteeing data integrity and coherence.
-   - Ingestion Jobs are configured to run at different time intervals based on the criticality and update frequency of data from external endpoints.
-
-7. **Benefits of the Ingestion Process 🌟:**
-   - The ingestion process ensures that the information provided to users is current, accurate, and comprehensive.
-   - Data integrity is maintained by setting dependencies between Jobs and verifying prerequisites before critical information ingestion.
-   - Users can access updated and relevant information through the Ktor API with fast and efficient response times.
-
-8. **Dependency Overview 📦:**
-   - TVNexa relies on a variety of dependencies for crucial functionalities, including server authentication, serialization, database migration, and scheduling periodic tasks.
-
 This architecture is meticulously designed to handle the complexities of managing a diverse range of television content, ensuring a seamless and enriching experience for users on the TVNexa platform.
 
 ## 🔄 Integration Process
