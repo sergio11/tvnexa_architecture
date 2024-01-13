@@ -153,6 +153,51 @@ In this table, you can view the ports assigned to each service for accessing web
 | mariadb_haproxy        | 8404, 3306, 3307                             | HAProxy for MariaDB Cluster                     |
 | mariadb_web_admin      | 8081                                         | phpMyAdmin for MariaDB Cluster                  |
 
+## Dependency Overview: Key Components in Project Infrastructure
+
+The following is a summary of key dependencies used in the infrastructure of our project. These libraries and modules play fundamental roles in various areas, from server authentication to integration with Quartz for scheduled tasks. Below is a detailed breakdown of each dependency and its specific function within the context of our project
+
+| Dependency                                           | Explanation                                                                                          |
+|------------------------------------------------------|------------------------------------------------------------------------------------------------------|
+| `io.ktor:ktor-server-auth-jvm`                       | Ktor server authentication module for the JVM.                                                       |
+| `io.ktor:ktor-server-core-jvm`                       | Ktor server core module for the JVM.                                                                  |
+| `io.ktor:ktor-server-auth-jwt-jvm`                   | Ktor server JSON Web Token (JWT) authentication module for the JVM.                                    |
+| `io.ktor:ktor-server-content-negotiation-jvm`        | Ktor server content negotiation module for the JVM.                                                   |
+| `io.ktor:ktor-server-call-logging-jvm`               | Ktor server call logging module for the JVM.                                                          |
+| `io.ktor:ktor-server-call-id-jvm`                    | Ktor server call ID module for the JVM.                                                               |
+| `io.ktor:ktor-server-conditional-headers-jvm`        | Ktor server conditional headers module for the JVM.                                                   |
+| `io.ktor:ktor-server-compression-jvm`                | Ktor server response compression module for the JVM.                                                  |
+| `io.ktor:ktor-server-caching-headers-jvm`            | Ktor server caching headers module for the JVM.                                                       |
+| `io.ktor:ktor-serialization-jackson`                 | Ktor serialization module using Jackson for the JVM.                                                  |
+| `io.ktor:ktor-serialization-kotlinx-json-jvm`        | Ktor serialization module using kotlinx.serialization and JSON for the JVM.                            |
+| `io.ktor:ktor-server-netty-jvm`                      | Ktor server Netty module for the JVM.                                                                 |
+| `io.ktor:ktor-server-status-pages-jvm`              | Ktor server status pages module for the JVM.                                                          |
+| `io.ktor:ktor-server-request-validation`             | Ktor server request validation module for the JVM.                                                    |
+| `redis.clients:jedis`                                | Redis Java client designed for performance and ease of use.                                           |
+| `com.google.code.gson:gson`                          | Google Gson library for JSON serialization and deserialization.                                       |
+| `io.ktor:ktor-server-tests-jvm`                     | Ktor server tests module for the JVM, used for testing Ktor applications.                              |
+| `io.insert-koin:koin-ktor`                           | Koin integration for Ktor.                                                                           |
+| `io.insert-koin:koin-logger-slf4j`                   | Koin logger integration with SLF4J.                                                                  |
+| `com.sksamuel.hoplite:hoplite-core`                  | A boilerplate-free Kotlin config library for loading configuration files as data classes.           |
+| `com.sksamuel.hoplite:hoplite-yaml`                  | Hoplite YAML support for configuration.                                                              |
+| `org.jetbrains.exposed:exposed-core`                | Exposed ORM core module.                                                                             |
+| `org.jetbrains.exposed:exposed-dao`                 | Exposed DAO module.                                                                                 |
+| `org.jetbrains.exposed:exposed-jdbc`                | Exposed JDBC module.                                                                                |
+| `org.jetbrains.exposed:exposed-java-time`           | Exposed Java Time extension.                                                                        |
+| `org.mariadb.jdbc:mariadb-java-client`              | MariaDB Java client.                                                                               |
+| `com.zaxxer:HikariCP`                               | HikariCP connection pool.                                                                          |
+| `org.flywaydb:flyway-core`                          | Flyway database migration library - core.                                                           |
+| `org.flywaydb:flyway-mysql`                         | Flyway database migration library - MySQL extension.                                                |
+| `com.h2database:h2`                                 | H2 Database Engine.                                                                                |
+| `commons-net:commons-net`                            | Apache Commons Net library.                                                                        |
+| `commons-io:commons-io`                              | Apache Commons IO library.                                                                         |
+| `ch.qos.logback:logback-classic`                    | Logback Classic module for logging.                                                                |
+| `com.fasterxml.jackson.module:jackson-module-kotlin`     | Jackson module for Kotlin support.                                                                   |
+| `com.fasterxml.jackson.dataformat:jackson-dataformat-xml`| Jackson data format module for XML support.                                                          |
+| `org.quartz-scheduler:quartz`                            | Quartz scheduler library for CRON jobs.                                                              |
+
+This collection of dependencies forms the backbone of our infrastructure, providing essential functionalities for development, communication, data persistence, and scheduling periodic tasks in the project.
+
 ## Some screenshots
 
 As follow, I include some images that help us to understand the performance of each part of system
