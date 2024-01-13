@@ -15,14 +15,19 @@ namespace :tvnexa do
 	end
 
 	desc "Status Containers"
-	task :status do
+	task :status => [
+         "redis:status",
+         "galera:status",
+         "platform:status"
+        ] do
 		puts "Show Containers Status"
-		puts `docker-compose ps 2>&1`
 	end
 
 	desc "Deploys Platform Containers and launches all services and daemons needed to properly work"
 	task :deploy => [
 		:cleaning_environment_task,
+		"redis:start",
+		"galera:start",
 		"platform:start",
 		:status] do
 	    puts "Deploying services..."
@@ -66,6 +71,12 @@ namespace :tvnexa do
             puts "Stop Platform Containers"
             puts `docker-compose -f ./mariadb_galera_cluster/docker-compose.yml stop 2>&1`
         end
+
+        desc "Check Status of MariaDB Galera Cluster and HAProxy containers"
+        task :status => [ :check_docker_task, :login, :check_deployment_file ] do
+            puts "Check Status of MariaDB Galera Cluster and HAProxy containers"
+            puts `docker-compose -f ./mariadb_galera_cluster/docker-compose.yml ps`
+        end
 	end
 
 	# Redis Cluster
@@ -90,6 +101,12 @@ namespace :tvnexa do
     		puts "Stop Cluster Containers"
     		puts `docker-compose -f ./redis_cluster/docker-compose.yml stop 2>&1`
     	end
+
+    	 desc "Check Status of Redis Cluster Containers"
+         task :status => [ :check_docker_task, :login, :check_deployment_file ] do
+             puts "Check Status of Redis Cluster Containers"
+             puts `docker-compose -f ./redis_cluster/docker-compose.yml ps`
+         end
 
     end
 
@@ -130,6 +147,12 @@ namespace :tvnexa do
             puts `docker push #{ingestionServiceDockerImage}`
 			puts `docker images`
 		end
+
+		desc "Check Status of Platform Containers"
+        task :status => [ :check_docker_task, :login, :check_deployment_file ] do
+            puts "Check Status of Platform Containers"
+            puts `docker-compose -f ./platform/docker-compose.yml ps`
+        end
 	end
 
 
