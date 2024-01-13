@@ -131,7 +131,7 @@ In this table, you can view the ports assigned to each service for accessing web
 
 | Service                | Port(s)                                      | Description                                      |
 |------------------------|----------------------------------------------|--------------------------------------------------|
-| haproxy                | 9090 (HAProxy stats), 8404                   | Load balancer for API services                   |
+| haproxy                | 9090, 9191 (HAProxy stats)                                  | Load balancer for API services                   |
 | ftp_repository         | 20, 21, 22, 40000-40009 (passive mode range) | FTP configuration repository                    |
 | tv_nexa_api_service_1  | (No specific ports exposed)                  | API service #1                                   |
 | tv_nexa_api_service_2  | (No specific ports exposed)                  | API service #2                                   |
