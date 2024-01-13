@@ -65,6 +65,30 @@ services:
     networks:
       - tv_nexa_network
 
+  tv_nexa_ingestion_service_2:
+    container_name: tv_nexa_ingestion_service_2
+    image: ssanchez11/tv_nexa_ingestion_service:0.0.1
+    links:
+      - ftp_repository
+    networks:
+      - tv_nexa_network
+
+  tv_nexa_ingestion_service_3:
+    container_name: tv_nexa_ingestion_service_3
+    image: ssanchez11/tv_nexa_ingestion_service:0.0.1
+    links:
+      - ftp_repository
+    networks:
+      - tv_nexa_network
+
+  tv_nexa_ingestion_service_4:
+    container_name: tv_nexa_ingestion_service_4
+    image: ssanchez11/tv_nexa_ingestion_service:0.0.1
+    links:
+      - ftp_repository
+    networks:
+      - tv_nexa_network
+
   # TV Nexa API Service Instances
   tv_nexa_api_service_1:
     container_name: tv_nexa_api_service_1
