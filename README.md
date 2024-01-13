@@ -27,9 +27,14 @@ TVNexa 🌐 is an innovative online television platform that allows you to explo
 
 
 <p align="center">
-  <img width="350" height="auto" src="./doc/images/ktor_picture.png" />
-  <img width="350" height="auto" src="./doc/images/redis_picture.jpg" />
+  <img width="auto" height="300" src="./doc/images/ktor_picture.png" />
+  <img width="auto" height="300" src="./doc/images/redis_picture.jpg" />
 </p>
+
+
+## Architecture Overview
+
+<img width="auto" src="./doc/TvNexaArchitecture.jpg" />
 
 ## 🔄 Integration Process
 
