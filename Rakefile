@@ -99,20 +99,20 @@ namespace :tvnexa do
 		desc "Check Platform Deployment File"
 		task :check_deployment_file do
 			puts "Check Platform Deployment File ..."
-			raise "Deployment file not found, please check availability" unless File.file?("./docker-compose.yml")
+			raise "Deployment file not found, please check availability" unless File.file?("./platform/docker-compose.yml")
 			puts "Platform Deployment File OK!"
 		end
 
 		desc "Start Platform Hotspot JVM Containers"
 		task :start => [ :check_docker_task, :login, :check_deployment_file ] do
 			puts "Start Platform Containers"
-			puts `docker-compose -f ./docker-compose.yml up -d`
+			puts `docker-compose -f ./platform/docker-compose.yml up -d`
 		end
 
 		desc "Stop Platform Hotspot JVM Containers"
 		task :stop => [ :check_docker_task, :login, :check_deployment_file  ] do
 			puts "Stop Platform Containers"
-			puts `docker-compose -f ./docker-compose.yml stop 2>&1`
+			puts `docker-compose -f ./platform/docker-compose.yml stop 2>&1`
 		end
 
 		desc "Build Docker Image based on Hotspot JVM"

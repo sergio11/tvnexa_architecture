@@ -4,6 +4,11 @@ volumes:
   mariadb_data:
     driver: local
 
+# Define a custom network for services to communicate
+networks:
+  tv_nexa_network:
+    driver: bridge
+
 # Platform Services
 services:
 
@@ -12,7 +17,7 @@ services:
     image: haproxytech/haproxy-alpine:2.7
     container_name: haproxy
     volumes:
-      - ./platform/haproxy:/usr/local/etc/haproxy:ro
+      - ./haproxy:/usr/local/etc/haproxy:ro
     links:
       - tv_nexa_api_service_1
       - tv_nexa_api_service_2
@@ -20,6 +25,8 @@ services:
     ports:
       - "9090:9090"
       - "9191:9191"
+    networks:
+      - tv_nexa_network
 
   # FTP configuration repository
   ftp_repository:
@@ -45,22 +52,40 @@ services:
       - "40008:40008"
       - "40009:40009"
     volumes:
-      - ./platform/ftp/data:$FTP_HOME_USER_PATH
+      - ./ftp/data:$FTP_HOME_USER_PATH
+    networks:
+      - tv_nexa_network
 
+  # TV Nexa Ingestion Service Instances
+  tv_nexa_ingestion_service_1:
+    container_name: tv_nexa_ingestion_service_1
+    image: ssanchez11/tv_nexa_ingestion_service:0.0.1
+    links:
+      - ftp_repository
+    networks:
+      - tv_nexa_network
+
+  # TV Nexa API Service Instances
   tv_nexa_api_service_1:
     container_name: tv_nexa_api_service_1
     image: ssanchez11/tv_nexa_api_service:0.0.1
     links:
       - ftp_repository
+    networks:
+      - tv_nexa_network
 
   tv_nexa_api_service_2:
     container_name: tv_nexa_api_service_2
     image: ssanchez11/tv_nexa_api_service:0.0.1
     links:
       - ftp_repository
+    networks:
+      - tv_nexa_network
 
   tv_nexa_api_service_3:
     container_name: tv_nexa_api_service_3
     image: ssanchez11/tv_nexa_api_service:0.0.1
     links:
       - ftp_repository
+    networks:
+      - tv_nexa_network
