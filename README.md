@@ -247,6 +247,8 @@ With the PhpMyAdmin tool as you can see below it is possible to manipulate and m
 
 In the context of the MariaDB Galera cluster, HAProxy plays a central role as a load balancer. Its primary function is to evenly distribute read and write requests among the cluster nodes, enhancing scalability and availability. It provides a fault-tolerance layer by directing traffic to healthy nodes, ensuring uninterrupted operation even in failure scenarios.
 
+![picture](doc/images/picture_5.PNG)
+
 In the microservices API infrastructure, HAProxy serves a similar load-balancing role. It distributes client requests across multiple instances of microservices, optimizing performance and enabling horizontal scalability. Its presence contributes to the resilience of the API, ensuring an efficient and robust experience for end-users.
 
 ![picture](doc/images/picture_2.PNG)
@@ -260,6 +262,14 @@ Additionally, Postman supports the automated testing of APIs, providing a platfo
 ![picture](doc/images/picture_3.PNG)
 ![picture](doc/images/picture_4.PNG)
 
+### Docker Compose in TVNexa: Container Orchestration for Microservices
+
+Docker Compose is a fundamental component in TVNexa's infrastructure, serving as a container orchestration tool that simplifies the deployment and management of microservices. In TVNexa's distributed architecture, Docker Compose is utilized to define and configure multi-container environments, ensuring consistency across various services.
+
+With Docker Compose, TVNexa can efficiently define the interdependencies of its microservices, specifying the configuration of each containerized service in a single file. This not only simplifies the deployment process but also enables the seamless scaling of services as needed. Docker Compose enhances the maintainability and reproducibility of TVNexa's deployment, allowing the team to focus on developing and improving individual microservices while ensuring they work harmoniously within the overall system.
+
+![picture](doc/images/picture_6.PNG)
+![picture](doc/images/picture_7.PNG)
 
 ## Contribution
 Contributions to TvNexa are highly encouraged! If you're interested in adding new features, resolving bugs, or enhancing the project's functionality, please feel free to submit pull requests.
