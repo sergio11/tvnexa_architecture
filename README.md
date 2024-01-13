@@ -271,6 +271,60 @@ With Docker Compose, TVNexa can efficiently define the interdependencies of its 
 ![picture](doc/images/picture_6.PNG)
 ![picture](doc/images/picture_7.PNG)
 
+
+## 🚀 Steps to Launch the Platform 🛠️
+
+To deploy and launch the TVNexa platform, you can follow these straightforward steps:
+
+### Ensure Prerequisites:
+
+* Make sure you have Ruby installed on your system.
+* Check the availability of Docker and Docker Compose in your system's PATH. If not installed, follow the official Docker installation guide and Docker Compose installation guide.
+
+### Clone the Repository:
+
+Clone the TVNexa repository to your local machine using the following command:
+
+```bash
+git clone https://github.com/sergio11/tvnexa_architecture.git
+```
+
+### Navigate to Project Directory:
+
+Move into the project directory with:
+
+```bash
+cd tvnexa_architecture
+```
+
+### Run Deployment Task:
+
+Execute the deployment task using the following command:
+
+```bash
+rake tvnexa:deploy
+```
+
+This task will perform preliminary checks, clean unnecessary images and volumes, and download required images while initializing the containers.
+
+### Check Status:
+
+Ensure that the platform is up and running by checking the status of containers:
+
+```bash
+rake tvnexa:status
+```
+
+This will display the current status of the deployed containers.
+
+### Access the Platform:
+
+Once the containers are running, you can access the TVNexa platform through your web browser or using Postman Tool importing the collection which I prepared for this project. Check the specific ports assigned to each service in the "Containers Ports" section of the README to access different components.
+
+### Explore and Enjoy:
+
+You are now ready to explore the diverse world of IPTVs and global television through TVNexa. Navigate through channels, streams, and guides, and enjoy an enriched viewing experience.
+
 ## Contribution
 Contributions to TvNexa are highly encouraged! If you're interested in adding new features, resolving bugs, or enhancing the project's functionality, please feel free to submit pull requests.
 
