@@ -17,7 +17,7 @@ java {
 group = "com.dreamsoftware"
 version = "0.0.1"
 application {
-    mainClass.set("com.dreamsoftware.ApplicationKt")
+    mainClass.set("com.dreamsoftware.api.ApplicationKt")
 
     val isDevelopment: Boolean = project.ext.has("development")
     applicationDefaultJvmArgs = listOf("-Dio.ktor.development=$isDevelopment")
@@ -25,7 +25,7 @@ application {
 
 ktor {
     fatJar {
-        archiveFileName.set("iptv_api_service.jar")
+        archiveFileName.set("tv_nexa_api_service.jar")
     }
 }
 

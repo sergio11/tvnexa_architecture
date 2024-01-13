@@ -3,9 +3,9 @@ FROM gradle:7-jdk17  AS build
 RUN apt-get update
 RUN apt-get install -y dos2unix
 RUN apt-get install -y wget
-COPY --chown=gradle:gradle iptv_common /home/gradle/iptv_common
-COPY --chown=gradle:gradle iptv_ingestion_service /home/gradle/iptv_ingestion_service
-WORKDIR /home/gradle/iptv_ingestion_service
+COPY --chown=gradle:gradle tv_nexa_common /home/gradle/tv_nexa_common
+COPY --chown=gradle:gradle tv_nexa_ingestion_service /home/gradle/tv_nexa_ingestion_service
+WORKDIR /home/gradle/tv_nexa_ingestion_service
 RUN wget -q -O ./iptv_org_master.zip https://github.com/iptv-org/epg/archive/refs/heads/master.zip && unzip ./iptv_org_master.zip && rm ./iptv_org_master.zip
 RUN ls -al ./epg-master/sites
 RUN dos2unix gradlew
@@ -24,9 +24,9 @@ RUN apt-get install -y nodejs
 RUN npm install -g epg-grabber
 RUN npm install -g cheerio
 RUN npm install -g luxon
-COPY --from=build /home/gradle/iptv_ingestion_service/build/libs/iptv_ingestion_service.jar /opt/app/iptv_ingestion_service.jar
-COPY --from=build /home/gradle/iptv_ingestion_service/epg-master/sites /opt/app/iptv_org/sites
-COPY --from=build /home/gradle/iptv_ingestion_service/resources/wait-for-it.sh /opt/app/wait-for-it.sh
+COPY --from=build /home/gradle/tv_nexa_ingestion_service/build/libs/tv_nexa_ingestion_service.jar /opt/app/tv_nexa_ingestion_service.jar
+COPY --from=build /home/gradle/tv_nexa_ingestion_service/epg-master/sites /opt/app/iptv_org/sites
+COPY --from=build /home/gradle/tv_nexa_ingestion_service/resources/wait-for-it.sh /opt/app/wait-for-it.sh
 WORKDIR /opt/app
 EXPOSE 8080
-CMD ["sh", "-c", "echo 'waiting for 300 seconds for FTP Repository to be accessable before starting application' && ./wait-for-it.sh -t 300 ftp_repository:21 -- java -jar iptv_ingestion_service.jar"]
+CMD ["sh", "-c", "echo 'waiting for 300 seconds for FTP Repository to be accessable before starting application' && ./wait-for-it.sh -t 300 ftp_repository:21 -- java -jar tv_nexa_ingestion_service.jar"]
