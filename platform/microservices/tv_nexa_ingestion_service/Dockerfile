@@ -21,12 +21,15 @@ RUN apt-get update && apt-get install -y curl
 RUN apt-get install -y netcat && which nc
 RUN curl -sL https://deb.nodesource.com/setup_18.x | bash -
 RUN apt-get install -y nodejs
-RUN npm install -g epg-grabber
-RUN npm install -g cheerio
-RUN npm install -g luxon
-COPY --from=build /home/gradle/tv_nexa_ingestion_service/build/libs/tv_nexa_ingestion_service.jar /opt/app/tv_nexa_ingestion_service.jar
+# Copy the necessary files for npm packages
 COPY --from=build /home/gradle/tv_nexa_ingestion_service/epg-master/sites /opt/app/iptv_org/sites
 COPY --from=build /home/gradle/tv_nexa_ingestion_service/resources/wait-for-it.sh /opt/app/wait-for-it.sh
+# Copy the JAR file
+COPY --from=build /home/gradle/tv_nexa_ingestion_service/build/libs/tv_nexa_ingestion_service.jar /opt/app/tv_nexa_ingestion_service.jar
+# Set working directory for npm packages
+WORKDIR /opt/app/iptv_org
+# Install specific npm packages locally
+RUN npm install epg-grabber cheerio luxon axios lodash dayjs cwait --save
 WORKDIR /opt/app
 EXPOSE 8080
 CMD ["sh", "-c", "echo 'waiting for 300 seconds for FTP Repository to be accessable before starting application' && ./wait-for-it.sh -t 300 ftp_repository:21 -- java -jar tv_nexa_ingestion_service.jar"]
