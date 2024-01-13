@@ -27,9 +27,40 @@ TVNexa 🌐 is an innovative online television platform that allows you to explo
 
 
 <p align="center">
-  <img width="350" height="auto" src="./doc/images/ktor_picture.png" />
-  <img width="350" height="auto" src="./doc/images/redis_picture.jpg" />
+  <img width="auto" height="200" src="./doc/images/ktor_picture.png" />
+  <img width="auto" height="200" src="./doc/images/redis_picture.jpg" />
 </p>
+
+
+## Architecture Overview 🏰
+
+The architecture of TVNexa is designed to provide a robust and efficient framework for handling diverse television content from around the world. Here's an overview of the key components and their interactions:
+
+<img width="auto" src="./doc/TvNexaArchitecture.jpg" />
+
+
+1. **Quartz Jobs for EPG Integration 🕒:**
+   - Quartz Jobs are employed to manage the integration of electronic program guide (EPG) data into the TVNexa platform.
+   - These jobs are responsible for retrieving detailed program information from various sources and storing it in the MariaDB Galera cluster.
+
+2. **MariaDB Galera Cluster with Jetbrains Exposed 🗃️:**
+   - TVNexa utilizes a MariaDB Galera cluster for efficient and secure data storage.
+   - Jetbrains Exposed, an SQL library, is integrated to manage data storage and retrieval within the MariaDB Galera cluster.
+
+3. **API Development with Ktor 🚀:**
+   - The API layer is developed using the Ktor framework, a highly optimized framework for building asynchronous and scalable applications.
+   - This API facilitates rapid and efficient data retrieval from the MariaDB Galera storage to serve end-users.
+
+4. **Redis Cluster for Caching 🔄:**
+   - Redis Cluster is implemented as a caching system to enhance the performance of data retrieval through the Ktor API.
+   - Caching helps in providing lightning-fast responses to user queries by storing frequently accessed data.
+
+5. **Read and Write Clusters 📚🖊️:**
+   - The storage environment is divided into Read and Write clusters to optimize data access.
+   - The Read Cluster is used primarily by the information reading component via the Ktor API, allowing quick and efficient access to data for end-users.
+   - The Write Cluster is employed by the ingestion component to store data from Quartz Jobs, handling write operations to update and enrich the database.
+
+This architecture is meticulously designed to handle the complexities of managing a diverse range of television content, ensuring a seamless and enriching experience for users on the TVNexa platform.
 
 ## 🔄 Integration Process
 
@@ -202,11 +233,97 @@ This collection of dependencies forms the backbone of our infrastructure, provid
 
 As follow, I include some images that help us to understand the performance of each part of system
 
+### PhpMyAdmin
+
+All information is stored in the MariaDB Galera Cluster, the information is replicated between several nodes, read-only operations are served by the group of reading nodes that receive the information from the master group.
+
+The relational model ensures the integrity of the stored data.
+
+With the PhpMyAdmin tool as you can see below it is possible to manipulate and manage the different tables and their content
+
 ![picture](doc/images/picture_1.PNG)
+
+### HAProxy in TVNexa: MariaDB Galera Cluster and Microservices API
+
+In the context of the MariaDB Galera cluster, HAProxy plays a central role as a load balancer. Its primary function is to evenly distribute read and write requests among the cluster nodes, enhancing scalability and availability. It provides a fault-tolerance layer by directing traffic to healthy nodes, ensuring uninterrupted operation even in failure scenarios.
+
+![picture](doc/images/picture_5.PNG)
+
+In the microservices API infrastructure, HAProxy serves a similar load-balancing role. It distributes client requests across multiple instances of microservices, optimizing performance and enabling horizontal scalability. Its presence contributes to the resilience of the API, ensuring an efficient and robust experience for end-users.
+
 ![picture](doc/images/picture_2.PNG)
+
+### Postman in TVNexa: API Development and Testing
+
+Postman plays a crucial role in TVNexa's development and testing processes. It serves as a comprehensive API development environment, allowing developers to design, test, and document APIs seamlessly. Postman simplifies the creation of API requests, enabling quick testing of different endpoints and ensuring their functionality.
+
+Additionally, Postman supports the automated testing of APIs, providing a platform for creating and running test suites. This ensures that TVNexa's APIs meet the expected standards and behave consistently across various scenarios. As a collaborative tool, Postman enhances the efficiency of the development team by facilitating communication, sharing API specifications, and streamlining the testing and debugging processes.
+
 ![picture](doc/images/picture_3.PNG)
 ![picture](doc/images/picture_4.PNG)
 
+### Docker Compose in TVNexa: Container Orchestration for Microservices
+
+Docker Compose is a fundamental component in TVNexa's infrastructure, serving as a container orchestration tool that simplifies the deployment and management of microservices. In TVNexa's distributed architecture, Docker Compose is utilized to define and configure multi-container environments, ensuring consistency across various services.
+
+With Docker Compose, TVNexa can efficiently define the interdependencies of its microservices, specifying the configuration of each containerized service in a single file. This not only simplifies the deployment process but also enables the seamless scaling of services as needed. Docker Compose enhances the maintainability and reproducibility of TVNexa's deployment, allowing the team to focus on developing and improving individual microservices while ensuring they work harmoniously within the overall system.
+
+![picture](doc/images/picture_6.PNG)
+![picture](doc/images/picture_7.PNG)
+
+
+## 🚀 Steps to Launch the Platform 🛠️
+
+To deploy and launch the TVNexa platform, you can follow these straightforward steps:
+
+### Ensure Prerequisites:
+
+* Make sure you have Ruby installed on your system.
+* Check the availability of Docker and Docker Compose in your system's PATH. If not installed, follow the official Docker installation guide and Docker Compose installation guide.
+
+### Clone the Repository:
+
+Clone the TVNexa repository to your local machine using the following command:
+
+```bash
+git clone https://github.com/sergio11/tvnexa_architecture.git
+```
+
+### Navigate to Project Directory:
+
+Move into the project directory with:
+
+```bash
+cd tvnexa_architecture
+```
+
+### Run Deployment Task:
+
+Execute the deployment task using the following command:
+
+```bash
+rake tvnexa:deploy
+```
+
+This task will perform preliminary checks, clean unnecessary images and volumes, and download required images while initializing the containers.
+
+### Check Status:
+
+Ensure that the platform is up and running by checking the status of containers:
+
+```bash
+rake tvnexa:status
+```
+
+This will display the current status of the deployed containers.
+
+### Access the Platform:
+
+Once the containers are running, you can access the TVNexa platform through your web browser or using Postman Tool importing the collection which I prepared for this project. Check the specific ports assigned to each service in the "Containers Ports" section of the README to access different components.
+
+### Explore and Enjoy:
+
+You are now ready to explore the diverse world of IPTVs and global television through TVNexa. Navigate through channels, streams, and guides, and enjoy an enriched viewing experience.
 
 ## Contribution
 Contributions to TvNexa are highly encouraged! If you're interested in adding new features, resolving bugs, or enhancing the project's functionality, please feel free to submit pull requests.
