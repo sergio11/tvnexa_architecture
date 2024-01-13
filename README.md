@@ -233,8 +233,30 @@ This collection of dependencies forms the backbone of our infrastructure, provid
 
 As follow, I include some images that help us to understand the performance of each part of system
 
+### PhpMyAdmin
+
+All information is stored in the MariaDB Galera Cluster, the information is replicated between several nodes, read-only operations are served by the group of reading nodes that receive the information from the master group.
+
+The relational model ensures the integrity of the stored data.
+
+With the PhpMyAdmin tool as you can see below it is possible to manipulate and manage the different tables and their content
+
 ![picture](doc/images/picture_1.PNG)
+
+### HAProxy in TVNexa: MariaDB Galera Cluster and Microservices API
+
+In the context of the MariaDB Galera cluster, HAProxy plays a central role as a load balancer. Its primary function is to evenly distribute read and write requests among the cluster nodes, enhancing scalability and availability. It provides a fault-tolerance layer by directing traffic to healthy nodes, ensuring uninterrupted operation even in failure scenarios.
+
+In the microservices API infrastructure, HAProxy serves a similar load-balancing role. It distributes client requests across multiple instances of microservices, optimizing performance and enabling horizontal scalability. Its presence contributes to the resilience of the API, ensuring an efficient and robust experience for end-users.
+
 ![picture](doc/images/picture_2.PNG)
+
+### Postman in TVNexa: API Development and Testing
+
+Postman plays a crucial role in TVNexa's development and testing processes. It serves as a comprehensive API development environment, allowing developers to design, test, and document APIs seamlessly. Postman simplifies the creation of API requests, enabling quick testing of different endpoints and ensuring their functionality.
+
+Additionally, Postman supports the automated testing of APIs, providing a platform for creating and running test suites. This ensures that TVNexa's APIs meet the expected standards and behave consistently across various scenarios. As a collaborative tool, Postman enhances the efficiency of the development team by facilitating communication, sharing API specifications, and streamlining the testing and debugging processes.
+
 ![picture](doc/images/picture_3.PNG)
 ![picture](doc/images/picture_4.PNG)
 
