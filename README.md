@@ -32,9 +32,48 @@ TVNexa 🌐 is an innovative online television platform that allows you to explo
 </p>
 
 
-## Architecture Overview
+## Architecture Overview 🏰
+
+The architecture of TVNexa is designed to provide a robust and efficient framework for handling diverse television content from around the world. Here's an overview of the key components and their interactions:
 
 <img width="auto" src="./doc/TvNexaArchitecture.jpg" />
+
+
+1. **Quartz Jobs for EPG Integration 🕒:**
+   - Quartz Jobs are employed to manage the integration of electronic program guide (EPG) data into the TVNexa platform.
+   - These jobs are responsible for retrieving detailed program information from various sources and storing it in the MariaDB Galera cluster.
+
+2. **MariaDB Galera Cluster with Jetbrains Exposed 🗃️:**
+   - TVNexa utilizes a MariaDB Galera cluster for efficient and secure data storage.
+   - Jetbrains Exposed, an SQL library, is integrated to manage data storage and retrieval within the MariaDB Galera cluster.
+
+3. **API Development with Ktor 🚀:**
+   - The API layer is developed using the Ktor framework, a highly optimized framework for building asynchronous and scalable applications.
+   - This API facilitates rapid and efficient data retrieval from the MariaDB Galera storage to serve end-users.
+
+4. **Redis Cluster for Caching 🔄:**
+   - Redis Cluster is implemented as a caching system to enhance the performance of data retrieval through the Ktor API.
+   - Caching helps in providing lightning-fast responses to user queries by storing frequently accessed data.
+
+5. **Read and Write Clusters 📚🖊️:**
+   - The storage environment is divided into Read and Write clusters to optimize data access.
+   - The Read Cluster is used primarily by the information reading component via the Ktor API, allowing quick and efficient access to data for end-users.
+   - The Write Cluster is employed by the ingestion component to store data from Quartz Jobs, handling write operations to update and enrich the database.
+
+6. **Ingestion Process 🚀:**
+   - The data ingestion process is structured into specialized Jobs, each with a clearly defined responsibility.
+   - Specialized Jobs, like channel ingestion, have logical constraints to ensure information coherence, guaranteeing data integrity and coherence.
+   - Ingestion Jobs are configured to run at different time intervals based on the criticality and update frequency of data from external endpoints.
+
+7. **Benefits of the Ingestion Process 🌟:**
+   - The ingestion process ensures that the information provided to users is current, accurate, and comprehensive.
+   - Data integrity is maintained by setting dependencies between Jobs and verifying prerequisites before critical information ingestion.
+   - Users can access updated and relevant information through the Ktor API with fast and efficient response times.
+
+8. **Dependency Overview 📦:**
+   - TVNexa relies on a variety of dependencies for crucial functionalities, including server authentication, serialization, database migration, and scheduling periodic tasks.
+
+This architecture is meticulously designed to handle the complexities of managing a diverse range of television content, ensuring a seamless and enriching experience for users on the TVNexa platform.
 
 ## 🔄 Integration Process
 
