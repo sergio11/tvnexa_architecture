@@ -14,10 +14,12 @@ services:
     volumes:
       - ./platform/haproxy:/usr/local/etc/haproxy:ro
     links:
-      - iptv_api_service_1
+      - tv_nexa_api_service_1
+      - tv_nexa_api_service_2
+      - tv_nexa_api_service_3
     ports:
       - "9090:9090"
-      - "8404:8404"
+      - "9191:9191"
 
   # FTP configuration repository
   ftp_repository:
@@ -45,19 +47,20 @@ services:
     volumes:
       - ./platform/ftp/data:$FTP_HOME_USER_PATH
 
-  # IPTV Ingestion service
-  iptv_ingestion_service_1:
-    container_name: iptv_ingestion_service_1
-    image: ssanchez11/iptv_ingestion_service:0.0.1
+  tv_nexa_api_service_1:
+    container_name: tv_nexa_api_service_1
+    image: ssanchez11/tv_nexa_api_service:0.0.1
     links:
       - ftp_repository
 
-  # IPTV API Service
-  iptv_api_service_1:
-    container_name: iptv_api_service_1
-    image: ssanchez11/iptv_api_service:0.0.1
+  tv_nexa_api_service_2:
+    container_name: tv_nexa_api_service_2
+    image: ssanchez11/tv_nexa_api_service:0.0.1
     links:
       - ftp_repository
-    ports:
-      - "6969:6969"
-      - "6963:6963"
+
+  tv_nexa_api_service_3:
+    container_name: tv_nexa_api_service_3
+    image: ssanchez11/tv_nexa_api_service:0.0.1
+    links:
+      - ftp_repository
