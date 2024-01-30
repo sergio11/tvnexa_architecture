@@ -17,4 +17,5 @@ val databaseMapperModule = module {
     mapper { ChannelGuideEntityDaoMapper(getMapper()) }
     mapper { EpgChannelProgrammeDaoMapper(getMapper(), getMapper()) }
     mapper { UserEntityDaoMapper() }
+    mapper { ProfileEntityDaoMapper() }
 }
