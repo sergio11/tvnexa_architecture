@@ -3,6 +3,7 @@ package com.dreamsoftware.api.domain.services.impl
 import com.auth0.jwt.JWT
 import com.auth0.jwt.algorithms.Algorithm
 import com.dreamsoftware.api.domain.model.exceptions.AppException
+import com.dreamsoftware.api.domain.repository.IProfileRepository
 import com.dreamsoftware.api.domain.repository.IUserRepository
 import com.dreamsoftware.api.domain.services.IUserService
 import com.dreamsoftware.api.rest.dto.request.SignInRequestDTO
@@ -25,6 +26,7 @@ import java.util.*
  * Implementation of the IUserService interface responsible for managing user-related operations.
  *
  * @property userRepository The repository responsible for user-related data operations.
+ * @property profileRepository The repository responsible for profile-related data operations.
  * @property mapper The mapper used to map UserEntity objects to UserResponseDTO objects.
  * @property environment The Ktor application environment for accessing configurations.
  * @property createUserMapper The mapper used to map SignUpRequestDTO to SaveUserEntity.
@@ -32,6 +34,7 @@ import java.util.*
  */
 internal class UserServiceImpl(
     private val userRepository: IUserRepository,
+    private val profileRepository: IProfileRepository,
     private val mapper: ISimpleMapper<UserEntity, UserResponseDTO>,
     private val environment: ApplicationEnvironment,
     private val createUserMapper: ISimpleMapper<SignUpRequestDTO, CreateUserEntity>,
@@ -89,6 +92,7 @@ internal class UserServiceImpl(
                 userRepository.signIn(email, password)?.let(mapper::map)?.let { userDTO ->
                     AuthResponseDTO(
                         user = userDTO,
+                        profilesCount = profileRepository.countByUser(userDTO.uuid),
                         token =  with(environment.config) {
                             JWT.create()
                                 .withSubject(userDTO.uuid)

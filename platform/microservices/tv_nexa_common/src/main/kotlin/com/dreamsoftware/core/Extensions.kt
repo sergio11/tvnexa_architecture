@@ -12,3 +12,6 @@ fun Date.toLocalDateTime() = Instant.ofEpochMilli(time)
 fun String.hash256() =
     MessageDigest.getInstance("SHA-256").digest(toByteArray())
         .joinToString("") { "%02x".format(it) }
+
+fun String.toUUID() =
+    UUID.fromString(this)
