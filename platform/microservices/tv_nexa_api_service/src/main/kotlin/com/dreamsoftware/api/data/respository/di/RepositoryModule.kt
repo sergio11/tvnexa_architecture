@@ -17,4 +17,5 @@ val repositoryModule = module {
     single<IChannelRepository> { ChannelRepositoryImpl(get(), get()) }
     single<IEpgChannelProgrammeRepository> { EpgChannelProgrammeRepositoryImpl(get(), get()) }
     single<IUserRepository> { UserRepositoryImpl(get(), get(), get()) }
+    single<IProfileRepository> { ProfileRepositoryImpl(get(), get()) }
 }

@@ -20,4 +20,10 @@ data class AuthResponseDTO(
      */
     @SerialName("user")
     val user: UserResponseDTO,
+
+    /**
+     * The number of profiles associated with the authenticated user.
+     */
+    @SerialName("profiles_count")
+    val profilesCount: Long
 )
