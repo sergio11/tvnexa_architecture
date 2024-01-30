@@ -36,7 +36,7 @@ internal class ChannelRepositoryImpl(
      */
     override suspend fun findByCategoryAndCountryPaginated(categoryId: String?, countryId: String?, offset: Long, limit: Long): List<SimpleChannelEntity>  =
         retrieveFromCacheOrElse(cacheKey = "${offset}_${limit}_${categoryId ?: "no_category"}_${countryId ?: "no_country"}") {
-            channelDataSource.findPaginated(offset, limit.toInt()).toList()
+            channelDataSource.filterByCategoryAndCountry(categoryId, countryId, offset, limit).toList()
         }
 
     /**

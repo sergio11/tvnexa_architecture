@@ -38,9 +38,11 @@ internal class ChannelDatabaseDataSourceImpl(
      *
      * @param categoryId The category ID to filter by. Pass null to exclude this filter.
      * @param countryId The country ID to filter by. Pass null to exclude this filter.
+     * @param offset The offset indicating the starting point from where channels should be fetched.
+     * @param limit The maximum number of channel entities to be retrieved in a single request.
      * @return An iterable collection of [SimpleChannelEntity] objects matching the provided filters.
      */
-    override suspend fun filterByCategoryAndCountry(categoryId: String?, countryId: String?): Iterable<SimpleChannelEntity> = execQuery {
+    override suspend fun filterByCategoryAndCountry(categoryId: String?, countryId: String?, offset: Long, limit: Long): Iterable<SimpleChannelEntity> = execQuery {
         entityDAO.find {
             if (!categoryId.isNullOrBlank() && !countryId.isNullOrBlank()) {
                 (ChannelCategoryTable.category eq categoryId) and (ChannelTable.country eq countryId)
@@ -51,7 +53,7 @@ internal class ChannelDatabaseDataSourceImpl(
             } else {
                 ChannelTable.id.isNotNull()
             }
-        }.map(mapper::map)
+        }.limit(limit.toInt(), offset = offset).map(mapper::map)
     }
 
     /**
