@@ -16,5 +16,5 @@ val repositoryModule = module {
     single<ISubdivisionRepository> {  SubdivisionRepositoryImpl(get(), get()) }
     single<IChannelRepository> { ChannelRepositoryImpl(get(), get()) }
     single<IEpgChannelProgrammeRepository> { EpgChannelProgrammeRepositoryImpl(get(), get()) }
-    single<IUserRepository> { UserRepositoryImpl(get(), get()) }
+    single<IUserRepository> { UserRepositoryImpl(get(), get(), get()) }
 }
