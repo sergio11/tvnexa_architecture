@@ -12,6 +12,7 @@ import org.jetbrains.exposed.sql.Transaction
 import org.jetbrains.exposed.sql.and
 import org.jetbrains.exposed.sql.lowerCase
 import org.jetbrains.exposed.sql.statements.UpdateBuilder
+import kotlin.reflect.KProperty1
 
 /**
  * Implementation of the [IChannelDatabaseDataSource] interface for managing channel-related database operations.
@@ -32,6 +33,9 @@ internal class ChannelDatabaseDataSourceImpl(
 
     override val disableFkValidationsOnBatchOperation: Boolean
         get() = true
+
+    override val findAllEagerRelationships: List<KProperty1<ChannelEntityDAO, Any?>>
+        get() = listOf(ChannelEntityDAO::streams)
 
     /**
      * Retrieves a list of channels filtered by category and country.

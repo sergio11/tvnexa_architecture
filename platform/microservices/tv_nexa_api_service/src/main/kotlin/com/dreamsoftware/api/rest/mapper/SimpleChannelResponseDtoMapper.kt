@@ -1,5 +1,6 @@
 package com.dreamsoftware.api.rest.mapper
 
+import com.dreamsoftware.api.rest.dto.response.ChannelStreamResponseDTO
 import com.dreamsoftware.api.rest.dto.response.SimpleChannelResponseDTO
 import com.dreamsoftware.core.ISimpleMapper
 import com.dreamsoftware.data.database.entity.*
@@ -7,8 +8,11 @@ import com.dreamsoftware.data.database.entity.*
 /**
  * Mapper class that maps [SimpleChannelEntity] objects to [SimpleChannelResponseDTO] objects.
  *
+ * @property channelStreamMapper The mapper for mapping [ChannelStreamEntity] objects to [ChannelStreamResponseDTO] objects.
  */
-class SimpleChannelResponseDtoMapper : ISimpleMapper<SimpleChannelEntity, SimpleChannelResponseDTO> {
+class SimpleChannelResponseDtoMapper(
+    private val channelStreamMapper: ISimpleMapper<ChannelStreamEntity, ChannelStreamResponseDTO>,
+) : ISimpleMapper<SimpleChannelEntity, SimpleChannelResponseDTO> {
 
     /**
      * Map a single [SimpleChannelEntity] object to a [SimpleChannelResponseDTO] object.
@@ -22,7 +26,8 @@ class SimpleChannelResponseDtoMapper : ISimpleMapper<SimpleChannelEntity, Simple
         city = input.city,
         isNsfw = input.isNsfw,
         website = input.website,
-        logo = input.logo
+        logo = input.logo,
+        streams = channelStreamMapper.mapList(input.streams).toList()
     )
 
     /**
