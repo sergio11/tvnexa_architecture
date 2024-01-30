@@ -77,4 +77,24 @@ internal class ChannelServiceImpl(
             }
         }
     }
+
+    /**
+     * Searches for channels whose names contain the specified term in a case-insensitive manner.
+     *
+     * @param term The search term to match against channel names.
+     * @return A list of [SimpleChannelResponseDTO] representing the channels found.
+     * @throws AppException.InternalServerError if an internal server error occurs during the search.
+     */
+    @Throws(AppException.InternalServerError::class)
+    override suspend fun findByNameLike(term: String): List<SimpleChannelResponseDTO> =
+        try {
+            log.debug("CHS (findByNameLike) term: $term")
+            channelRepository
+                .findByNameLike(term)
+                .map(simpleChannelMapper::map)
+        } catch (e: Exception) {
+            e.printStackTrace()
+            log.debug("CHS (findByNameLike) An exception occurred: ${e.message ?: "Unknown error"}")
+            throw AppException.InternalServerError("An error occurred while fetching channels.")
+        }
 }

@@ -35,4 +35,14 @@ interface IChannelService {
         AppException.NotFoundException.ChannelNotFoundException::class
     )
     suspend fun findById(channelId: String): ChannelDetailResponseDTO
+
+    /**
+     * Searches for channels whose names contain the specified term in a case-insensitive manner.
+     *
+     * @param term The search term to match against channel names.
+     * @return A list of [SimpleChannelResponseDTO] representing the channels found.
+     * @throws AppException.InternalServerError if an internal server error occurs during the search.
+     */
+    @Throws(AppException.InternalServerError::class)
+    suspend fun findByNameLike(term: String): List<SimpleChannelResponseDTO>
 }

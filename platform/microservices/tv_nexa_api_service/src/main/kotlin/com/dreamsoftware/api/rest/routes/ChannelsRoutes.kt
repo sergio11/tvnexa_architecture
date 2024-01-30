@@ -76,5 +76,28 @@ fun Route.channelRoutes() {
                 }
             }
         }
+
+        /**
+         * New endpoint for searching channels by name.
+         * Accepts GET requests to "/channels/search" and retrieves channels by name.
+         * Generates a success response with a code of 2003, a message indicating successful channel search by name,
+         * and data containing the list of channels matching the search term.
+         *
+         * Query Parameters:
+         * - name: The search term for channel names.
+         */
+        get("/search") {
+            with(call) {
+                parameters["term"]?.takeIf { it.isNotBlank() }?.let { name ->
+                    generateSuccessResponse(
+                        code = 2003,
+                        message = "Channels found by name.",
+                        data = channelService.findByNameLike(name)
+                    )
+                } ?: run {
+                    generateErrorResponse(ErrorType.BAD_REQUEST)
+                }
+            }
+        }
     }
 }

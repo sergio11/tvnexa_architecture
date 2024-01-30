@@ -37,4 +37,13 @@ interface IChannelDatabaseDataSource : ISupportDatabaseDataSource<String, SaveCh
      * @return The found ChannelDetailEntity if available, or null if not found.
      */
     suspend fun findDetailByKey(key: String): ChannelDetailEntity?
+
+    /**
+     * Searches for channels whose names contain the specified term in a case-insensitive manner.
+     *
+     * @param term The search term to match against channel names.
+     * @return An iterable of [SimpleChannelEntity] representing the channels found.
+     */
+    suspend fun findByNameLike(term: String): Iterable<SimpleChannelEntity>
+
 }

@@ -10,6 +10,7 @@ import com.dreamsoftware.data.database.entity.SaveChannelEntity
 import com.dreamsoftware.data.database.entity.SimpleChannelEntity
 import org.jetbrains.exposed.sql.Transaction
 import org.jetbrains.exposed.sql.and
+import org.jetbrains.exposed.sql.lowerCase
 import org.jetbrains.exposed.sql.statements.UpdateBuilder
 
 /**
@@ -88,6 +89,22 @@ internal class ChannelDatabaseDataSourceImpl(
             ChannelEntityDAO::streams,
             ChannelEntityDAO::guides
         ))?.let(detailMapper::map)
+    }
+
+    /**
+     * Searches for channels whose names contain the specified term in a case-insensitive manner.
+     *
+     * @param term The search term to match against channel names.
+     * @return An iterable of [SimpleChannelEntity] representing the channels found.
+     */
+    override suspend fun findByNameLike(term: String): Iterable<SimpleChannelEntity> = execQuery {
+        entityDAO.find {
+            if (term.isNotBlank()) {
+                ChannelTable.name.lowerCase() like "%${term.lowercase()}%"
+            } else {
+                ChannelTable.id.isNotNull()
+            }
+        }.map(mapper::map)
     }
 
     /**

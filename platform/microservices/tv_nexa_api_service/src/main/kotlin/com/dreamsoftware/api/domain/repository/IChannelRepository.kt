@@ -34,4 +34,12 @@ interface IChannelRepository {
      *  @return An iterable collection of channel entities matching the specified country filter.
      */
     suspend fun filterByCountry(countryId: String): List<SimpleChannelEntity>
+
+    /**
+     * Searches for channels whose names contain the specified term in a case-insensitive manner.
+     *
+     * @param term The search term to match against channel names.
+     * @return A list of [SimpleChannelEntity] representing the channels found.
+     */
+    suspend fun findByNameLike(term: String): List<SimpleChannelEntity>
 }

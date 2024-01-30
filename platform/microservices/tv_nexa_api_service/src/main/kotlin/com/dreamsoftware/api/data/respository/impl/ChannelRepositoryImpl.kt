@@ -22,6 +22,7 @@ internal class ChannelRepositoryImpl(
     private companion object {
         const val CHANNEL_DETAIL_CACHE_KEY_PREFIX = "channel:detail:"
         const val CHANNELS_BY_COUNTRY_CACHE_KEY_PREFIX = "channel:country:"
+        const val CHANNEL_SEARCH_CACHE_KEY_PREFIX = "channel:search:"
     }
 
     /**
@@ -59,5 +60,16 @@ internal class ChannelRepositoryImpl(
     override suspend fun filterByCountry(countryId: String): List<SimpleChannelEntity> =
         retrieveFromCacheOrElse(cacheKey = CHANNELS_BY_COUNTRY_CACHE_KEY_PREFIX + countryId) {
             channelDataSource.findByCountry(countryId).toList()
+        }
+
+    /**
+     * Searches for channels whose names contain the specified term in a case-insensitive manner.
+     *
+     * @param term The search term to match against channel names.
+     * @return A list of [SimpleChannelEntity] representing the channels found.
+     */
+    override suspend fun findByNameLike(term: String): List<SimpleChannelEntity> =
+        retrieveFromCacheOrElse(cacheKey = CHANNEL_SEARCH_CACHE_KEY_PREFIX + term) {
+            channelDataSource.findByNameLike(term).toList()
         }
 }
