@@ -10,10 +10,12 @@ import com.dreamsoftware.api.rest.dto.request.SignInRequestDTO
 import com.dreamsoftware.api.rest.dto.request.SignUpRequestDTO
 import com.dreamsoftware.api.rest.dto.request.UpdatedUserRequestDTO
 import com.dreamsoftware.api.rest.dto.response.AuthResponseDTO
+import com.dreamsoftware.api.rest.dto.response.ProfileResponseDTO
 import com.dreamsoftware.api.rest.dto.response.UserResponseDTO
 import com.dreamsoftware.api.rest.utils.getStringProperty
 import com.dreamsoftware.core.ISimpleMapper
 import com.dreamsoftware.data.database.entity.CreateUserEntity
+import com.dreamsoftware.data.database.entity.ProfileEntity
 import com.dreamsoftware.data.database.entity.UpdateUserEntity
 import com.dreamsoftware.data.database.entity.UserEntity
 import io.ktor.server.application.*
@@ -28,6 +30,7 @@ import java.util.*
  * @property userRepository The repository responsible for user-related data operations.
  * @property profileRepository The repository responsible for profile-related data operations.
  * @property mapper The mapper used to map UserEntity objects to UserResponseDTO objects.
+ * @property profileMapper The mapper used to map ProfileEntity objects to ProfileResponseDTO objects.
  * @property environment The Ktor application environment for accessing configurations.
  * @property createUserMapper The mapper used to map SignUpRequestDTO to SaveUserEntity.
  * @property updateUserMapper The mapper used to map UpdatedUserRequestDTO to UpdateUserEntity
@@ -36,6 +39,7 @@ internal class UserServiceImpl(
     private val userRepository: IUserRepository,
     private val profileRepository: IProfileRepository,
     private val mapper: ISimpleMapper<UserEntity, UserResponseDTO>,
+    private val profileMapper: ISimpleMapper<ProfileEntity, ProfileResponseDTO>,
     private val environment: ApplicationEnvironment,
     private val createUserMapper: ISimpleMapper<SignUpRequestDTO, CreateUserEntity>,
     private val updateUserMapper: ISimpleMapper<UpdatedUserRequestDTO, UpdateUserEntity>,
@@ -129,7 +133,7 @@ internal class UserServiceImpl(
         AppException.InternalServerError::class,
         AppException.NotFoundException.UserNotFoundException::class
     )
-    override suspend fun getUserProfile(uuid: UUID): UserResponseDTO = withContext(Dispatchers.IO) {
+    override suspend fun getUserDetail(uuid: UUID): UserResponseDTO = withContext(Dispatchers.IO) {
         try {
             userRepository.getUserById(uuid)?.let(mapper::map)
                 ?: throw AppException.NotFoundException.UserNotFoundException("User with code '$uuid' not found.")
@@ -138,6 +142,29 @@ internal class UserServiceImpl(
             throw if (e !is AppException) {
                 log.debug("USES (getUserProfile) An exception occurred: ${e.message ?: "Unknown error"}")
                 AppException.InternalServerError("An error occurred while finding user by UUID.")
+            } else {
+                e
+            }
+        }
+    }
+
+    /**
+     * Retrieves profiles associated with a user identified by their UUID.
+     *
+     * @param uuid The unique identifier (UUID) of the user.
+     * @return A list of [ProfileResponseDTO] objects representing the user's profiles.
+     *
+     * @throws AppException.InternalServerError If there is an internal server error during profile retrieval.
+     */
+    @Throws(AppException.InternalServerError::class)
+    override suspend fun getUserProfiles(uuid: UUID): List<ProfileResponseDTO> = withContext(Dispatchers.IO) {
+        try {
+            profileRepository.findByUser(uuid.toString()).map(profileMapper::map)
+        } catch (e: Exception) {
+            e.printStackTrace()
+            throw if (e !is AppException) {
+                log.debug("USES (getUserProfiles) An exception occurred: ${e.message ?: "Unknown error"}")
+                AppException.InternalServerError("An error occurred while finding profiles by user.")
             } else {
                 e
             }
@@ -156,7 +183,7 @@ internal class UserServiceImpl(
         AppException.NotFoundException.UserNotFoundException::class,
         AppException.UserAlreadyExistsException::class
     )
-    override suspend fun updateUserProfile(uuid: UUID, updatedUser: UpdatedUserRequestDTO): UserResponseDTO = withContext(Dispatchers.IO) {
+    override suspend fun updateUserDetail(uuid: UUID, updatedUser: UpdatedUserRequestDTO): UserResponseDTO = withContext(Dispatchers.IO) {
         try {
             with(userRepository) {
                 updatedUser.username?.let { newUsername ->

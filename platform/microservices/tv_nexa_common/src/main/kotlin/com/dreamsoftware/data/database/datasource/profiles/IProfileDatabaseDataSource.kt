@@ -18,4 +18,12 @@ interface IProfileDatabaseDataSource : ISupportDatabaseDataSource<UUID, CreatePr
      * @return The number of profiles associated with the specified user.
      */
     suspend fun countByUser(uuid: String): Long
+
+    /**
+     * Retrieves the profiles associated with a user.
+     *
+     * @param uuid The unique identifier of the user.
+     * @return A list of [ProfileEntity] objects representing the user's profiles.
+     */
+    suspend fun findByUser(uuid: String): List<ProfileEntity>
 }

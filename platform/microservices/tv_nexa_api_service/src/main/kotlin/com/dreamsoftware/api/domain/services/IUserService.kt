@@ -5,6 +5,7 @@ import com.dreamsoftware.api.rest.dto.request.SignInRequestDTO
 import com.dreamsoftware.api.rest.dto.request.SignUpRequestDTO
 import com.dreamsoftware.api.rest.dto.request.UpdatedUserRequestDTO
 import com.dreamsoftware.api.rest.dto.response.AuthResponseDTO
+import com.dreamsoftware.api.rest.dto.response.ProfileResponseDTO
 import com.dreamsoftware.api.rest.dto.response.UserResponseDTO
 import java.util.*
 
@@ -54,7 +55,22 @@ interface IUserService {
         AppException.InternalServerError::class,
         AppException.NotFoundException.UserNotFoundException::class
     )
-    suspend fun getUserProfile(uuid: UUID): UserResponseDTO
+    suspend fun getUserDetail(uuid: UUID): UserResponseDTO
+
+    /**
+     * Retrieves the profiles associated with a user.
+     *
+     * @param uuid The unique identifier of the user.
+     * @return A list of [ProfileResponseDTO] objects representing the user's profiles.
+     *
+     * @throws AppException.InternalServerError If there is an internal server error.
+     * @throws AppException.NotFoundException.UserNotFoundException If the specified user is not found.
+     */
+    @Throws(
+        AppException.InternalServerError::class,
+        AppException.NotFoundException.UserNotFoundException::class
+    )
+    suspend fun getUserProfiles(uuid: UUID): List<ProfileResponseDTO>
 
     /**
      * Updates the user profile based on the provided user ID and updated information.
@@ -68,5 +84,5 @@ interface IUserService {
         AppException.NotFoundException.UserNotFoundException::class,
         AppException.UserAlreadyExistsException::class
     )
-    suspend fun updateUserProfile(uuid: UUID, updatedUser: UpdatedUserRequestDTO): UserResponseDTO
+    suspend fun updateUserDetail(uuid: UUID, updatedUser: UpdatedUserRequestDTO): UserResponseDTO
 }
