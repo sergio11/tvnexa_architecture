@@ -9,7 +9,7 @@ val dtoMappersModule = module {
     mapper { CategoryResponseDtoMapper() }
     mapper { ChannelGuideResponseDtoMapper() }
     mapper { ChannelDetailResponseDtoMapper(getMapper(), getMapper(), getMapper(), getMapper(), getMapper(), getMapper()) }
-    mapper { SimpleChannelResponseDtoMapper() }
+    mapper { SimpleChannelResponseDtoMapper(getMapper()) }
     mapper { ChannelStreamResponseDtoMapper() }
     mapper { CountryResponseDtoMapper(getMapper()) }
     mapper { EpgChannelProgrammeResponseDtoMapper(getMapper(), getMapper()) }

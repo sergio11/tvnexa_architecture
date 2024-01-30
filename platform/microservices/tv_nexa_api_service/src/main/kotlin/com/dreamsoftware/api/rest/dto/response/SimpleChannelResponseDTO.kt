@@ -37,4 +37,10 @@ data class SimpleChannelResponseDTO(
      */
     @SerialName("logo")
     val logo: String? = null,
+
+    /**
+     * The stream data for the channel
+     */
+    @SerialName("streams")
+    val streams: List<ChannelStreamResponseDTO>
 )

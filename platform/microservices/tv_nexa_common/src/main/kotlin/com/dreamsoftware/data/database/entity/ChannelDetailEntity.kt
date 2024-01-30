@@ -6,7 +6,8 @@ data class SimpleChannelEntity(
     val city: String? = null,
     val isNsfw: Boolean? = null,
     val website: String? = null,
-    val logo: String? = null
+    val logo: String? = null,
+    val streams: List<ChannelStreamEntity>,
 )
 
 data class ChannelDetailEntity(

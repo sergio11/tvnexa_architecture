@@ -6,8 +6,12 @@ import com.dreamsoftware.data.database.entity.*
 
 /**
  * Mapper implementation to convert ChannelEntityDAO objects to SimpleChannelEntity objects.
+ *
+ * @param streamMapper Mapper for converting [ChannelStreamEntityDAO] to [ChannelStreamEntity].
  */
-class SimpleChannelEntityDaoMapper : ISimpleMapper<ChannelEntityDAO, SimpleChannelEntity> {
+class SimpleChannelEntityDaoMapper(
+    private val streamMapper: ISimpleMapper<ChannelStreamEntityDAO, ChannelStreamEntity>,
+) : ISimpleMapper<ChannelEntityDAO, SimpleChannelEntity> {
 
     /**
      * Maps a single ChannelEntityDAO object to a SimpleChannelEntity object.
@@ -22,7 +26,8 @@ class SimpleChannelEntityDaoMapper : ISimpleMapper<ChannelEntityDAO, SimpleChann
             city = city,
             isNsfw = isNsfw,
             website = website,
-            logo = logo
+            logo = logo,
+            streams = streamMapper.mapList(streams).toList()
         )
     }
 
