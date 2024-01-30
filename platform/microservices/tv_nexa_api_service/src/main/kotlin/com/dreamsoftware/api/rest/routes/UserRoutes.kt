@@ -14,18 +14,18 @@ import org.koin.ktor.ext.inject
  *
  * @property userService An instance of the [IUserService] interface for handling user-related operations.
  */
-fun Route.profileRoutes() {
+fun Route.userRoutes() {
 
     val userService by inject<IUserService>()
 
     /**
-     * Defines the routes under the "/profile" endpoint for user profile-related operations.
+     * Defines the routes under the "/user" endpoint for user user-related operations.
      */
-    route("/profile") {
+    route("/user") {
 
         /**
          * Endpoint for retrieving the user profile.
-         * Accepts GET requests to "/profile/" and retrieves the user profile using the [userService.getUserProfile] method.
+         * Accepts GET requests to "/user/" and retrieves the user profile using the [userService.getUserProfile] method.
          * Generates a success response with a code of 8001, a message indicating successful retrieval of the user profile,
          * and data containing the user profile information.
          */
@@ -34,14 +34,14 @@ fun Route.profileRoutes() {
                 generateSuccessResponse(
                     code = 8001,
                     message = "User profile retrieved successfully.",
-                    data = userService.getUserProfile(fetchAuthUserUuidOrThrow())
+                    data = userService.getUserDetail(fetchAuthUserUuidOrThrow())
                 )
             }
         }
 
         /**
          * Endpoint for updating the user profile.
-         * Accepts PUT requests to "/profile/" and updates the user profile using the [userService.updateUserProfile] method.
+         * Accepts PUT requests to "/user/" and updates the user profile using the [userService.updateUserProfile] method.
          * Generates a success response with a code of 8002, a message indicating successful update of the user profile,
          * and data containing any additional information related to the update.
          */
@@ -50,7 +50,20 @@ fun Route.profileRoutes() {
                 generateSuccessResponse(
                     code = 8002,
                     message = "User profile updated successfully.",
-                    data = userService.updateUserProfile(fetchAuthUserUuidOrThrow(), receive())
+                    data = userService.updateUserDetail(fetchAuthUserUuidOrThrow(), receive())
+                )
+            }
+        }
+
+        /**
+         * Endpoint to retrieve profiles for the authenticated user
+         */
+        get("/profiles") {
+            with(call) {
+                generateSuccessResponse(
+                    code = 8003,
+                    message = "Profiles retrieved successfully",
+                    data = userService.getUserProfiles(fetchAuthUserUuidOrThrow())
                 )
             }
         }

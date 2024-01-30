@@ -54,4 +54,14 @@ internal class ProfileDatabaseDataSourceImpl(
             .select { ProfileTable.userId eq uuid.toUUID() }
             .single()[ProfileTable.userId.count()]
     }
+
+    /**
+     * Retrieves profiles associated with a user.
+     *
+     * @param uuid The unique identifier of the user.
+     * @return A list of [ProfileEntity] objects representing the user's profiles.
+     */
+    override suspend fun findByUser(uuid: String): List<ProfileEntity> = execQuery {
+        entityDAO.find { ProfileTable.userId eq uuid.toUUID() }.map(mapper::map)
+    }
 }
