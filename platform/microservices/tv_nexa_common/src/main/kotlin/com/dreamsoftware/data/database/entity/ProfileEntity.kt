@@ -15,10 +15,10 @@ data class ProfileEntity(
 
 data class CreateProfileEntity(
     val alias: String,
-    val pin: Int,
+    val pin: Int = 123456,
     val userId: UUID,
-    val isAdmin: Boolean,
-    val type: ProfileType
+    val isAdmin: Boolean = true,
+    val type: ProfileType = ProfileType.BOY
 )
 
 data class UpdateProfileEntity(
