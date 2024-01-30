@@ -18,9 +18,11 @@ interface IChannelDatabaseDataSource : ISupportDatabaseDataSource<String, SaveCh
      *
      * @param categoryId The category ID to filter by. Pass null to exclude this filter.
      * @param countryId The country ID to filter by. Pass null to exclude this filter.
+     * @param offset The offset indicating the starting point from where channels should be fetched.
+     * @param limit The maximum number of channel entities to be retrieved in a single request.
      * @return An iterable collection of [SimpleChannelEntity] objects matching the provided filters.
      */
-    suspend fun filterByCategoryAndCountry(categoryId: String?, countryId: String?): Iterable<SimpleChannelEntity>
+    suspend fun filterByCategoryAndCountry(categoryId: String?, countryId: String?, offset: Long, limit: Long): Iterable<SimpleChannelEntity>
 
     /**
      * Retrieves a list of channels based on the provided country ID.
