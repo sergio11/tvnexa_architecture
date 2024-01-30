@@ -193,7 +193,7 @@ internal abstract class SupportDatabaseDataSource<KEY : Comparable<KEY>, DAO : E
         entityDAO.all()
             .limit(limit, offset = offset)
             .with(*eagerRelationships.toTypedArray())
-            .sortedByDescending { it.id }
+            .sortedBy { it.id }
 
     /**
      * Constructs and retrieves a query to find all entities with eager relationships loaded.
@@ -204,7 +204,7 @@ internal abstract class SupportDatabaseDataSource<KEY : Comparable<KEY>, DAO : E
     protected fun onBuildFindAllQuery(eagerRelationships: List<KProperty1<DAO, Any?>> = emptyList()) =
         entityDAO.all()
             .with(*eagerRelationships.toTypedArray())
-            .sortedByDescending { it.id }
+            .sortedBy { it.id }
 
     /**
      * Constructs and retrieves a query to find an entity by its unique [key] with eager relationships loaded.
