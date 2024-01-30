@@ -215,6 +215,45 @@
 			"response": []
 		},
 		{
+			"name": "Search Channels by Name",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://127.0.0.1:6969/api/v1/channels/search?term={{searchTerm}}",
+					"protocol": "http",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "6969",
+					"path": [
+						"api",
+						"v1",
+						"channels",
+						"search"
+					],
+					"query": [
+						{
+							"key": "term",
+							"value": "{{searchTerm}}"
+						}
+					]
+				},
+				"description": "Search channels by name",
+				"variables": [
+					{
+						"key": "searchTerm",
+						"value": "exampleName",
+						"type": "string"
+					}
+				]
+			},
+			"response": []
+		},
+		{
 			"name": "EPG by Channel ID",
 			"request": {
 				"method": "GET",
