@@ -32,7 +32,7 @@ fun Route.accountsRoutes() {
             with(call) {
                 userService.signUp(receive())
                 generateSuccessResponse(
-                    code = 7002,
+                    code = 7001,
                     message = "User registered successfully.",
                     data = "User registered"
                 )

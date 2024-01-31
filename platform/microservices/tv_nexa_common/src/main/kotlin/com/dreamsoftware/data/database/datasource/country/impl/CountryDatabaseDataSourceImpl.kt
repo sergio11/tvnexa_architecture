@@ -66,6 +66,14 @@ internal class CountryDatabaseDataSourceImpl(
     }
 
     /**
+     * Defines the sorting criteria for a [CountryEntityDAO] based on the country name.
+     *
+     * @param dao The [CountryEntityDAO] instance to determine the sorting criteria for.
+     * @return A string representing the country name, which is used as the sorting criterion.
+     */
+    override fun onSortBy(dao: CountryEntityDAO): String = dao.name
+
+    /**
      * Saves countries' languages relationships to the database.
      *
      * @param data Iterable of pairs representing the relationship between country codes and language codes.
