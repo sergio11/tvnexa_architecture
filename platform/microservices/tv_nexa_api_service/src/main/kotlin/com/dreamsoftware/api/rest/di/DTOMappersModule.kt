@@ -20,4 +20,5 @@ val dtoMappersModule = module {
     mapper { SaveUserDtoMapper() }
     mapper { UpdateUserDtoMapper() }
     mapper { ProfileResponseDtoMapper() }
+    mapper { UpdateUserProfileDtoMapper() }
 }

@@ -8,16 +8,14 @@ import com.dreamsoftware.api.domain.repository.IUserRepository
 import com.dreamsoftware.api.domain.services.IUserService
 import com.dreamsoftware.api.rest.dto.request.SignInRequestDTO
 import com.dreamsoftware.api.rest.dto.request.SignUpRequestDTO
+import com.dreamsoftware.api.rest.dto.request.UpdatedProfileRequestDTO
 import com.dreamsoftware.api.rest.dto.request.UpdatedUserRequestDTO
 import com.dreamsoftware.api.rest.dto.response.AuthResponseDTO
 import com.dreamsoftware.api.rest.dto.response.ProfileResponseDTO
 import com.dreamsoftware.api.rest.dto.response.UserResponseDTO
 import com.dreamsoftware.api.rest.utils.getStringProperty
 import com.dreamsoftware.core.ISimpleMapper
-import com.dreamsoftware.data.database.entity.CreateUserEntity
-import com.dreamsoftware.data.database.entity.ProfileEntity
-import com.dreamsoftware.data.database.entity.UpdateUserEntity
-import com.dreamsoftware.data.database.entity.UserEntity
+import com.dreamsoftware.data.database.entity.*
 import io.ktor.server.application.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
@@ -40,6 +38,7 @@ internal class UserServiceImpl(
     private val profileRepository: IProfileRepository,
     private val mapper: ISimpleMapper<UserEntity, UserResponseDTO>,
     private val profileMapper: ISimpleMapper<ProfileEntity, ProfileResponseDTO>,
+    private val updateProfileMapper: ISimpleMapper<UpdatedProfileRequestDTO, UpdateProfileEntity>,
     private val environment: ApplicationEnvironment,
     private val createUserMapper: ISimpleMapper<SignUpRequestDTO, CreateUserEntity>,
     private val updateUserMapper: ISimpleMapper<UpdatedUserRequestDTO, UpdateUserEntity>,
@@ -71,7 +70,7 @@ internal class UserServiceImpl(
                     createUser(createUserMapper.map(signUpRequest))
                 } catch (e: Exception) {
                     e.printStackTrace()
-                    log.debug("USES (signUp) An exception occurred: ${e.message ?: "Unknown error"}")
+                    log.debug("USER (signUp) An exception occurred: ${e.message ?: "Unknown error"}")
                     throw AppException.InternalServerError("An error occurred while user signUp.")
                 }
             }
@@ -113,7 +112,7 @@ internal class UserServiceImpl(
         }  catch (e: Exception) {
             e.printStackTrace()
             throw if (e !is AppException) {
-                log.debug("USES (signIn) An exception occurred: ${e.message ?: "Unknown error"}")
+                log.debug("USER (signIn) An exception occurred: ${e.message ?: "Unknown error"}")
                 AppException.InternalServerError("An error occurred while user signing.")
             } else {
                 e
@@ -140,7 +139,7 @@ internal class UserServiceImpl(
         } catch (e: Exception) {
             e.printStackTrace()
             throw if (e !is AppException) {
-                log.debug("USES (getUserProfile) An exception occurred: ${e.message ?: "Unknown error"}")
+                log.debug("USER (getUserDetail) An exception occurred: ${e.message ?: "Unknown error"}")
                 AppException.InternalServerError("An error occurred while finding user by UUID.")
             } else {
                 e
@@ -163,7 +162,45 @@ internal class UserServiceImpl(
         } catch (e: Exception) {
             e.printStackTrace()
             throw if (e !is AppException) {
-                log.debug("USES (getUserProfiles) An exception occurred: ${e.message ?: "Unknown error"}")
+                log.debug("USER (getUserProfiles) An exception occurred: ${e.message ?: "Unknown error"}")
+                AppException.InternalServerError("An error occurred while finding profiles by user.")
+            } else {
+                e
+            }
+        }
+    }
+
+    /**
+     * Updates a user's profile based on the provided data.
+     *
+     * @param userUuid The unique identifier of the user.
+     * @param profileUUID The unique identifier of the profile to be updated.
+     * @param data The data containing the updates to be applied to the profile.
+     * @return A [ProfileResponseDTO] representing the updated user profile.
+     * @throws AppException.InternalServerError if an unexpected internal error occurs.
+     * @throws AppException.NotFoundException.ProfileNotFoundException if the specified profile is not found.
+     * @throws AppException.UserProfileAlreadyExistsException if there is an attempt to create a duplicate profile.
+     */
+    @Throws(
+        AppException.InternalServerError::class,
+        AppException.NotFoundException.ProfileNotFoundException::class,
+        AppException.UserProfileAlreadyExistsException::class
+    )
+    override suspend fun updateUserProfile(
+        userUuid: UUID,
+        profileUUID: UUID,
+        data: UpdatedProfileRequestDTO
+    ): ProfileResponseDTO = withContext(Dispatchers.IO) {
+        try {
+            with(profileRepository) {
+                update(userUuid.toString(), profileUUID.toString(), updateProfileMapper.map(data))
+                getProfileById(profileUUID)?.let(profileMapper::map)
+                    ?: throw AppException.NotFoundException.ProfileNotFoundException("Profile with code '$profileUUID' not found.")
+            }
+        } catch (e: Exception) {
+            e.printStackTrace()
+            throw if (e !is AppException) {
+                log.debug("USER (updateUserProfile) An exception occurred: ${e.message ?: "Unknown error"}")
                 AppException.InternalServerError("An error occurred while finding profiles by user.")
             } else {
                 e
@@ -198,7 +235,7 @@ internal class UserServiceImpl(
         } catch (e: Exception) {
             e.printStackTrace()
             throw if (e !is AppException) {
-                log.debug("USES (updateUserProfile) An exception occurred: ${e.message ?: "Unknown error"}")
+                log.debug("USER (updateUserProfile) An exception occurred: ${e.message ?: "Unknown error"}")
                 AppException.InternalServerError("An error occurred while finding user by UUID.")
             } else {
                 e

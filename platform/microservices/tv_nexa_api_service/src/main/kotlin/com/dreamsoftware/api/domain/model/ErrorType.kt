@@ -14,6 +14,7 @@ enum class ErrorType(val code: Int, val message: String) {
     SUBDIVISION_NOT_FOUND(110, "The requested subdivision was not found in the system."),
     INVALID_CREDENTIALS(112, "The provided credentials are invalid."),
     USER_ALREADY_EXISTS(113, "The operation failed because a user with the provided credentials (username or email) already exists in the system. Please choose a different username or use a unique email address when creating a new user account"),
+    PROFILE_NOT_FOUND(114, "The requested profile was not found in the system."),
     BAD_REQUEST(109, "The request sent was invalid or incomplete. Please review and ensure all required data is provided."),
     UNAUTHORIZED_CLIENT_EXCEPTION(108, "Operation denied. You do not have the necessary permissions to perform this action.")
 }

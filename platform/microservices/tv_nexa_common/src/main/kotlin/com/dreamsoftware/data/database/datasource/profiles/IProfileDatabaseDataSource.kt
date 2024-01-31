@@ -26,4 +26,13 @@ interface IProfileDatabaseDataSource : ISupportDatabaseDataSource<UUID, CreatePr
      * @return A list of [ProfileEntity] objects representing the user's profiles.
      */
     suspend fun findByUser(uuid: String): List<ProfileEntity>
+
+    /**
+     * Suspended function to update a user's profile information.
+     *
+     * @param userUuid The unique identifier of the user.
+     * @param profileUuid The unique identifier of the profile to be updated.
+     * @param data The [UpdateProfileEntity] containing the updated profile information.
+     */
+    suspend fun updateProfile(userUuid: String, profileUuid: String, data: UpdateProfileEntity)
 }

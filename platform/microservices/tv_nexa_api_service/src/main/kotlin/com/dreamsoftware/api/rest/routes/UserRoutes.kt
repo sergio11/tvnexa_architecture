@@ -3,6 +3,7 @@ package com.dreamsoftware.api.rest.routes
 import com.dreamsoftware.api.domain.services.IUserService
 import com.dreamsoftware.api.rest.utils.fetchAuthUserUuidOrThrow
 import com.dreamsoftware.api.rest.utils.generateSuccessResponse
+import com.dreamsoftware.api.rest.utils.getUUIDParamOrThrow
 import io.ktor.server.application.*
 import io.ktor.server.request.*
 import io.ktor.server.routing.*
@@ -49,22 +50,44 @@ fun Route.userRoutes() {
             with(call) {
                 generateSuccessResponse(
                     code = 8002,
-                    message = "User profile updated successfully.",
+                    message = "User detail updated successfully.",
                     data = userService.updateUserDetail(fetchAuthUserUuidOrThrow(), receive())
                 )
             }
         }
 
-        /**
-         * Endpoint to retrieve profiles for the authenticated user
-         */
-        get("/profiles") {
-            with(call) {
-                generateSuccessResponse(
-                    code = 8003,
-                    message = "Profiles retrieved successfully",
-                    data = userService.getUserProfiles(fetchAuthUserUuidOrThrow())
-                )
+        route("/profiles") {
+
+            /**
+             * Endpoint to retrieve profiles for the authenticated user
+             */
+            get("/") {
+                with(call) {
+                    generateSuccessResponse(
+                        code = 8003,
+                        message = "Profiles retrieved successfully",
+                        data = userService.getUserProfiles(fetchAuthUserUuidOrThrow())
+                    )
+                }
+            }
+
+            /**
+             * Handles the HTTP PUT request to update a user's profile identified by {profileId}.
+             *
+             * This endpoint allows an authenticated user to update their profile information.
+             */
+            put("/{profileId}") {
+                with(call) {
+                    generateSuccessResponse(
+                        code = 8004,
+                        message = "User profile updated successfully.",
+                        data = userService.updateUserProfile(
+                            userUuid = fetchAuthUserUuidOrThrow(),
+                            profileUUID = getUUIDParamOrThrow("profileId"),
+                            data = receive()
+                        )
+                    )
+                }
             }
         }
     }

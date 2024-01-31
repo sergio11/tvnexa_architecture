@@ -9,9 +9,11 @@ sealed class AppException(message: String? = null, cause: Throwable? = null) : E
         class RegionNotFoundException(message: String? = null, cause: Throwable? = null) : NotFoundException(message, cause)
         class SubdivisionNotFoundException(message: String? = null, cause: Throwable? = null) : NotFoundException(message, cause)
         class UserNotFoundException(message: String? = null, cause: Throwable? = null) : NotFoundException(message, cause)
+        class ProfileNotFoundException(message: String? = null, cause: Throwable? = null) : NotFoundException(message, cause)
     }
     class InvalidCredentialsException(message: String? = null, cause: Throwable? = null) : NotFoundException(message, cause)
     class UserAlreadyExistsException(message: String? = null, cause: Throwable? = null) : NotFoundException(message, cause)
     class InternalServerError(message: String? = null, cause: Throwable? = null) : AppException(message, cause)
     class JwtAuthenticationException(message: String? = null, cause: Throwable? = null) : AppException(message, cause)
+    class UserProfileAlreadyExistsException(message: String? = null, cause: Throwable? = null) : NotFoundException(message, cause)
 }

@@ -5,13 +5,17 @@ import com.dreamsoftware.core.toUUID
 import com.dreamsoftware.data.database.core.IDatabaseFactory
 import com.dreamsoftware.data.database.dao.ProfileEntityDAO
 import com.dreamsoftware.data.database.dao.ProfileTable
+import com.dreamsoftware.data.database.dao.UserTable
 import com.dreamsoftware.data.database.datasource.core.SupportDatabaseDataSource
 import com.dreamsoftware.data.database.datasource.profiles.IProfileDatabaseDataSource
 import com.dreamsoftware.data.database.entity.CreateProfileEntity
 import com.dreamsoftware.data.database.entity.ProfileEntity
+import com.dreamsoftware.data.database.entity.UpdateProfileEntity
+import org.jetbrains.exposed.sql.and
 import org.jetbrains.exposed.sql.count
 import org.jetbrains.exposed.sql.select
 import org.jetbrains.exposed.sql.statements.UpdateBuilder
+import org.jetbrains.exposed.sql.update
 import java.util.*
 
 /**
@@ -63,5 +67,23 @@ internal class ProfileDatabaseDataSourceImpl(
      */
     override suspend fun findByUser(uuid: String): List<ProfileEntity> = execQuery {
         entityDAO.find { ProfileTable.userId eq uuid.toUUID() }.map(mapper::map)
+    }
+
+    /**
+     * update a user's profile information.
+     *
+     * @param userUuid The unique identifier of the user.
+     * @param profileUuid The unique identifier of the profile to be updated.
+     * @param data The [UpdateProfileEntity] containing the updated profile information.
+     */
+    override suspend fun updateProfile(userUuid: String, profileUuid: String, data: UpdateProfileEntity): Unit = execWrite {
+        UserTable.update({ ProfileTable.userId eq userUuid.toUUID() and(ProfileTable.id eq profileUuid.toUUID()) }) { statement ->
+            with(data) {
+                alias?.let { statement[ProfileTable.alias] = it }
+                pin?.let { statement[ProfileTable.pin] = it }
+                isAdmin?.let { statement[ProfileTable.isAdmin] = it }
+                type?.let { statement[ProfileTable.type] = it }
+            }
+        }
     }
 }
