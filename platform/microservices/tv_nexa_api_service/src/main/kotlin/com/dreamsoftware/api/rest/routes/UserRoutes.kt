@@ -89,6 +89,61 @@ fun Route.userRoutes() {
                     )
                 }
             }
+
+            /**
+             * Handles the HTTP DELETE request to delete a user's profile identified by {profileId}.
+             *
+             * This endpoint allows an authenticated user to delete their profile.
+             */
+            delete("/{profileId}") {
+                with(call) {
+                    generateSuccessResponse(
+                        code = 8005,
+                        message = "User profile deleted successfully.",
+                        data = userService.deleteUserProfile(
+                            userUuid = fetchAuthUserUuidOrThrow(),
+                            profileUUID = getUUIDParamOrThrow("profileId")
+                        )
+                    )
+                }
+            }
+
+            /**
+             * Handles the HTTP POST request to create a new profile for the authenticated user.
+             *
+             * This endpoint allows an authenticated user to create a new profile.
+             */
+            post("/") {
+                with(call) {
+                    generateSuccessResponse(
+                        code = 8006,
+                        message = "User profile created successfully.",
+                        data = userService.createProfile(
+                            userUuid = fetchAuthUserUuidOrThrow(),
+                            data = receive()
+                        )
+                    )
+                }
+            }
+
+            /**
+             * Handles the HTTP POST request to verify the PIN of a user's profile.
+             *
+             * This endpoint allows an authenticated user to verify the PIN of their profile.
+             */
+            post("/verify-pin") {
+                with(call) {
+                    generateSuccessResponse(
+                        code = 8007,
+                        message = "PIN verification successful.",
+                        data = userService.verifyPin(
+                            userUuid = fetchAuthUserUuidOrThrow(),
+                            profileUUID = getUUIDParamOrThrow("profileId"),
+                            data = receive()
+                        )
+                    )
+                }
+            }
         }
     }
 }

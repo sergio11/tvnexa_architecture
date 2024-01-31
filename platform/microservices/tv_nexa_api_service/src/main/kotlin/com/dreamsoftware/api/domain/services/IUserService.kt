@@ -1,10 +1,7 @@
 package com.dreamsoftware.api.domain.services
 
 import com.dreamsoftware.api.domain.model.exceptions.AppException
-import com.dreamsoftware.api.rest.dto.request.SignInRequestDTO
-import com.dreamsoftware.api.rest.dto.request.SignUpRequestDTO
-import com.dreamsoftware.api.rest.dto.request.UpdatedProfileRequestDTO
-import com.dreamsoftware.api.rest.dto.request.UpdatedUserRequestDTO
+import com.dreamsoftware.api.rest.dto.request.*
 import com.dreamsoftware.api.rest.dto.response.AuthResponseDTO
 import com.dreamsoftware.api.rest.dto.response.ProfileResponseDTO
 import com.dreamsoftware.api.rest.dto.response.UserResponseDTO
@@ -104,4 +101,47 @@ interface IUserService {
         AppException.UserAlreadyExistsException::class
     )
     suspend fun updateUserDetail(uuid: UUID, updatedUser: UpdatedUserRequestDTO): UserResponseDTO
+
+    /**
+     * Deletes a user's profile.
+     *
+     * @param userUuid The unique identifier of the user.
+     * @param profileUUID The unique identifier of the profile to be deleted.
+     * @throws [AppException.InternalServerError] if an unexpected internal error occurs.
+     * @throws [AppException.NotFoundException.UserNotFoundException] if the specified user is not found.
+     * @throws [AppException.NotFoundException.ProfileNotFoundException] if the specified profile is not found.
+     */
+    @Throws(
+        AppException.InternalServerError::class,
+        AppException.NotFoundException.UserNotFoundException::class,
+        AppException.NotFoundException.ProfileNotFoundException::class
+    )
+    suspend fun deleteUserProfile(userUuid: UUID, profileUUID: UUID)
+
+    /**
+     * Creates a new profile for the authenticated user.
+     *
+     * @param userUuid The unique identifier of the user.
+     * @param data The [CreateProfileRequestDTO] containing the data for the new profile.
+     * @return A [ProfileResponseDTO] representing the newly created user profile.
+     * @throws [AppException.InternalServerError] if an unexpected internal error occurs.
+     * @throws [AppException.UserProfileAlreadyExistsException] if there is an attempt to create a duplicate profile.
+     */
+    @Throws(
+        AppException.InternalServerError::class,
+        AppException.UserProfileAlreadyExistsException::class
+    )
+    suspend fun createProfile(userUuid: UUID, data: CreateProfileRequestDTO)
+
+    /**
+     * Verifies the PIN of a user's profile.
+     *
+     * @param userUuid The unique identifier of the user.
+     * @param profileUUID The unique identifier of the profile to be verified.
+     * @param data The PinVerificationRequest to be verified.
+     * @return `true` if the PIN is verified successfully, `false` otherwise.
+     * @throws [AppException.NotFoundException.ProfileNotFoundException] if the specified profile is not found.
+     */
+    @Throws(AppException.NotFoundException.ProfileNotFoundException::class)
+    suspend fun verifyPin(userUuid: UUID, profileUUID: UUID, data: PinVerificationRequestDTO): Boolean
 }

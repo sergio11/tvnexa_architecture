@@ -4,6 +4,7 @@ import com.dreamsoftware.api.data.cache.datasource.ICacheDatasource
 import com.dreamsoftware.api.data.respository.impl.core.SupportRepository
 import com.dreamsoftware.api.domain.repository.IProfileRepository
 import com.dreamsoftware.data.database.datasource.profiles.IProfileDatabaseDataSource
+import com.dreamsoftware.data.database.entity.CreateProfileEntity
 import com.dreamsoftware.data.database.entity.ProfileEntity
 import com.dreamsoftware.data.database.entity.UpdateProfileEntity
 import kotlinx.coroutines.Dispatchers
@@ -27,7 +28,7 @@ internal class ProfileRepositoryImpl(
      * @param uuid The unique identifier of the user.
      * @return The number of profiles associated with the specified user.
      */
-    override suspend fun countByUser(uuid: String): Long = withContext(Dispatchers.IO) {
+    override suspend fun countByUser(uuid: UUID): Long = withContext(Dispatchers.IO) {
         profileDatabaseDataSource.countByUser(uuid)
     }
 
@@ -37,19 +38,18 @@ internal class ProfileRepositoryImpl(
      * @param uuid The unique identifier of the user.
      * @return A list of [ProfileEntity] objects representing the user's profiles.
      */
-    override suspend fun findByUser(uuid: String): List<ProfileEntity> = withContext(Dispatchers.IO) {
+    override suspend fun findByUser(uuid: UUID): List<ProfileEntity> = withContext(Dispatchers.IO) {
         profileDatabaseDataSource.findByUser(uuid)
     }
 
     /**
      * Updates a user's profile information.
      *
-     * @param userUuid The unique identifier of the user.
      * @param profileUuid The unique identifier of the profile to be updated.
      * @param profile The updated information for the user's profile.
      */
-    override suspend fun update(userUuid: String, profileUuid: String, profile: UpdateProfileEntity) = withContext(Dispatchers.IO) {
-        profileDatabaseDataSource.updateProfile(userUuid, profileUuid, profile)
+    override suspend fun update(profileUuid: UUID, profile: UpdateProfileEntity) = withContext(Dispatchers.IO) {
+        profileDatabaseDataSource.updateProfile(profileUuid, profile)
     }
 
     /**
@@ -60,5 +60,35 @@ internal class ProfileRepositoryImpl(
      */
     override suspend fun getProfileById(uuid: UUID): ProfileEntity? = withContext(Dispatchers.IO) {
         profileDatabaseDataSource.findByKey(uuid)
+    }
+
+    /**
+     * Deletes a user's profile.
+     *
+     * @param uuid The unique identifier of the profile to be deleted.
+     */
+    override suspend fun deleteProfile(uuid: UUID) = withContext(Dispatchers.IO) {
+        profileDatabaseDataSource.deleteByKey(uuid)
+    }
+
+    /**
+     * Creates a new profile for the authenticated user.
+     *
+     * @param data The [UpdateProfileEntity] containing the data for the new profile.
+     * @return A [ProfileEntity] representing the newly created user profile.
+     */
+    override suspend fun createProfile(data: CreateProfileEntity): Unit = withContext(Dispatchers.IO) {
+        profileDatabaseDataSource.save(data)
+    }
+
+    /**
+     * Verifies the PIN of a user's profile.
+     *
+     * @param profileUuid The unique identifier of the profile to be verified.
+     * @param pin The PIN to be verified.
+     * @return `true` if the PIN is verified successfully, `false` otherwise.
+     */
+    override suspend fun verifyPin(profileUuid: UUID, pin: Int): Boolean = withContext(Dispatchers.IO) {
+        profileDatabaseDataSource.verifyPin(profileUuid, pin)
     }
 }

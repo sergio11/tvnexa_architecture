@@ -1,11 +1,9 @@
 package com.dreamsoftware.data.database.datasource.profiles.impl
 
 import com.dreamsoftware.core.ISimpleMapper
-import com.dreamsoftware.core.toUUID
 import com.dreamsoftware.data.database.core.IDatabaseFactory
 import com.dreamsoftware.data.database.dao.ProfileEntityDAO
 import com.dreamsoftware.data.database.dao.ProfileTable
-import com.dreamsoftware.data.database.dao.UserTable
 import com.dreamsoftware.data.database.datasource.core.SupportDatabaseDataSource
 import com.dreamsoftware.data.database.datasource.profiles.IProfileDatabaseDataSource
 import com.dreamsoftware.data.database.entity.CreateProfileEntity
@@ -52,10 +50,10 @@ internal class ProfileDatabaseDataSourceImpl(
      * @param uuid The unique identifier of the user.
      * @return The number of profiles associated with the specified user.
      */
-    override suspend fun countByUser(uuid: String): Long = execQuery {
+    override suspend fun countByUser(uuid: UUID): Long = execQuery {
         ProfileTable
             .slice(ProfileTable.userId.count())
-            .select { ProfileTable.userId eq uuid.toUUID() }
+            .select { ProfileTable.userId eq uuid }
             .single()[ProfileTable.userId.count()]
     }
 
@@ -65,19 +63,18 @@ internal class ProfileDatabaseDataSourceImpl(
      * @param uuid The unique identifier of the user.
      * @return A list of [ProfileEntity] objects representing the user's profiles.
      */
-    override suspend fun findByUser(uuid: String): List<ProfileEntity> = execQuery {
-        entityDAO.find { ProfileTable.userId eq uuid.toUUID() }.map(mapper::map)
+    override suspend fun findByUser(uuid: UUID): List<ProfileEntity> = execQuery {
+        entityDAO.find { ProfileTable.userId eq uuid }.map(mapper::map)
     }
 
     /**
      * update a user's profile information.
      *
-     * @param userUuid The unique identifier of the user.
      * @param profileUuid The unique identifier of the profile to be updated.
      * @param data The [UpdateProfileEntity] containing the updated profile information.
      */
-    override suspend fun updateProfile(userUuid: String, profileUuid: String, data: UpdateProfileEntity): Unit = execWrite {
-        UserTable.update({ ProfileTable.userId eq userUuid.toUUID() and(ProfileTable.id eq profileUuid.toUUID()) }) { statement ->
+    override suspend fun updateProfile(profileUuid: UUID, data: UpdateProfileEntity): Unit = execWrite {
+        ProfileTable.update({ ProfileTable.id eq profileUuid }) { statement ->
             with(data) {
                 alias?.let { statement[ProfileTable.alias] = it }
                 pin?.let { statement[ProfileTable.pin] = it }
@@ -85,5 +82,16 @@ internal class ProfileDatabaseDataSourceImpl(
                 type?.let { statement[ProfileTable.type] = it }
             }
         }
+    }
+
+    /**
+     * Suspended function to verify the PIN of a user's profile.
+     *
+     * @param profileUuid The unique identifier of the profile to be verified.
+     * @param pin The PIN to be verified.
+     * @return `true` if the PIN is verified successfully, `false` otherwise.
+     */
+    override suspend fun verifyPin(profileUuid: UUID, pin: Int): Boolean = execQuery {
+        entityDAO.find { ProfileTable.id eq profileUuid and(ProfileTable.pin eq pin) }.count() > 0
     }
 }

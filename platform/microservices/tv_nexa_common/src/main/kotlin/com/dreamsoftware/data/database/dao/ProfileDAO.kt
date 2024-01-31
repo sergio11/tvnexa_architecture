@@ -19,7 +19,7 @@ object ProfileTable : UUIDTable(name = "profiles") {
     val userId = uuid("user_id").references(UserTable.id, onDelete = ReferenceOption.CASCADE)
 
     // Alias for the profile
-    val alias = varchar("alias", 10)
+    val alias = varchar("alias", 100)
 
     // Type of the profile ("BOY", "GIRL", "WOMAN", "MAN")
     val type = enumerationByName("profile_type", 10, ProfileType::class)
