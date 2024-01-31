@@ -140,6 +140,7 @@ internal abstract class SupportDatabaseDataSource<KEY : Comparable<KEY>, DAO : E
      */
     abstract fun UpdateBuilder<Int>.onMapEntityToSave(entityToSave: INPUT)
 
+    open fun onSortBy(dao: DAO): String = dao.id.value.toString()
 
     /**
      * This method is called after a transaction for saving a single record finishes.
@@ -193,7 +194,7 @@ internal abstract class SupportDatabaseDataSource<KEY : Comparable<KEY>, DAO : E
         entityDAO.all()
             .limit(limit, offset = offset)
             .with(*eagerRelationships.toTypedArray())
-            .sortedBy { it.id }
+            .sortedBy(::onSortBy)
 
     /**
      * Constructs and retrieves a query to find all entities with eager relationships loaded.
@@ -204,7 +205,7 @@ internal abstract class SupportDatabaseDataSource<KEY : Comparable<KEY>, DAO : E
     protected fun onBuildFindAllQuery(eagerRelationships: List<KProperty1<DAO, Any?>> = emptyList()) =
         entityDAO.all()
             .with(*eagerRelationships.toTypedArray())
-            .sortedBy { it.id }
+            .sortedBy(::onSortBy)
 
     /**
      * Constructs and retrieves a query to find an entity by its unique [key] with eager relationships loaded.

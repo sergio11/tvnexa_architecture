@@ -30,7 +30,6 @@ fun StatusPagesConfig.configureUsersStatusPages() {
         call.respond(
             HttpStatusCode.BadRequest,
             ErrorType.PROFILE_NOT_FOUND.toErrorResponseDTO()
-            ErrorType.PROFILE_NOT_FOUND.toErrorResponseDTO()
         )
     }
 }
