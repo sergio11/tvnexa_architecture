@@ -4,26 +4,22 @@ import com.dreamsoftware.api.data.cache.datasource.ICacheDatasource
 import com.dreamsoftware.api.data.respository.impl.core.SupportRepository
 import com.dreamsoftware.api.domain.repository.IUserRepository
 import com.dreamsoftware.api.utils.toJSON
-import com.dreamsoftware.data.database.datasource.profiles.IProfileDatabaseDataSource
 import com.dreamsoftware.data.database.datasource.user.IUserDatabaseDataSource
-import com.dreamsoftware.data.database.entity.CreateProfileEntity
 import com.dreamsoftware.data.database.entity.CreateUserEntity
 import com.dreamsoftware.data.database.entity.UpdateUserEntity
 import com.dreamsoftware.data.database.entity.UserEntity
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
-import java.util.UUID
+import java.util.*
 
 /**
  * Implementation of the UserRepository interface responsible for handling user-related operations.
  *
  * @property userDatabaseDataSource The data source responsible for user-related database operations.
- * @property profileDatabaseDataSource The data source responsible for profile-related database operations.
  * @property cacheDatasource The cache data source for caching user information.
  */
 internal class UserRepositoryImpl(
     private val userDatabaseDataSource: IUserDatabaseDataSource,
-    private val profileDatabaseDataSource: IProfileDatabaseDataSource,
     cacheDatasource: ICacheDatasource<String>
 ) : SupportRepository(cacheDatasource), IUserRepository {
 
@@ -63,13 +59,7 @@ internal class UserRepositoryImpl(
      * @param user The user data to be created.
      */
     override suspend fun createUser(user: CreateUserEntity) = withContext(Dispatchers.IO) {
-        with(userDatabaseDataSource) {
-            save(user).also {
-                findByUsername(user.username)?.let {
-                    profileDatabaseDataSource.save(CreateProfileEntity(alias = it.firstName, userId = it.uuid))
-                }
-            }
-        }
+        userDatabaseDataSource.save(user)
     }
 
     /**
