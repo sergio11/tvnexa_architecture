@@ -131,7 +131,7 @@ fun Route.userRoutes() {
              *
              * This endpoint allows an authenticated user to verify the PIN of their profile.
              */
-            post("/verify-pin") {
+            post("/{profileId}/verify-pin") {
                 with(call) {
                     generateSuccessResponse(
                         code = 8007,
