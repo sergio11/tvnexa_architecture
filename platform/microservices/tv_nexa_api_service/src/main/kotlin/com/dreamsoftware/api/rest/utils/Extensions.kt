@@ -3,6 +3,7 @@ package com.dreamsoftware.api.rest.utils
 import com.dreamsoftware.api.domain.model.ErrorType
 import com.dreamsoftware.api.domain.model.toErrorResponseDTO
 import com.dreamsoftware.api.rest.dto.response.ApiResponseDTO
+import com.dreamsoftware.core.toUUID
 import io.ktor.server.application.*
 import io.ktor.server.auth.*
 import io.ktor.server.auth.jwt.*
@@ -57,6 +58,19 @@ suspend fun ApplicationCall.doIfParamExists(paramName: String, block: suspend (p
  */
 fun ApplicationCall.getLongParamOrDefault(paramName: String, defaultValue: Long) =
     parameters[paramName]?.toLongOrNull() ?: defaultValue
+
+
+/**
+ * Extension function for [ApplicationCall] to retrieve a UUID parameter from the call's parameters map.
+ *
+ * @param paramName The name of the UUID parameter to retrieve.
+ * @return The UUID value associated with the specified parameter name.
+ * @throws BadRequestException if the parameter is not present or if it cannot be converted to a valid UUID.
+ */
+fun ApplicationCall.getUUIDParamOrThrow(paramName: String): UUID =
+    parameters[paramName]?.let {
+        runCatching { it.toUUID() }.getOrNull() ?: throw BadRequestException("Invalid UUID")
+    } ?: throw BadRequestException("UUID not provided")
 
 
 /**

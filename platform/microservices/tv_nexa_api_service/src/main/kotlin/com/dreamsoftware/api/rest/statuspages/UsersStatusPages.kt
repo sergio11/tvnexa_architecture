@@ -26,4 +26,11 @@ fun StatusPagesConfig.configureUsersStatusPages() {
             ErrorType.USER_ALREADY_EXISTS.toErrorResponseDTO()
         )
     }
+    exception<AppException.NotFoundException.ProfileNotFoundException>() { call, _ ->
+        call.respond(
+            HttpStatusCode.BadRequest,
+            ErrorType.PROFILE_NOT_FOUND.toErrorResponseDTO()
+            ErrorType.PROFILE_NOT_FOUND.toErrorResponseDTO()
+        )
+    }
 }

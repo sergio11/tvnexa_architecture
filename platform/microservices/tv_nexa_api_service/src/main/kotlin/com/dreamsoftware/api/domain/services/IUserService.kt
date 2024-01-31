@@ -3,6 +3,7 @@ package com.dreamsoftware.api.domain.services
 import com.dreamsoftware.api.domain.model.exceptions.AppException
 import com.dreamsoftware.api.rest.dto.request.SignInRequestDTO
 import com.dreamsoftware.api.rest.dto.request.SignUpRequestDTO
+import com.dreamsoftware.api.rest.dto.request.UpdatedProfileRequestDTO
 import com.dreamsoftware.api.rest.dto.request.UpdatedUserRequestDTO
 import com.dreamsoftware.api.rest.dto.response.AuthResponseDTO
 import com.dreamsoftware.api.rest.dto.response.ProfileResponseDTO
@@ -71,6 +72,24 @@ interface IUserService {
         AppException.NotFoundException.UserNotFoundException::class
     )
     suspend fun getUserProfiles(uuid: UUID): List<ProfileResponseDTO>
+
+    /**
+     * Suspended function to update a user's profile based on the provided data.
+     *
+     * @param userUuid The unique identifier of the user.
+     * @param profileUUID The unique identifier of the profile to be updated.
+     * @param data The [UpdatedProfileRequestDTO] containing the updates to be applied to the profile.
+     * @return A [ProfileResponseDTO] representing the updated user profile.
+     * @throws [AppException.InternalServerError] if an unexpected internal error occurs.
+     * @throws [AppException.NotFoundException.UserNotFoundException] if the specified user is not found.
+     * @throws [AppException.UserProfileAlreadyExistsException] if there is an attempt to create a duplicate profile.
+     */
+    @Throws(
+        AppException.InternalServerError::class,
+        AppException.NotFoundException.UserNotFoundException::class,
+        AppException.UserProfileAlreadyExistsException::class
+    )
+    suspend fun updateUserProfile(userUuid: UUID, profileUUID: UUID, data: UpdatedProfileRequestDTO): ProfileResponseDTO
 
     /**
      * Updates the user profile based on the provided user ID and updated information.
