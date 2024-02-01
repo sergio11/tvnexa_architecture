@@ -3,12 +3,10 @@ package com.dreamsoftware.api.domain.services.impl
 import com.dreamsoftware.api.domain.model.exceptions.AppException
 import com.dreamsoftware.api.domain.repository.ISubdivisionRepository
 import com.dreamsoftware.api.domain.services.ISubdivisionService
+import com.dreamsoftware.api.domain.services.impl.core.SupportService
 import com.dreamsoftware.api.rest.dto.response.SubdivisionResponseDTO
 import com.dreamsoftware.core.ISimpleMapper
 import com.dreamsoftware.data.database.entity.SubdivisionEntity
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.withContext
-import org.slf4j.LoggerFactory
 
 /**
  * Implementation of [ISubdivisionService] responsible for managing Subdivisions.
@@ -19,9 +17,7 @@ import org.slf4j.LoggerFactory
 internal class SubdivisionServiceImpl(
     private val subdivisionRepository: ISubdivisionRepository,
     private val subdivisionMapper: ISimpleMapper<SubdivisionEntity, SubdivisionResponseDTO>
-) : ISubdivisionService {
-
-    private val log = LoggerFactory.getLogger(this::class.java)
+) : SupportService(), ISubdivisionService {
 
     /**
      * Retrieves all Subdivision response DTOs.
@@ -30,16 +26,11 @@ internal class SubdivisionServiceImpl(
      * @throws AppException.InternalServerError if an internal server error occurs.
      */
     @Throws(AppException.InternalServerError::class)
-    override suspend fun findAll(): List<SubdivisionResponseDTO> = withContext(Dispatchers.IO) {
-        try {
+    override suspend fun findAll(): List<SubdivisionResponseDTO> =
+        safeCall(errorMessage = "An error occurred while fetching all subdivisions.") {
             subdivisionRepository.findAll()
                 .map(subdivisionMapper::map)
-        } catch (e: Exception) {
-            e.printStackTrace()
-            log.debug("SUBS (findAll) An exception occurred: ${e.message ?: "Unknown error"}")
-            throw AppException.InternalServerError("An error occurred while fetching all subdivisions.")
         }
-    }
 
     /**
      * Retrieves a Subdivision response DTO by its code.
@@ -53,20 +44,11 @@ internal class SubdivisionServiceImpl(
         AppException.InternalServerError::class,
         AppException.NotFoundException.SubdivisionNotFoundException::class
     )
-    override suspend fun findByCode(code: String): SubdivisionResponseDTO = withContext(Dispatchers.IO) {
-        try {
+    override suspend fun findByCode(code: String): SubdivisionResponseDTO =
+        safeCall(errorMessage = "An error occurred while finding subdivision by code.") {
             subdivisionRepository.findByCode(code)?.let(subdivisionMapper::map)
                 ?: throw AppException.NotFoundException.SubdivisionNotFoundException(
                     "Subdivision with code '$code' not found."
                 )
-        } catch (e: Exception) {
-            e.printStackTrace()
-            throw if(e !is AppException) {
-                log.debug("SUBS (findByCode) An exception occurred: ${e.message ?: "Unknown error"}")
-                AppException.InternalServerError("An error occurred while finding subdivision by code.")
-            } else {
-                e
-            }
         }
-    }
 }

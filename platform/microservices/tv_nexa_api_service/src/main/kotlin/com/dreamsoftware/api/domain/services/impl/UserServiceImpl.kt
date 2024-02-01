@@ -6,6 +6,7 @@ import com.dreamsoftware.api.domain.model.exceptions.AppException
 import com.dreamsoftware.api.domain.repository.IProfileRepository
 import com.dreamsoftware.api.domain.repository.IUserRepository
 import com.dreamsoftware.api.domain.services.IUserService
+import com.dreamsoftware.api.domain.services.impl.core.SupportService
 import com.dreamsoftware.api.rest.dto.request.*
 import com.dreamsoftware.api.rest.dto.response.AuthResponseDTO
 import com.dreamsoftware.api.rest.dto.response.ProfileResponseDTO
@@ -18,9 +19,6 @@ import com.dreamsoftware.core.toUUID
 import com.dreamsoftware.data.database.dao.ProfileType
 import com.dreamsoftware.data.database.entity.*
 import io.ktor.server.application.*
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.withContext
-import org.slf4j.LoggerFactory
 import java.util.*
 
 /**
@@ -48,9 +46,7 @@ internal class UserServiceImpl(
     private val updateUserMapper: ISimpleMapper<UpdatedUserRequestDTO, UpdateUserEntity>,
     private val createUserProfileMapper: ISimpleMapper<DataInput, CreateProfileEntity>,
     private val channelMapper: ISimpleMapper<SimpleChannelEntity, SimpleChannelResponseDTO>
-): IUserService {
-
-    private val log = LoggerFactory.getLogger(this::class.java)
+): SupportService(), IUserService {
 
     private companion object {
         const val EXPIRATION_TIME_IN_MILLIS = 48 * 60 * 60 * 1000L
@@ -68,12 +64,12 @@ internal class UserServiceImpl(
         AppException.InternalServerError::class,
         AppException.UserAlreadyExistsException::class
     )
-    override suspend fun signUp(signUpRequest: SignUpRequestDTO): Unit = withContext(Dispatchers.IO) {
-        with(userRepository) {
-            if(with(signUpRequest) { existsByUsernameOrEmail(username, email) }) {
-                throw AppException.UserAlreadyExistsException("User already exists")
-            } else {
-                try {
+    override suspend fun signUp(signUpRequest: SignUpRequestDTO): Unit =
+        safeCall(errorMessage = "An error occurred while user signUp.") {
+            with(userRepository) {
+                if(with(signUpRequest) { existsByUsernameOrEmail(username, email) }) {
+                    throw AppException.UserAlreadyExistsException("User already exists")
+                } else {
                     createUser(createUserMapper.map(signUpRequest))
                     getUserByUsername(signUpRequest.username)?.let {
                         profileRepository.createProfile(
@@ -86,14 +82,9 @@ internal class UserServiceImpl(
                             )
                         )
                     }
-                } catch (e: Exception) {
-                    e.printStackTrace()
-                    log.debug("USER (signUp) An exception occurred: ${e.message ?: "Unknown error"}")
-                    throw AppException.InternalServerError("An error occurred while user signUp.")
                 }
             }
         }
-    }
 
     /**
      * Authenticates a user based on the provided sign-in credentials and generates an authentication token.
@@ -107,8 +98,8 @@ internal class UserServiceImpl(
         AppException.InternalServerError::class,
         AppException.InvalidCredentialsException::class
     )
-    override suspend fun signIn(signInRequest: SignInRequestDTO): AuthResponseDTO = withContext(Dispatchers.IO) {
-        try {
+    override suspend fun signIn(signInRequest: SignInRequestDTO): AuthResponseDTO =
+        safeCall(errorMessage = "An error occurred while user signing.") {
             with(signInRequest) {
                 userRepository.signIn(email, password)?.let(mapper::map)?.let { userDTO ->
                     AuthResponseDTO(
@@ -127,16 +118,7 @@ internal class UserServiceImpl(
                         } )
                 } ?: throw AppException.InvalidCredentialsException("Invalid credentials!")
             }
-        }  catch (e: Exception) {
-            e.printStackTrace()
-            throw if (e !is AppException) {
-                log.debug("USER (signIn) An exception occurred: ${e.message ?: "Unknown error"}")
-                AppException.InternalServerError("An error occurred while user signing.")
-            } else {
-                e
-            }
         }
-    }
 
     /**
      * Retrieves a user's profile based on the provided UUID.
@@ -150,20 +132,11 @@ internal class UserServiceImpl(
         AppException.InternalServerError::class,
         AppException.NotFoundException.UserNotFoundException::class
     )
-    override suspend fun getUserDetail(uuid: UUID): UserResponseDTO = withContext(Dispatchers.IO) {
-        try {
+    override suspend fun getUserDetail(uuid: UUID): UserResponseDTO =
+        safeCall(errorMessage = "An error occurred while finding user by UUID.") {
             userRepository.getUserById(uuid)?.let(mapper::map)
                 ?: throw AppException.NotFoundException.UserNotFoundException("User with code '$uuid' not found.")
-        } catch (e: Exception) {
-            e.printStackTrace()
-            throw if (e !is AppException) {
-                log.debug("USER (getUserDetail) An exception occurred: ${e.message ?: "Unknown error"}")
-                AppException.InternalServerError("An error occurred while finding user by UUID.")
-            } else {
-                e
-            }
         }
-    }
 
     /**
      * Retrieves profiles associated with a user identified by their UUID.
@@ -174,19 +147,10 @@ internal class UserServiceImpl(
      * @throws AppException.InternalServerError If there is an internal server error during profile retrieval.
      */
     @Throws(AppException.InternalServerError::class)
-    override suspend fun getUserProfiles(uuid: UUID): List<ProfileResponseDTO> = withContext(Dispatchers.IO) {
-        try {
+    override suspend fun getUserProfiles(uuid: UUID): List<ProfileResponseDTO> =
+        safeCall(errorMessage = "An error occurred while finding profiles by user.") {
             profileRepository.findByUser(uuid).map(profileMapper::map)
-        } catch (e: Exception) {
-            e.printStackTrace()
-            throw if (e !is AppException) {
-                log.debug("USER (getUserProfiles) An exception occurred: ${e.message ?: "Unknown error"}")
-                AppException.InternalServerError("An error occurred while finding profiles by user.")
-            } else {
-                e
-            }
         }
-    }
 
     /**
      * Updates a user's profile based on the provided data.
@@ -208,23 +172,14 @@ internal class UserServiceImpl(
         userUuid: UUID,
         profileUUID: UUID,
         data: UpdatedProfileRequestDTO
-    ): ProfileResponseDTO = withContext(Dispatchers.IO) {
-        try {
+    ): ProfileResponseDTO =
+        safeCall(errorMessage = "An error occurred while finding profiles by user.") {
             with(profileRepository) {
                 update(profileUUID, updateProfileMapper.map(data))
                 getProfileById(profileUUID)?.let(profileMapper::map)
                     ?: throw AppException.NotFoundException.ProfileNotFoundException("Profile with code '$profileUUID' not found.")
             }
-        } catch (e: Exception) {
-            e.printStackTrace()
-            throw if (e !is AppException) {
-                log.debug("USER (updateUserProfile) An exception occurred: ${e.message ?: "Unknown error"}")
-                AppException.InternalServerError("An error occurred while finding profiles by user.")
-            } else {
-                e
-            }
         }
-    }
 
     /**
      * Updates a user's profile based on the provided UUID and updated user information.
@@ -238,8 +193,8 @@ internal class UserServiceImpl(
         AppException.NotFoundException.UserNotFoundException::class,
         AppException.UserAlreadyExistsException::class
     )
-    override suspend fun updateUserDetail(uuid: UUID, updatedUser: UpdatedUserRequestDTO): UserResponseDTO = withContext(Dispatchers.IO) {
-        try {
+    override suspend fun updateUserDetail(uuid: UUID, updatedUser: UpdatedUserRequestDTO): UserResponseDTO =
+        safeCall(errorMessage = "An error occurred while finding user by UUID.") {
             with(userRepository) {
                 updatedUser.username?.let { newUsername ->
                     if(existsByUsername(newUsername)) {
@@ -250,16 +205,7 @@ internal class UserServiceImpl(
                 getUserById(uuid)?.let(mapper::map)
                     ?: throw AppException.NotFoundException.UserNotFoundException("User with code '$uuid' not found.")
             }
-        } catch (e: Exception) {
-            e.printStackTrace()
-            throw if (e !is AppException) {
-                log.debug("USER (updateUserProfile) An exception occurred: ${e.message ?: "Unknown error"}")
-                AppException.InternalServerError("An error occurred while finding user by UUID.")
-            } else {
-                e
-            }
         }
-    }
 
     /**
      * Deletes a user's profile.
@@ -275,19 +221,10 @@ internal class UserServiceImpl(
         AppException.NotFoundException.UserNotFoundException::class,
         AppException.NotFoundException.ProfileNotFoundException::class
     )
-    override suspend fun deleteUserProfile(userUuid: UUID, profileUUID: UUID): Unit = withContext(Dispatchers.IO) {
-        try {
+    override suspend fun deleteUserProfile(userUuid: UUID, profileUUID: UUID): Unit =
+        safeCall(errorMessage = "An error occurred while deleting profile.") {
             profileRepository.deleteProfile(profileUUID)
-        } catch (e: Exception) {
-            e.printStackTrace()
-            throw if (e !is AppException) {
-                log.debug("USER (deleteUserProfile) An exception occurred: ${e.message ?: "Unknown error"}")
-                AppException.InternalServerError("An error occurred while deleting profile.")
-            } else {
-                e
-            }
         }
-    }
 
     /**
      * Creates a new profile for the authenticated user.
@@ -302,19 +239,10 @@ internal class UserServiceImpl(
         AppException.InternalServerError::class,
         AppException.UserProfileAlreadyExistsException::class
     )
-    override suspend fun createProfile(userUuid: UUID, data: CreateProfileRequestDTO): Unit = withContext(Dispatchers.IO) {
-        try {
+    override suspend fun createProfile(userUuid: UUID, data: CreateProfileRequestDTO): Unit =
+        safeCall(errorMessage = "An error occurred while deleting profile.") {
             profileRepository.createProfile(createUserProfileMapper.map(DataInput(data, userUuid)))
-        } catch (e: Exception) {
-            e.printStackTrace()
-            throw if (e !is AppException) {
-                log.debug("USER (deleteUserProfile) An exception occurred: ${e.message ?: "Unknown error"}")
-                AppException.InternalServerError("An error occurred while deleting profile.")
-            } else {
-                e
-            }
         }
-    }
 
     /**
      * Verifies the PIN of a user's profile.
@@ -328,19 +256,10 @@ internal class UserServiceImpl(
     @Throws(
         AppException.NotFoundException.ProfileNotFoundException::class
     )
-    override suspend fun verifyPin(userUuid: UUID, profileUUID: UUID, data: PinVerificationRequestDTO): Boolean = withContext(Dispatchers.IO) {
-        try {
+    override suspend fun verifyPin(userUuid: UUID, profileUUID: UUID, data: PinVerificationRequestDTO): Boolean =
+        safeCall(errorMessage = "An error occurred while verifying pin.") {
             profileRepository.verifyPin(profileUUID, data.pin)
-        } catch (e: Exception) {
-            e.printStackTrace()
-            throw if (e !is AppException) {
-                log.debug("USER (verifyPin) An exception occurred: ${e.message ?: "Unknown error"}")
-                AppException.InternalServerError("An error occurred while verifying pin.")
-            } else {
-                e
-            }
         }
-    }
 
     /**
      * Retrieves a list of blocked channels for the specified user profile.
@@ -351,22 +270,13 @@ internal class UserServiceImpl(
      * @throws AppException.InternalServerError if there is an internal server error during the operation.
      */
     @Throws(AppException.InternalServerError::class)
-    override suspend fun getBlockedChannels(userUuid: UUID, profileUUID: UUID): List<SimpleChannelResponseDTO> = withContext(Dispatchers.IO) {
-        try {
+    override suspend fun getBlockedChannels(userUuid: UUID, profileUUID: UUID): List<SimpleChannelResponseDTO> =
+        safeCall(errorMessage = "An error occurred while fetching blocked channels.") {
             // Fetch blocked channels from the profile repository
             profileRepository.getBlockedChannels(profileUUID)
                 // Map the retrieved channels to SimpleChannelResponseDTO using the channelMapper
                 .map(channelMapper::map)
-        } catch (e: Exception) {
-            e.printStackTrace()
-            throw if (e !is AppException) {
-                log.debug("USER (getBlockedChannels) An exception occurred: ${e.message ?: "Unknown error"}")
-                AppException.InternalServerError("An error occurred while fetching blocked channels.")
-            } else {
-                e
-            }
         }
-    }
 
     /**
      * Retrieves a list of favorite channels for the specified user profile.
@@ -377,20 +287,11 @@ internal class UserServiceImpl(
      * @throws AppException.InternalServerError if there is an internal server error during the operation.
      */
     @Throws(AppException.InternalServerError::class)
-    override suspend fun getFavoriteChannels(userUuid: UUID, profileUUID: UUID): List<SimpleChannelResponseDTO> = withContext(Dispatchers.IO) {
-        try {
-            // Fetch favorite channels from the profile repository
-            profileRepository.getFavoriteChannels(profileUUID)
+    override suspend fun getFavoriteChannels(userUuid: UUID, profileUUID: UUID): List<SimpleChannelResponseDTO> =
+        safeCall(errorMessage = "An error occurred while fetching favorite channels.") {
+                // Fetch favorite channels from the profile repository
+                profileRepository.getFavoriteChannels(profileUUID)
                 // Map the retrieved channels to SimpleChannelResponseDTO using the channelMapper
                 .map(channelMapper::map)
-        } catch (e: Exception) {
-            e.printStackTrace()
-            throw if (e !is AppException) {
-                log.debug("USER (getFavoriteChannels) An exception occurred: ${e.message ?: "Unknown error"}")
-                AppException.InternalServerError("An error occurred while fetching favorite channels.")
-            } else {
-                e
-            }
         }
-    }
 }

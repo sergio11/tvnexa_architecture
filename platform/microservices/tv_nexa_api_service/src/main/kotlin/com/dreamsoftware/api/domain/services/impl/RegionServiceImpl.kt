@@ -1,14 +1,12 @@
 package com.dreamsoftware.api.domain.services.impl
 
 import com.dreamsoftware.api.domain.model.exceptions.AppException
-import com.dreamsoftware.api.rest.dto.response.RegionResponseDTO
 import com.dreamsoftware.api.domain.repository.IRegionRepository
 import com.dreamsoftware.api.domain.services.IRegionService
+import com.dreamsoftware.api.domain.services.impl.core.SupportService
+import com.dreamsoftware.api.rest.dto.response.RegionResponseDTO
 import com.dreamsoftware.core.ISimpleMapper
 import com.dreamsoftware.data.database.entity.RegionEntity
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.withContext
-import org.slf4j.LoggerFactory
 
 /**
  * Implementation of the IRegionService interface responsible for managing region-related operations.
@@ -19,9 +17,7 @@ import org.slf4j.LoggerFactory
 internal class RegionServiceImpl(
     private val regionRepository: IRegionRepository,
     private val regionMapper: ISimpleMapper<RegionEntity, RegionResponseDTO>
-) : IRegionService {
-
-    private val log = LoggerFactory.getLogger(this::class.java)
+) : SupportService(), IRegionService {
 
     /**
      * Retrieves a list of all regions.
@@ -30,17 +26,12 @@ internal class RegionServiceImpl(
      * @throws AppException.InternalServerError if an internal server error occurs while fetching all regions.
      */
     @Throws(AppException.InternalServerError::class)
-    override suspend fun findAll(): List<RegionResponseDTO> = withContext(Dispatchers.IO) {
-        try {
+    override suspend fun findAll(): List<RegionResponseDTO> =
+        safeCall(errorMessage = "An error occurred while fetching all regions.") {
             regionRepository
                 .findAll()
                 .map(regionMapper::map)
-        } catch (e: Exception) {
-            e.printStackTrace()
-            log.debug("RES (findAll) An exception occurred: ${e.message ?: "Unknown error"}")
-            throw AppException.InternalServerError("An error occurred while fetching all regions.")
         }
-    }
 
     /**
      * Retrieves region information by code.
@@ -54,19 +45,10 @@ internal class RegionServiceImpl(
         AppException.InternalServerError::class,
         AppException.NotFoundException.RegionNotFoundException::class
     )
-    override suspend fun findByCode(code: String): RegionResponseDTO = withContext(Dispatchers.IO) {
-        try {
+    override suspend fun findByCode(code: String): RegionResponseDTO =
+        safeCall(errorMessage = "An error occurred while finding region by code.") {
             regionRepository.findByCode(code)?.let(regionMapper::map) ?: run {
                 throw AppException.NotFoundException.RegionNotFoundException("Region with code '$code' not found.")
             }
-        } catch (e: Exception) {
-            e.printStackTrace()
-            throw if(e !is AppException) {
-                log.debug("RES (findByCode) An exception occurred: ${e.message ?: "Unknown error"}")
-                AppException.InternalServerError("An error occurred while finding region by code.")
-            } else {
-                e
-            }
         }
-    }
 }
