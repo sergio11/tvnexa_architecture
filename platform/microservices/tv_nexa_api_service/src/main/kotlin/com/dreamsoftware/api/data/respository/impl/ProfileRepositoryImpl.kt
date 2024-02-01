@@ -3,9 +3,12 @@ package com.dreamsoftware.api.data.respository.impl
 import com.dreamsoftware.api.data.cache.datasource.ICacheDatasource
 import com.dreamsoftware.api.data.respository.impl.core.SupportRepository
 import com.dreamsoftware.api.domain.repository.IProfileRepository
+import com.dreamsoftware.data.database.datasource.profiles.IBlockedChannelDataSource
+import com.dreamsoftware.data.database.datasource.profiles.IFavoriteChannelDataSource
 import com.dreamsoftware.data.database.datasource.profiles.IProfileDatabaseDataSource
 import com.dreamsoftware.data.database.entity.CreateProfileEntity
 import com.dreamsoftware.data.database.entity.ProfileEntity
+import com.dreamsoftware.data.database.entity.SimpleChannelEntity
 import com.dreamsoftware.data.database.entity.UpdateProfileEntity
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
@@ -15,10 +18,14 @@ import java.util.*
  * Implementation of the [IProfileRepository] interface responsible for handling profile-related operations.
  *
  * @property profileDatabaseDataSource The data source responsible for profile-related database operations.
+ * @property blockedChannelsDataSource The data source for managing blocked channels related to profiles.
+ * @property favoriteChannelDataSource The data source for managing favorite channels related to profiles.
  * @property cacheDatasource The cache data source for caching profile information.
  */
 internal class ProfileRepositoryImpl(
     private val profileDatabaseDataSource: IProfileDatabaseDataSource,
+    private val blockedChannelsDataSource: IBlockedChannelDataSource,
+    private val favoriteChannelDataSource: IFavoriteChannelDataSource,
     cacheDatasource: ICacheDatasource<String>
 ) : SupportRepository(cacheDatasource), IProfileRepository {
 
@@ -90,5 +97,25 @@ internal class ProfileRepositoryImpl(
      */
     override suspend fun verifyPin(profileUuid: UUID, pin: Int): Boolean = withContext(Dispatchers.IO) {
         profileDatabaseDataSource.verifyPin(profileUuid, pin)
+    }
+
+    /**
+     * Suspended function to retrieve a list of blocked channels for the specified profile.
+     *
+     * @param profileUUID The unique identifier of the profile.
+     * @return A list of [SimpleChannelEntity] representing the blocked channels for the specified profile.
+     */
+    override suspend fun getBlockedChannels(profileUUID: UUID): List<SimpleChannelEntity> = withContext(Dispatchers.IO) {
+        blockedChannelsDataSource.findByProfile(profileUUID)
+    }
+
+    /**
+     * Suspended function to retrieve a list of favorite channels for the specified profile.
+     *
+     * @param profileUUID The unique identifier of the profile.
+     * @return A list of [SimpleChannelEntity] representing the favorite channels for the specified profile.
+     */
+    override suspend fun getFavoriteChannels(profileUUID: UUID): List<SimpleChannelEntity> = withContext(Dispatchers.IO) {
+        favoriteChannelDataSource.findByProfile(profileUUID)
     }
 }

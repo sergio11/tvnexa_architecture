@@ -18,4 +18,6 @@ val databaseMapperModule = module {
     mapper { EpgChannelProgrammeDaoMapper(getMapper(), getMapper()) }
     mapper { UserEntityDaoMapper() }
     mapper { ProfileEntityDaoMapper() }
+    mapper { FavoriteChannelEntityDaoMapper(getMapper()) }
+    mapper { BlockedChannelEntityDaoMapper(getMapper()) }
 }

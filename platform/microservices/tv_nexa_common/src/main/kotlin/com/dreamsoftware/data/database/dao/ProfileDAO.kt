@@ -3,7 +3,6 @@ package com.dreamsoftware.data.database.dao
 import org.jetbrains.exposed.dao.Entity
 import org.jetbrains.exposed.dao.EntityClass
 import org.jetbrains.exposed.dao.id.EntityID
-import org.jetbrains.exposed.dao.id.LongIdTable
 import org.jetbrains.exposed.dao.id.UUIDTable
 import org.jetbrains.exposed.sql.ReferenceOption
 import java.util.*
@@ -40,48 +39,6 @@ enum class ProfileType {
     BOY, GIRL, WOMAN, MAN
 }
 
-// Table associating profiles with blocked channels
-object BlockedChannelsTable : LongIdTable(name = "blocked_channels") {
-
-    // Reference to the profile
-    val profile = reference("profile", ProfileTable)
-
-    // Reference to the blocked channel
-    val channel = reference("channel", ChannelTable)
-
-    init {
-        uniqueIndex("UNIQUE_BlockedChannels", profile, channel)
-    }
-}
-
-// Table associating profiles with favorite channels
-object FavoriteChannelsTable : LongIdTable(name = "favorite_channels") {
-
-    // Reference to the profile
-    val profile = reference("profile", ProfileTable)
-
-    // Reference to the favorite channel
-    val channel = reference("channel", ChannelTable)
-
-    init {
-        uniqueIndex("UNIQUE_FavoriteChannels", profile, channel)
-    }
-}
-
-// Table associating profiles with favorite countries
-object FavoriteCountriesTable : LongIdTable(name = "favorite_countries") {
-
-    // Reference to the profile
-    val profile = reference("profile", ProfileTable)
-
-    // Reference to the favorite country
-    val country = reference("country", CountryTable)
-
-    init {
-        uniqueIndex("UNIQUE_FavoriteCountries", profile, country)
-    }
-}
-
 /**
  * ProfileEntity: Represents a user profile in the database.
  *
@@ -104,8 +61,4 @@ class ProfileEntityDAO(id: EntityID<UUID>) : Entity<UUID>(id) {
 
     // Secret PIN for profile (6 digits), default value set to 123456
     var pin by ProfileTable.pin
-
-    val blockedChannels by ChannelEntityDAO via BlockedChannelsTable
-    val favoritesChannels by CategoryEntityDAO via FavoriteChannelsTable
-    val favoritesCountries by CategoryEntityDAO via FavoriteCountriesTable
 }

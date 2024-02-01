@@ -9,6 +9,7 @@ import com.dreamsoftware.api.domain.services.IUserService
 import com.dreamsoftware.api.rest.dto.request.*
 import com.dreamsoftware.api.rest.dto.response.AuthResponseDTO
 import com.dreamsoftware.api.rest.dto.response.ProfileResponseDTO
+import com.dreamsoftware.api.rest.dto.response.SimpleChannelResponseDTO
 import com.dreamsoftware.api.rest.dto.response.UserResponseDTO
 import com.dreamsoftware.api.rest.mapper.DataInput
 import com.dreamsoftware.api.rest.utils.getStringProperty
@@ -34,6 +35,7 @@ import java.util.*
  * @property createUserMapper The mapper used to map [SignUpRequestDTO] to [CreateUserEntity].
  * @property updateUserMapper The mapper used to map [UpdatedUserRequestDTO] to [UpdateUserEntity].
  * @property createUserProfileMapper The mapper used to map [DataInput] to [CreateProfileEntity].
+ * @property channelMapper The mapper used to map [SimpleChannelEntity] to [SimpleChannelResponseDTO].
  */
 internal class UserServiceImpl(
     private val userRepository: IUserRepository,
@@ -44,7 +46,8 @@ internal class UserServiceImpl(
     private val environment: ApplicationEnvironment,
     private val createUserMapper: ISimpleMapper<SignUpRequestDTO, CreateUserEntity>,
     private val updateUserMapper: ISimpleMapper<UpdatedUserRequestDTO, UpdateUserEntity>,
-    private val createUserProfileMapper: ISimpleMapper<DataInput, CreateProfileEntity>
+    private val createUserProfileMapper: ISimpleMapper<DataInput, CreateProfileEntity>,
+    private val channelMapper: ISimpleMapper<SimpleChannelEntity, SimpleChannelResponseDTO>
 ): IUserService {
 
     private val log = LoggerFactory.getLogger(this::class.java)
@@ -333,6 +336,58 @@ internal class UserServiceImpl(
             throw if (e !is AppException) {
                 log.debug("USER (verifyPin) An exception occurred: ${e.message ?: "Unknown error"}")
                 AppException.InternalServerError("An error occurred while verifying pin.")
+            } else {
+                e
+            }
+        }
+    }
+
+    /**
+     * Retrieves a list of blocked channels for the specified user profile.
+     *
+     * @param userUuid The unique identifier of the user.
+     * @param profileUUID The unique identifier of the user profile.
+     * @return A list of [SimpleChannelResponseDTO] objects representing the blocked channels.
+     * @throws AppException.InternalServerError if there is an internal server error during the operation.
+     */
+    @Throws(AppException.InternalServerError::class)
+    override suspend fun getBlockedChannels(userUuid: UUID, profileUUID: UUID): List<SimpleChannelResponseDTO> = withContext(Dispatchers.IO) {
+        try {
+            // Fetch blocked channels from the profile repository
+            profileRepository.getBlockedChannels(profileUUID)
+                // Map the retrieved channels to SimpleChannelResponseDTO using the channelMapper
+                .map(channelMapper::map)
+        } catch (e: Exception) {
+            e.printStackTrace()
+            throw if (e !is AppException) {
+                log.debug("USER (getBlockedChannels) An exception occurred: ${e.message ?: "Unknown error"}")
+                AppException.InternalServerError("An error occurred while fetching blocked channels.")
+            } else {
+                e
+            }
+        }
+    }
+
+    /**
+     * Retrieves a list of favorite channels for the specified user profile.
+     *
+     * @param userUuid The unique identifier of the user.
+     * @param profileUUID The unique identifier of the user profile.
+     * @return A list of [SimpleChannelResponseDTO] objects representing the favorite channels.
+     * @throws AppException.InternalServerError if there is an internal server error during the operation.
+     */
+    @Throws(AppException.InternalServerError::class)
+    override suspend fun getFavoriteChannels(userUuid: UUID, profileUUID: UUID): List<SimpleChannelResponseDTO> = withContext(Dispatchers.IO) {
+        try {
+            // Fetch favorite channels from the profile repository
+            profileRepository.getFavoriteChannels(profileUUID)
+                // Map the retrieved channels to SimpleChannelResponseDTO using the channelMapper
+                .map(channelMapper::map)
+        } catch (e: Exception) {
+            e.printStackTrace()
+            throw if (e !is AppException) {
+                log.debug("USER (getFavoriteChannels) An exception occurred: ${e.message ?: "Unknown error"}")
+                AppException.InternalServerError("An error occurred while fetching favorite channels.")
             } else {
                 e
             }
