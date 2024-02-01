@@ -144,6 +144,42 @@ fun Route.userRoutes() {
                     )
                 }
             }
+
+            /**
+             * Endpoint to retrieve blocked channels for a user's profile identified by {profileId}.
+             *
+             * This endpoint allows an authenticated user to retrieve the list of blocked channels for their profile.
+             */
+            get("/{profileId}/blocked-channels") {
+                with(call) {
+                    generateSuccessResponse(
+                        code = 8008,
+                        message = "Blocked channels retrieved successfully.",
+                        data = userService.getBlockedChannels(
+                            userUuid = fetchAuthUserUuidOrThrow(),
+                            profileUUID = getUUIDParamOrThrow("profileId")
+                        )
+                    )
+                }
+            }
+
+            /**
+             * Endpoint to retrieve favorite channels for a user's profile identified by {profileId}.
+             *
+             * This endpoint allows an authenticated user to retrieve the list of favorite channels for their profile.
+             */
+            get("/{profileId}/favorite-channels") {
+                with(call) {
+                    generateSuccessResponse(
+                        code = 8009,
+                        message = "Favorite channels retrieved successfully.",
+                        data = userService.getFavoriteChannels(
+                            userUuid = fetchAuthUserUuidOrThrow(),
+                            profileUUID = getUUIDParamOrThrow("profileId")
+                        )
+                    )
+                }
+            }
         }
     }
 }

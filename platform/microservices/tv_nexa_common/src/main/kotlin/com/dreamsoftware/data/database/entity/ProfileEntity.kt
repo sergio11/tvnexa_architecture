@@ -21,6 +21,16 @@ data class CreateProfileEntity(
     val type: ProfileType
 )
 
+data class SaveFavoriteChannel(
+    val profileId: UUID,
+    val channelId: String
+)
+
+data class SaveBlockedChannel(
+    val profileId: UUID,
+    val channelId: String
+)
+
 data class UpdateProfileEntity(
     val alias: String?,
     val pin: Int?,

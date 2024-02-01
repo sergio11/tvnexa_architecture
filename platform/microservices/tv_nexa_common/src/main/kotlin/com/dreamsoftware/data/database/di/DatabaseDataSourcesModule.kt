@@ -13,7 +13,11 @@ import com.dreamsoftware.data.database.datasource.guide.IChannelGuideDatabaseDat
 import com.dreamsoftware.data.database.datasource.guide.impl.ChannelGuideDatabaseDataSourceImpl
 import com.dreamsoftware.data.database.datasource.language.ILanguageDatabaseDataSource
 import com.dreamsoftware.data.database.datasource.language.impl.LanguageDatabaseDataSourceImpl
+import com.dreamsoftware.data.database.datasource.profiles.IBlockedChannelDataSource
+import com.dreamsoftware.data.database.datasource.profiles.IFavoriteChannelDataSource
 import com.dreamsoftware.data.database.datasource.profiles.IProfileDatabaseDataSource
+import com.dreamsoftware.data.database.datasource.profiles.impl.BlockedChannelDataSourceImpl
+import com.dreamsoftware.data.database.datasource.profiles.impl.FavoriteChannelDataSourceImpl
 import com.dreamsoftware.data.database.datasource.profiles.impl.ProfileDatabaseDataSourceImpl
 import com.dreamsoftware.data.database.datasource.region.IRegionDatabaseDataSource
 import com.dreamsoftware.data.database.datasource.region.impl.RegionDatabaseDataSourceImpl
@@ -38,4 +42,6 @@ val databaseDataSourcesModule = module {
     single<IEpgChannelProgrammeDatabaseDataSource> { EpgChannelProgrammeDatabaseDataSourceImpl(get(), getMapper())  }
     single<IUserDatabaseDataSource> { UserDatabaseDataSourceImpl(get(), getMapper()) }
     single<IProfileDatabaseDataSource> { ProfileDatabaseDataSourceImpl(get(), getMapper()) }
+    single<IFavoriteChannelDataSource> { FavoriteChannelDataSourceImpl(get(), getMapper()) }
+    single<IBlockedChannelDataSource> { BlockedChannelDataSourceImpl(get(), getMapper()) }
 }

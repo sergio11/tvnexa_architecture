@@ -4,6 +4,7 @@ import com.dreamsoftware.api.domain.model.exceptions.AppException
 import com.dreamsoftware.api.rest.dto.request.*
 import com.dreamsoftware.api.rest.dto.response.AuthResponseDTO
 import com.dreamsoftware.api.rest.dto.response.ProfileResponseDTO
+import com.dreamsoftware.api.rest.dto.response.SimpleChannelResponseDTO
 import com.dreamsoftware.api.rest.dto.response.UserResponseDTO
 import java.util.*
 
@@ -144,4 +145,26 @@ interface IUserService {
      */
     @Throws(AppException.NotFoundException.ProfileNotFoundException::class)
     suspend fun verifyPin(userUuid: UUID, profileUUID: UUID, data: PinVerificationRequestDTO): Boolean
+
+    /**
+     * Retrieves a list of blocked channels for the specified user and user profile.
+     *
+     * @param userUuid The unique identifier of the user.
+     * @param profileUUID The unique identifier of the user profile.
+     * @return A list of [SimpleChannelResponseDTO] objects representing the blocked channels.
+     * @throws AppException.InternalServerError if there is an internal server error during the operation.
+     */
+    @Throws(AppException.InternalServerError::class)
+    suspend fun getBlockedChannels(userUuid: UUID, profileUUID: UUID): List<SimpleChannelResponseDTO>
+
+    /**
+     * Retrieves a list of favorite channels for the specified user and user profile.
+     *
+     * @param userUuid The unique identifier of the user.
+     * @param profileUUID The unique identifier of the user profile.
+     * @return A list of [SimpleChannelResponseDTO] objects representing the favorite channels.
+     * @throws AppException.InternalServerError if there is an internal server error during the operation.
+     */
+    @Throws(AppException.InternalServerError::class)
+    suspend fun getFavoriteChannels(userUuid: UUID, profileUUID: UUID): List<SimpleChannelResponseDTO>
 }

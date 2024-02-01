@@ -2,6 +2,7 @@ package com.dreamsoftware.api.domain.repository
 
 import com.dreamsoftware.data.database.entity.CreateProfileEntity
 import com.dreamsoftware.data.database.entity.ProfileEntity
+import com.dreamsoftware.data.database.entity.SimpleChannelEntity
 import com.dreamsoftware.data.database.entity.UpdateProfileEntity
 import java.util.*
 
@@ -64,4 +65,20 @@ interface IProfileRepository {
      * @return `true` if the PIN is verified successfully, `false` otherwise.
      */
     suspend fun verifyPin(profileUuid: UUID, pin: Int): Boolean
+
+    /**
+     * Suspended function to retrieve a list of blocked channels for the specified profile.
+     *
+     * @param profileUUID The unique identifier of the profile.
+     * @return A list of [SimpleChannelEntity] representing the blocked channels for the specified profile.
+     */
+    suspend fun getBlockedChannels(profileUUID: UUID): List<SimpleChannelEntity>
+
+    /**
+     * Suspended function to retrieve a list of favorite channels for the specified profile.
+     *
+     * @param profileUUID The unique identifier of the profile.
+     * @return A list of [SimpleChannelEntity] representing the favorite channels for the specified profile.
+     */
+    suspend fun getFavoriteChannels(profileUUID: UUID): List<SimpleChannelEntity>
 }
