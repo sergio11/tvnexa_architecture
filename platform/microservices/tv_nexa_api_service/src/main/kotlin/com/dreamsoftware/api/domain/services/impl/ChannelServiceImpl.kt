@@ -1,16 +1,14 @@
 package com.dreamsoftware.api.domain.services.impl
 
 import com.dreamsoftware.api.domain.model.exceptions.AppException
-import com.dreamsoftware.api.rest.dto.response.ChannelDetailResponseDTO
 import com.dreamsoftware.api.domain.repository.IChannelRepository
-import com.dreamsoftware.api.rest.dto.response.SimpleChannelResponseDTO
 import com.dreamsoftware.api.domain.services.IChannelService
+import com.dreamsoftware.api.domain.services.impl.core.SupportService
+import com.dreamsoftware.api.rest.dto.response.ChannelDetailResponseDTO
+import com.dreamsoftware.api.rest.dto.response.SimpleChannelResponseDTO
 import com.dreamsoftware.core.ISimpleMapper
 import com.dreamsoftware.data.database.entity.ChannelDetailEntity
 import com.dreamsoftware.data.database.entity.SimpleChannelEntity
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.withContext
-import org.slf4j.LoggerFactory
 
 /**
  * Implementation of the IChannelService interface responsible for managing channel-related operations.
@@ -23,9 +21,7 @@ internal class ChannelServiceImpl(
     private val channelRepository: IChannelRepository,
     private val channelDetailMapper: ISimpleMapper<ChannelDetailEntity, ChannelDetailResponseDTO>,
     private val simpleChannelMapper: ISimpleMapper<SimpleChannelEntity, SimpleChannelResponseDTO>
-): IChannelService {
-
-    private val log = LoggerFactory.getLogger(this::class.java)
+): SupportService(), IChannelService {
 
     /**
      * Retrieves a list of simple channel responses by category, country, offset, and limit.
@@ -38,18 +34,13 @@ internal class ChannelServiceImpl(
      * @throws AppException.InternalServerError if an internal server error occurs while fetching channels.
      */
     @Throws(AppException.InternalServerError::class)
-    override suspend fun findByCategoryAndCountryPaginated(category: String?, country: String?, offset: Long, limit: Long): List<SimpleChannelResponseDTO> = withContext(Dispatchers.IO) {
-        try {
+    override suspend fun findByCategoryAndCountryPaginated(category: String?, country: String?, offset: Long, limit: Long): List<SimpleChannelResponseDTO> =
+        safeCall(errorMessage = "An error occurred while fetching channels.") {
             log.debug("CHS (findByCategoryAndCountryPaginated) category: $category, country: $country, offset: $offset - limit: $limit")
             channelRepository
                 .findByCategoryAndCountryPaginated(category, country, offset, limit)
                 .map(simpleChannelMapper::map)
-        } catch (e: Exception) {
-            e.printStackTrace()
-            log.debug("CHS (findByCategoryAndCountryPaginated) An exception occurred: ${e.message ?: "Unknown error"}")
-            throw AppException.InternalServerError("An error occurred while fetching channels.")
         }
-    }
 
     /**
      * Retrieves a channel's detailed information by ID.
@@ -63,20 +54,11 @@ internal class ChannelServiceImpl(
         AppException.InternalServerError::class,
         AppException.NotFoundException.ChannelNotFoundException::class
     )
-    override suspend fun findById(channelId: String): ChannelDetailResponseDTO = withContext(Dispatchers.IO) {
-        try {
+    override suspend fun findById(channelId: String): ChannelDetailResponseDTO =
+        safeCall(errorMessage = "An error occurred while finding channel by ID.") {
             channelRepository.findById(channelId)?.let(channelDetailMapper::map) ?:
                 throw AppException.NotFoundException.ChannelNotFoundException("Channel with ID '$channelId' not found.")
-        } catch (e: Exception) {
-            e.printStackTrace()
-            throw if (e !is AppException) {
-                log.debug("CS (findById) An exception occurred: ${e.message ?: "Unknown error"}")
-                throw AppException.InternalServerError("An error occurred while finding channel by ID.")
-            } else {
-                e
-            }
         }
-    }
 
     /**
      * Searches for channels whose names contain the specified term in a case-insensitive manner.
@@ -87,14 +69,10 @@ internal class ChannelServiceImpl(
      */
     @Throws(AppException.InternalServerError::class)
     override suspend fun findByNameLike(term: String): List<SimpleChannelResponseDTO> =
-        try {
+        safeCall(errorMessage = "An error occurred while fetching channels.") {
             log.debug("CHS (findByNameLike) term: $term")
             channelRepository
                 .findByNameLike(term)
                 .map(simpleChannelMapper::map)
-        } catch (e: Exception) {
-            e.printStackTrace()
-            log.debug("CHS (findByNameLike) An exception occurred: ${e.message ?: "Unknown error"}")
-            throw AppException.InternalServerError("An error occurred while fetching channels.")
         }
 }
