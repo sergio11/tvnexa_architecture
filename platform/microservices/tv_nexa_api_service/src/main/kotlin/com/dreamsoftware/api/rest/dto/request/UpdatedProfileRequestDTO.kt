@@ -4,12 +4,12 @@ import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
 /**
- * Data Transfer Object (DTO) representing the data sent in a request to update a user profile.
+ * Data class representing a request to update an existing user profile.
  *
- * @property alias The alias associated with the user's profile.
- * @property pin The Personal Identification Number (PIN) associated with the user's profile.
- * @property isAdmin A flag indicating whether the user has administrative privileges.
- * @property type The type of the user's profile.
+ * @property alias The updated alias for the profile, nullable.
+ * @property pin The updated secret PIN for the profile, nullable.
+ * @property enableNSFW The updated boolean indicating whether NSFW content is enabled for the profile, nullable.
+ * @property avatarType The updated type of the profile, nullable.
  */
 @Serializable
 data class UpdatedProfileRequestDTO(
@@ -20,9 +20,9 @@ data class UpdatedProfileRequestDTO(
     @SerialName("pin")
     val pin: Int? = null,
 
-    @SerialName("is_admin")
-    val isAdmin: Boolean? = null,
+    @SerialName("enable_NSFW")
+    val enableNSFW: Boolean? = null,
 
-    @SerialName("type")
-    val type: String? = null
+    @SerialName("avatar_type")
+    val avatarType: String? = null
 )

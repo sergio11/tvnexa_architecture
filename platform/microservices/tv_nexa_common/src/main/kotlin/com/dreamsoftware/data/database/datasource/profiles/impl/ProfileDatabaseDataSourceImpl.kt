@@ -40,8 +40,9 @@ internal class ProfileDatabaseDataSourceImpl(
         this@onMapEntityToSave[ProfileTable.alias] = alias
         this@onMapEntityToSave[ProfileTable.isAdmin] = isAdmin
         this@onMapEntityToSave[ProfileTable.pin] = pin
-        this@onMapEntityToSave[ProfileTable.type] = type
+        this@onMapEntityToSave[ProfileTable.avatar_type] = avatarType
         this@onMapEntityToSave[ProfileTable.userId] = userId
+        this@onMapEntityToSave[ProfileTable.enableNSFW] = enableNSFW
     }
 
     /**
@@ -78,8 +79,8 @@ internal class ProfileDatabaseDataSourceImpl(
             with(data) {
                 alias?.let { statement[ProfileTable.alias] = it }
                 pin?.let { statement[ProfileTable.pin] = it }
-                isAdmin?.let { statement[ProfileTable.isAdmin] = it }
-                type?.let { statement[ProfileTable.type] = it }
+                enableNSFW?.let { statement[ProfileTable.enableNSFW] = enableNSFW }
+                avatarType?.let { statement[avatar_type] = it }
             }
         }
     }

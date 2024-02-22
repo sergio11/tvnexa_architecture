@@ -11,7 +11,7 @@ import java.util.*
  * ProfileTable: Represents the table structure for storing user profiles.
  *
  * This object defines the schema for the 'profiles' table in the database.
- * It includes fields like user ID (foreign key), alias, type, isAdmin, pin, etc.
+ * It includes fields like user ID (foreign key), alias, avatar type, isAdmin, pin, etc.
  */
 object ProfileTable : UUIDTable(name = "profiles") {
 
@@ -21,8 +21,8 @@ object ProfileTable : UUIDTable(name = "profiles") {
     // Alias for the profile
     val alias = varchar("alias", 100)
 
-    // Type of the profile ("BOY", "GIRL", "WOMAN", "MAN")
-    val type = enumerationByName("profile_type", 10, ProfileType::class)
+    // Avatar type of the profile ("BOY", "GIRL", "WOMAN", "MAN")
+    val avatar_type = enumerationByName("avatar_type", 10, AvatarType::class)
 
     // Whether the profile is an admin
     val isAdmin = bool("is_admin")
@@ -30,12 +30,15 @@ object ProfileTable : UUIDTable(name = "profiles") {
     // Secret PIN for profile (6 digits), default value set to 123456
     val pin = integer("pin").default(123456)
 
+    // Enable NSFW for the profile
+    val enableNSFW = bool("enable_nsfw").default(false)
+
     init {
         uniqueIndex("user_alias_unique", userId, alias)
     }
 }
 
-enum class ProfileType {
+enum class AvatarType {
     BOY, GIRL, WOMAN, MAN
 }
 
@@ -53,12 +56,15 @@ class ProfileEntityDAO(id: EntityID<UUID>) : Entity<UUID>(id) {
     // Alias for the profile
     var alias by ProfileTable.alias
 
-    // Type of the profile ("BOY", "GIRL", "WOMAN", "MAN")
-    var type by ProfileTable.type
+    // Avatar type of the profile ("BOY", "GIRL", "WOMAN", "MAN")
+    var avatarType by ProfileTable.avatar_type
 
     // Whether the profile is an admin
     var isAdmin by ProfileTable.isAdmin
 
     // Secret PIN for profile (6 digits), default value set to 123456
     var pin by ProfileTable.pin
+
+    // Enable NSFW for the profile
+    var enableNSFW by ProfileTable.enableNSFW
 }

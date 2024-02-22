@@ -2,7 +2,7 @@ package com.dreamsoftware.api.rest.mapper
 
 import com.dreamsoftware.api.rest.dto.request.CreateProfileRequestDTO
 import com.dreamsoftware.core.ISimpleMapper
-import com.dreamsoftware.data.database.dao.ProfileType
+import com.dreamsoftware.data.database.dao.AvatarType
 import com.dreamsoftware.data.database.entity.CreateProfileEntity
 import java.util.*
 
@@ -21,9 +21,10 @@ class CreateUserProfileDtoMapper : ISimpleMapper<DataInput, CreateProfileEntity>
         CreateProfileEntity(
             alias = request.alias,
             pin = request.pin,
-            isAdmin = request.isAdmin,
+            isAdmin = false,
+            enableNSFW = request.enableNSFW,
             userId = userId,
-            type = runCatching { ProfileType.valueOf(request.type) }.getOrDefault(ProfileType.BOY)
+            avatarType = runCatching { AvatarType.valueOf(request.type) }.getOrDefault(AvatarType.BOY)
         )
     }
 

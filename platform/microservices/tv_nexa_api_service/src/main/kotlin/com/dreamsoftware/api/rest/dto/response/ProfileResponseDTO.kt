@@ -4,12 +4,13 @@ import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
 /**
- * Data class representing the response for profile information.
+ * Data class representing a response containing user profile information.
  *
  * @property uuid The unique identifier of the profile.
  * @property alias The alias associated with the profile.
  * @property isAdmin Indicates whether the profile is an admin.
- * @property type The type of the profile.
+ * @property enableNSFW A boolean indicating whether NSFW content is enabled for the profile.
+ * @property avatarType The type of the profile avatar.
  */
 @Serializable
 data class ProfileResponseDTO(
@@ -32,8 +33,14 @@ data class ProfileResponseDTO(
     val isAdmin: Boolean,
 
     /**
-     * The type of the profile.
+     * A boolean indicating whether NSFW content is enabled for the profile.
      */
-    @SerialName("type")
-    val type: String
+    @SerialName("enable_NSFW")
+    val enableNSFW: Boolean,
+
+    /**
+     * The type of the profile avatar.
+     */
+    @SerialName("avatar_type")
+    val avatarType: String
 )
