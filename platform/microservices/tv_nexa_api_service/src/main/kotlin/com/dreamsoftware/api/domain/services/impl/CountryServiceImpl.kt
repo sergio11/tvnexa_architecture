@@ -51,4 +51,12 @@ internal class CountryServiceImpl(
                 throw AppException.NotFoundException.CountryNotFoundException("Country with code '$code' not found.")
             }
         }
+
+    @Throws(AppException.InternalServerError::class)
+    override suspend fun findByNameLike(term: String): List<CountryResponseDTO> =
+        safeCall(errorMessage = "An error occurred while fetching countries.") {
+            countryRepository
+                .findByNameLike(term)
+                .map(mapper::map)
+        }
 }

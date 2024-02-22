@@ -1,8 +1,10 @@
 package com.dreamsoftware.api.rest.routes
 
+import com.dreamsoftware.api.domain.model.ErrorType
 import com.dreamsoftware.api.rest.utils.doIfParamExists
 import com.dreamsoftware.api.rest.utils.generateSuccessResponse
 import com.dreamsoftware.api.domain.services.ICountryService
+import com.dreamsoftware.api.rest.utils.generateErrorResponse
 import io.ktor.server.application.*
 import io.ktor.server.routing.*
 import org.koin.ktor.ext.inject
@@ -52,6 +54,25 @@ fun Route.countryRoutes() {
                         code = 3002,
                         message = "Country found.",
                         data = countryService.findByCode(countryCode)
+                    )
+                }
+            }
+        }
+
+        /**
+         * Defines a route handler for searching countries by name.
+         * Retrieves countries whose names match the provided search term and returns a success response.
+         *
+         * @param term The search term used to find countries by name.
+         * @return A success response containing the countries found by name.
+         */
+        get("/search") {
+            with(call) {
+                doIfParamExists("term") {
+                    generateSuccessResponse(
+                        code = 3003,
+                        message = "Countries found by name.",
+                        data = countryService.findByNameLike(it)
                     )
                 }
             }
