@@ -1,8 +1,7 @@
 package com.dreamsoftware.data.database.entity
 
-import com.dreamsoftware.data.database.dao.ProfileType
+import com.dreamsoftware.data.database.dao.AvatarType
 import java.util.UUID
-
 
 data class ProfileEntity(
     val uuid: UUID,
@@ -10,7 +9,8 @@ data class ProfileEntity(
     val pin: Int,
     val userId: UUID,
     val isAdmin: Boolean,
-    val type: ProfileType
+    val avatarType: AvatarType,
+    val enableNSFW: Boolean
 )
 
 data class CreateProfileEntity(
@@ -18,7 +18,8 @@ data class CreateProfileEntity(
     val pin: Int,
     val userId: UUID,
     val isAdmin: Boolean,
-    val type: ProfileType
+    val avatarType: AvatarType,
+    val enableNSFW: Boolean
 )
 
 data class SaveFavoriteChannel(
@@ -34,6 +35,6 @@ data class SaveBlockedChannel(
 data class UpdateProfileEntity(
     val alias: String?,
     val pin: Int?,
-    val isAdmin: Boolean?,
-    val type: ProfileType?
+    val enableNSFW: Boolean?,
+    val avatarType: AvatarType?
 )

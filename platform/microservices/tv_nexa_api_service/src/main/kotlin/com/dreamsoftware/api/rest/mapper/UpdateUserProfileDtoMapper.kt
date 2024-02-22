@@ -2,7 +2,7 @@ package com.dreamsoftware.api.rest.mapper
 
 import com.dreamsoftware.api.rest.dto.request.UpdatedProfileRequestDTO
 import com.dreamsoftware.core.ISimpleMapper
-import com.dreamsoftware.data.database.dao.ProfileType
+import com.dreamsoftware.data.database.dao.AvatarType
 import com.dreamsoftware.data.database.entity.UpdateProfileEntity
 
 /**
@@ -22,8 +22,8 @@ class UpdateUserProfileDtoMapper : ISimpleMapper<UpdatedProfileRequestDTO, Updat
         UpdateProfileEntity(
             alias = alias,
             pin = pin,
-            isAdmin = isAdmin,
-            type = type?.let { runCatching { ProfileType.valueOf(it) }.getOrNull() }
+            enableNSFW = enableNSFW,
+            avatarType = avatarType?.let { runCatching { AvatarType.valueOf(it) }.getOrNull() }
         )
     }
 

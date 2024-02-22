@@ -20,7 +20,8 @@ class ProfileResponseDtoMapper : ISimpleMapper<ProfileEntity, ProfileResponseDTO
             uuid = uuid.toString(),
             alias = alias,
             isAdmin = isAdmin,
-            type = type.name
+            avatarType = avatarType.name,
+            enableNSFW = enableNSFW
         )
     }
 

@@ -16,7 +16,7 @@ import com.dreamsoftware.api.rest.mapper.DataInput
 import com.dreamsoftware.api.rest.utils.getStringProperty
 import com.dreamsoftware.core.ISimpleMapper
 import com.dreamsoftware.core.toUUID
-import com.dreamsoftware.data.database.dao.ProfileType
+import com.dreamsoftware.data.database.dao.AvatarType
 import com.dreamsoftware.data.database.entity.*
 import io.ktor.server.application.*
 import java.util.*
@@ -78,7 +78,8 @@ internal class UserServiceImpl(
                                 pin = DEFAULT_ADMIN_PIN,
                                 userId = it.uuid,
                                 isAdmin = true,
-                                type = ProfileType.BOY
+                                enableNSFW = true,
+                                avatarType = AvatarType.BOY
                             )
                         )
                     }
