@@ -3,10 +3,8 @@ package com.dreamsoftware.api.rest.routes
 import com.dreamsoftware.api.domain.model.ErrorType
 import com.dreamsoftware.api.rest.utils.Constants.DEFAULT_OFFSET
 import com.dreamsoftware.api.rest.utils.Constants.DEFAULT_PAGE_SIZE
-import com.dreamsoftware.api.rest.utils.generateErrorResponse
-import com.dreamsoftware.api.rest.utils.generateSuccessResponse
-import com.dreamsoftware.api.rest.utils.getLongParamOrDefault
 import com.dreamsoftware.api.domain.services.IChannelService
+import com.dreamsoftware.api.rest.utils.*
 import io.ktor.server.application.*
 import io.ktor.server.routing.*
 import org.koin.ktor.ext.inject
@@ -41,8 +39,8 @@ fun Route.channelRoutes() {
          */
         get("/") {
             with(call) {
-                val category = parameters["category"]
-                val country = parameters["country"]
+                val category = getStringParam("category")
+                val country = getStringParam("country")
                 val offset = getLongParamOrDefault(paramName = "offset", defaultValue = DEFAULT_OFFSET)
                 val limit = getLongParamOrDefault(paramName = "limit", defaultValue = DEFAULT_PAGE_SIZE)
                 generateSuccessResponse(
@@ -65,7 +63,7 @@ fun Route.channelRoutes() {
          */
         get("/{channelId}") {
             with(call) {
-                parameters["channelId"]?.let { channelId ->
+                getStringParam("channelId")?.let { channelId ->
                     generateSuccessResponse(
                         code = 2002,
                         message = "Channel found.",
@@ -88,14 +86,12 @@ fun Route.channelRoutes() {
          */
         get("/search") {
             with(call) {
-                parameters["term"]?.takeIf { it.isNotBlank() }?.let { name ->
+                doIfParamExists("term") {
                     generateSuccessResponse(
                         code = 2003,
                         message = "Channels found by name.",
-                        data = channelService.findByNameLike(name)
+                        data = channelService.findByNameLike(it)
                     )
-                } ?: run {
-                    generateErrorResponse(ErrorType.BAD_REQUEST)
                 }
             }
         }

@@ -44,7 +44,7 @@ suspend fun ApplicationCall.generateErrorResponse(errorType: ErrorType) {
  * @return Unit
  */
 suspend fun ApplicationCall.doIfParamExists(paramName: String, block: suspend (param: String) -> Unit) {
-    parameters[paramName]?.let { block(it) } ?: run {
+    getStringParam(paramName)?.let { block(it) } ?: run {
         generateErrorResponse(ErrorType.BAD_REQUEST)
     }
 }
@@ -58,6 +58,17 @@ suspend fun ApplicationCall.doIfParamExists(paramName: String, block: suspend (p
  */
 fun ApplicationCall.getLongParamOrDefault(paramName: String, defaultValue: Long) =
     parameters[paramName]?.toLongOrNull() ?: defaultValue
+
+
+/**
+ * Retrieves the string value of the specified parameter from the call's parameters.
+ * Returns the string value if it exists and is not blank; otherwise, returns null.
+ *
+ * @param paramName The name of the parameter whose string value is to be retrieved.
+ * @return The string value of the specified parameter if it exists and is not blank; otherwise, null.
+ */
+fun ApplicationCall.getStringParam(paramName: String): String? =
+    parameters[paramName]?.takeIf { it.isNotBlank() }
 
 
 /**

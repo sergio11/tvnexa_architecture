@@ -22,6 +22,7 @@ internal class CountryRepositoryImpl(
     private companion object {
         const val ALL_COUNTRIES_CACHE_KEY = "countries:all"
         const val COUNTRY_CACHE_KEY_PREFIX = "countries:"
+        const val COUNTRY_SEARCH_CACHE_KEY_PREFIX = "countries:search:"
     }
 
     /**
@@ -43,5 +44,17 @@ internal class CountryRepositoryImpl(
     override suspend fun findByCode(code: String): CountryEntity? =
         retrieveFromCacheOrElse(cacheKey = COUNTRY_CACHE_KEY_PREFIX) {
             countryDatabaseDataSource.findByKey(code)
+        }
+
+    /**
+     * Finds countries by name similarity using the provided search term.
+     * Retrieves data from cache if available; otherwise, retrieves data from the database and caches it.
+     *
+     * @param term The search term used to find countries by name similarity.
+     * @return A list of [CountryEntity] objects containing countries found by name similarity.
+     */
+    override suspend fun findByNameLike(term: String): List<CountryEntity> =
+        retrieveFromCacheOrElse(cacheKey = COUNTRY_SEARCH_CACHE_KEY_PREFIX + term) {
+            countryDatabaseDataSource.findByNameLike(term).toList()
         }
 }

@@ -2,6 +2,7 @@ package com.dreamsoftware.data.database.datasource.country.impl
 
 import com.dreamsoftware.core.ISimpleMapper
 import com.dreamsoftware.data.database.core.IDatabaseFactory
+import com.dreamsoftware.data.database.dao.ChannelTable
 import com.dreamsoftware.data.database.dao.CountryEntityDAO
 import com.dreamsoftware.data.database.dao.CountryLanguageTable
 import com.dreamsoftware.data.database.dao.CountryTable
@@ -9,7 +10,10 @@ import com.dreamsoftware.data.database.datasource.core.SupportDatabaseDataSource
 import com.dreamsoftware.data.database.datasource.country.ICountryDatabaseDataSource
 import com.dreamsoftware.data.database.entity.CountryEntity
 import com.dreamsoftware.data.database.entity.SaveCountryEntity
+import org.jetbrains.exposed.sql.SqlExpressionBuilder.isNotNull
+import org.jetbrains.exposed.sql.SqlExpressionBuilder.like
 import org.jetbrains.exposed.sql.Transaction
+import org.jetbrains.exposed.sql.lowerCase
 import org.jetbrains.exposed.sql.statements.UpdateBuilder
 import kotlin.reflect.KProperty1
 
@@ -87,5 +91,21 @@ internal class CountryDatabaseDataSourceImpl(
                 this[CountryLanguageTable.language] = it.second
             }
         )
+    }
+
+    /**
+     * Finds countries in the database whose names are similar to the provided search term.
+     *
+     * @param term The search term used to find countries by name similarity.
+     * @return An iterable collection of [CountryEntity] objects containing countries found by name similarity.
+     */
+    override suspend fun findByNameLike(term: String): Iterable<CountryEntity> = execQuery {
+        entityDAO.find {
+            if (term.isNotBlank()) {
+                CountryTable.name.lowerCase() like "%${term.lowercase()}%"
+            } else {
+                CountryTable.id.isNotNull()
+            }
+        }.map(mapper::map)
     }
 }
