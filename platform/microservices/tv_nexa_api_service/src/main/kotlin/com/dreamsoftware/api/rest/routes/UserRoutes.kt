@@ -153,14 +153,19 @@ fun Route.userRoutes() {
              */
             post("/{profileId}/verify-pin") {
                 with(call) {
+                    val isVerificationSuccess = userService.verifyPin(
+                        userUuid = fetchAuthUserUuidOrThrow(),
+                        profileUUID = getUUIDParamOrThrow("profileId"),
+                        data = receive()
+                    )
                     generateSuccessResponse(
-                        code = 8008,
-                        message = "PIN verification successful.",
-                        data = userService.verifyPin(
-                            userUuid = fetchAuthUserUuidOrThrow(),
-                            profileUUID = getUUIDParamOrThrow("profileId"),
-                            data = receive()
-                        )
+                        code = if(isVerificationSuccess) 8008 else 8009,
+                        message =  "PIN verification completed",
+                        data = if(isVerificationSuccess) {
+                            "PIN verification successful."
+                        } else {
+                            "PIN verification failed. Please check your PIN and try again."
+                        }
                     )
                 }
             }
@@ -173,7 +178,7 @@ fun Route.userRoutes() {
             get("/{profileId}/blocked-channels") {
                 with(call) {
                     generateSuccessResponse(
-                        code = 8009,
+                        code = 8010,
                         message = "Blocked channels retrieved successfully.",
                         data = userService.getBlockedChannels(
                             userUuid = fetchAuthUserUuidOrThrow(),
@@ -191,7 +196,7 @@ fun Route.userRoutes() {
             get("/{profileId}/favorite-channels") {
                 with(call) {
                     generateSuccessResponse(
-                        code = 8010,
+                        code = 8011,
                         message = "Favorite channels retrieved successfully.",
                         data = userService.getFavoriteChannels(
                             userUuid = fetchAuthUserUuidOrThrow(),
