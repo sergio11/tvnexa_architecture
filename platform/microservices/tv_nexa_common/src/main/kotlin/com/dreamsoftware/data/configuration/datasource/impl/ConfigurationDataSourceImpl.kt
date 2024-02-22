@@ -30,7 +30,7 @@ class ConfigurationDataSourceImpl(
         with(ftpClient) {
             try {
                 println("Trying to connect to FTP Host: $hostname")
-                connect("192.168.1.39")
+                connect(hostname)
                 enterLocalPassiveMode()
                 login(user, password)
 
