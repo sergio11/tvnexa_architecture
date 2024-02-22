@@ -72,6 +72,26 @@ fun Route.userRoutes() {
             }
 
             /**
+             * Defines a route handler for retrieving a user profile by its profile ID.
+             * Retrieves the user profile details for the specified profile ID and returns a success response.
+             *
+             * @param profileId The ID of the profile to retrieve.
+             * @return A success response containing the retrieved profile details.
+             */
+            get("/{profileId}") {
+                with(call) {
+                    generateSuccessResponse(
+                        code = 8004,
+                        message = "Profile retrieved successfully",
+                        data = userService.getUserProfileDetail(
+                            userUuid = fetchAuthUserUuidOrThrow(),
+                            profileUUID = getUUIDParamOrThrow("profileId")
+                        )
+                    )
+                }
+            }
+
+            /**
              * Handles the HTTP PUT request to update a user's profile identified by {profileId}.
              *
              * This endpoint allows an authenticated user to update their profile information.
@@ -79,7 +99,7 @@ fun Route.userRoutes() {
             put("/{profileId}") {
                 with(call) {
                     generateSuccessResponse(
-                        code = 8004,
+                        code = 8005,
                         message = "User profile updated successfully.",
                         data = userService.updateUserProfile(
                             userUuid = fetchAuthUserUuidOrThrow(),
@@ -98,7 +118,7 @@ fun Route.userRoutes() {
             delete("/{profileId}") {
                 with(call) {
                     generateSuccessResponse(
-                        code = 8005,
+                        code = 8006,
                         message = "User profile deleted successfully.",
                         data = userService.deleteUserProfile(
                             userUuid = fetchAuthUserUuidOrThrow(),
@@ -116,7 +136,7 @@ fun Route.userRoutes() {
             post("/") {
                 with(call) {
                     generateSuccessResponse(
-                        code = 8006,
+                        code = 8007,
                         message = "User profile created successfully.",
                         data = userService.createProfile(
                             userUuid = fetchAuthUserUuidOrThrow(),
@@ -134,7 +154,7 @@ fun Route.userRoutes() {
             post("/{profileId}/verify-pin") {
                 with(call) {
                     generateSuccessResponse(
-                        code = 8007,
+                        code = 8008,
                         message = "PIN verification successful.",
                         data = userService.verifyPin(
                             userUuid = fetchAuthUserUuidOrThrow(),
@@ -153,7 +173,7 @@ fun Route.userRoutes() {
             get("/{profileId}/blocked-channels") {
                 with(call) {
                     generateSuccessResponse(
-                        code = 8008,
+                        code = 8009,
                         message = "Blocked channels retrieved successfully.",
                         data = userService.getBlockedChannels(
                             userUuid = fetchAuthUserUuidOrThrow(),
@@ -171,7 +191,7 @@ fun Route.userRoutes() {
             get("/{profileId}/favorite-channels") {
                 with(call) {
                     generateSuccessResponse(
-                        code = 8009,
+                        code = 8010,
                         message = "Favorite channels retrieved successfully.",
                         data = userService.getFavoriteChannels(
                             userUuid = fetchAuthUserUuidOrThrow(),

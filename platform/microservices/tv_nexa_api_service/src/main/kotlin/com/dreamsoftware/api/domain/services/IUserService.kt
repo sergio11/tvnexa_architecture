@@ -72,6 +72,21 @@ interface IUserService {
     suspend fun getUserProfiles(uuid: UUID): List<ProfileResponseDTO>
 
     /**
+     * Retrieves the user profile details for the specified profile UUID.
+     *
+     * @param userUuid The UUID of the user for whom the profile details are being retrieved.
+     * @param profileUUID The UUID of the profile for which details are to be retrieved.
+     * @return A [ProfileResponseDTO] object containing the profile details.
+     * @throws AppException.InternalServerError If an internal server error occurs during the retrieval process.
+     * @throws AppException.NotFoundException.ProfileNotFoundException If the specified profile UUID is not found.
+     */
+    @Throws(
+        AppException.InternalServerError::class,
+        AppException.NotFoundException.ProfileNotFoundException::class
+    )
+    suspend fun getUserProfileDetail(userUuid: UUID, profileUUID: UUID): ProfileResponseDTO
+
+    /**
      * Suspended function to update a user's profile based on the provided data.
      *
      * @param userUuid The unique identifier of the user.

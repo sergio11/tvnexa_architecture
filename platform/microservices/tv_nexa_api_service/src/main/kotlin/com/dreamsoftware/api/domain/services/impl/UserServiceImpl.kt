@@ -153,6 +153,25 @@ internal class UserServiceImpl(
         }
 
     /**
+     * Retrieves the user profile details for the specified profile.
+     *
+     * @param userUuid The UUID of the user for whom the profile is being retrieved.
+     * @param profileUUID The UUID of the profile to retrieve.
+     * @return A [ProfileResponseDTO] object containing the profile details.
+     * @throws AppException.InternalServerError If an internal application error occurs during the process.
+     * @throws AppException.NotFoundException.ProfileNotFoundException If the specified profile is not found.
+     */
+    @Throws(
+        AppException.InternalServerError::class,
+        AppException.NotFoundException.ProfileNotFoundException::class
+    )
+    override suspend fun getUserProfileDetail(userUuid: UUID, profileUUID: UUID): ProfileResponseDTO =
+        safeCall(errorMessage = "An error occurred while finding the profile") {
+            profileRepository.getProfileById(profileUUID)?.let(profileMapper::map)
+                ?: throw AppException.NotFoundException.ProfileNotFoundException("Profile with code '$profileUUID' not found.")
+        }
+
+    /**
      * Updates a user's profile based on the provided data.
      *
      * @param userUuid The unique identifier of the user.
