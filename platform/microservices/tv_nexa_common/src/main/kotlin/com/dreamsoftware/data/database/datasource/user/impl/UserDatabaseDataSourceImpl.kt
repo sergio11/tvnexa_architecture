@@ -86,6 +86,15 @@ internal class UserDatabaseDataSourceImpl(
     }
 
     /**
+     * Checks whether a user with the specified ID exists.
+     * @param userId The ID of the user to check for existence.
+     * @return true if a user with the specified ID exists, false otherwise.
+     */
+    override suspend fun existsById(userId: UUID): Boolean = execQuery {
+        entityDAO.find { UserTable.id eq userId }.count() > 0
+    }
+
+    /**
      * Asynchronously updates the profile of the user with the specified [userId] based on the provided [UpdateUserEntity].
      *
      * @param userId The unique identifier (UUID) of the user whose profile is to be updated.

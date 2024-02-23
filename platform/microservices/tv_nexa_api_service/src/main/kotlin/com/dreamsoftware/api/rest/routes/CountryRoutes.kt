@@ -11,10 +11,10 @@ import org.koin.ktor.ext.inject
  * Class representing the routes related to countries in the application.
  * These routes include functionalities such as retrieving all countries and finding a country by its code.
  *
- * @property countryService An instance of the [ICountryController] interface for handling country-related operations.
+ * @property countryController An instance of the [ICountryController] interface for handling country-related operations.
  */
 fun Route.countryRoutes() {
-    val countryService by inject<ICountryController>()
+    val countryController by inject<ICountryController>()
 
     /**
      * Defines the routes under the "/countries" endpoint for country-related operations.
@@ -23,7 +23,7 @@ fun Route.countryRoutes() {
 
         /**
          * Endpoint for retrieving all countries.
-         * Accepts GET requests to "/countries/" and retrieves all countries using the [countryService.findAll] method.
+         * Accepts GET requests to "/countries/" and retrieves all countries using the [countryController.findAll] method.
          * Generates a success response with a code of 3001, a message indicating successful retrieval of countries,
          * and data containing the list of countries.
          */
@@ -31,7 +31,7 @@ fun Route.countryRoutes() {
             call.generateSuccessResponse(
                 code = 3001,
                 message = "Countries retrieved successfully.",
-                data = countryService.findAll()
+                data = countryController.findAll()
             )
         }
 
@@ -51,7 +51,7 @@ fun Route.countryRoutes() {
                     generateSuccessResponse(
                         code = 3002,
                         message = "Country found.",
-                        data = countryService.findByCode(countryCode)
+                        data = countryController.findByCode(countryCode)
                     )
                 }
             }
@@ -70,7 +70,7 @@ fun Route.countryRoutes() {
                     generateSuccessResponse(
                         code = 3003,
                         message = "Countries found by name.",
-                        data = countryService.findByNameLike(it)
+                        data = countryController.findByNameLike(it)
                     )
                 }
             }

@@ -81,4 +81,28 @@ interface IProfileRepository {
      * @return A list of [SimpleChannelEntity] representing the favorite channels for the specified profile.
      */
     suspend fun getFavoriteChannels(profileUUID: UUID): List<SimpleChannelEntity>
+
+    /**
+     * Saves a favorite channel for a given profile.
+     * @param profileUUID The UUID of the profile for which the favorite channel will be saved.
+     * @param channelId The ID of the channel to be saved as a favorite.
+     * @return Unit
+     * @throws Exception If an error occurs while saving the favorite channel.
+     */
+    suspend fun saveFavoriteChannel(profileUUID: UUID, channelId: String)
+
+    /**
+     * Checks whether a profile with the specified ID exists.
+     * @param profileId The UUID of the profile to check for existence.
+     * @return true if a profile with the specified ID exists, false otherwise.
+     */
+    suspend fun existsById(profileId: UUID): Boolean
+
+    /**
+     * Checks whether a profile with the specified ID can be managed by the user with the provided ID.
+     * @param profileId The UUID of the profile to check for manageability.
+     * @param userId The UUID of the user attempting to manage the profile.
+     * @return true if the user can manage the profile, false otherwise.
+     */
+    suspend fun canBeManagedByUser(profileId: UUID, userId: UUID): Boolean
 }

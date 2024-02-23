@@ -9,6 +9,7 @@ sealed class AppException(message: String? = null, cause: Throwable? = null) : E
         class RegionNotFoundException(message: String? = null, cause: Throwable? = null) : NotFoundException(message, cause)
         class SubdivisionNotFoundException(message: String? = null, cause: Throwable? = null) : NotFoundException(message, cause)
         class UserNotFoundException(message: String? = null, cause: Throwable? = null) : NotFoundException(message, cause)
+        class UserNotAllowedException(message: String? = null, cause: Throwable? = null) : NotFoundException(message, cause)
         class ProfileNotFoundException(message: String? = null, cause: Throwable? = null) : NotFoundException(message, cause)
     }
     class InvalidCredentialsException(message: String? = null, cause: Throwable? = null) : NotFoundException(message, cause)

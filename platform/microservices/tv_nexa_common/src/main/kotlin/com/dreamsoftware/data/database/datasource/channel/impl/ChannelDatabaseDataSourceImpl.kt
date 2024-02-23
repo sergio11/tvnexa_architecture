@@ -114,6 +114,15 @@ internal class ChannelDatabaseDataSourceImpl(
     }
 
     /**
+     * Checks whether a channel with the specified ID exists.
+     * @param channelId The ID of the user to check for existence.
+     * @return true if a channel with the specified ID exists, false otherwise.
+     */
+    override suspend fun existsById(channelId: String): Boolean = execQuery {
+        entityDAO.find { ChannelTable.id eq channelId }.count() > 0
+    }
+
+    /**
      * Maps attributes from [SaveChannelEntity] to the database update builder.
      *
      * @param entityToSave The [SaveChannelEntity] to map.

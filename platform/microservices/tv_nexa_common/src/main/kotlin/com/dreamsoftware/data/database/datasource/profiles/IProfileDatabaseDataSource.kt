@@ -43,4 +43,19 @@ interface IProfileDatabaseDataSource : ISupportDatabaseDataSource<UUID, CreatePr
      * @return `true` if the PIN is verified successfully, `false` otherwise.
      */
     suspend fun verifyPin(profileUuid: UUID, pin: Int): Boolean
+
+    /**
+     * Checks whether a profile with the specified ID exists.
+     * @param profileId The UUID of the profile to check for existence.
+     * @return true if a profile with the specified ID exists, false otherwise.
+     */
+    suspend fun existsById(profileId: UUID): Boolean
+
+    /**
+     * Checks whether a profile with the specified ID can be managed by the user with the provided ID.
+     * @param profileId The UUID of the profile to check for manageability.
+     * @param userId The UUID of the user attempting to manage the profile.
+     * @return true if the user can manage the profile, false otherwise.
+     */
+    suspend fun canBeManagedByUser(profileId: UUID, userId: UUID): Boolean
 }

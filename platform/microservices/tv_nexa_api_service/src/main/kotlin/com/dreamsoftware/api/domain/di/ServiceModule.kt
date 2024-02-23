@@ -17,5 +17,5 @@ val serviceModule = module {
     single<ISubdivisionController> { SubdivisionControllerImpl(get(), getMapper()) }
     single<IChannelController> { ChannelControllerImpl(get(), getMapper(), getMapper()) }
     single<IEpgChannelProgrammeController> { EpgChannelProgrammeControllerImpl(get(), get(), getMapper()) }
-    single<IUserController> { UserControllerImpl(get(), get(), getMapper(), getMapper(), getMapper(), get(), getMapper(), getMapper(), getMapper(), getMapper()) }
+    single<IUserController> { UserControllerImpl(get(), get(), get(), getMapper(), getMapper(), getMapper(), get(), getMapper(), getMapper(), getMapper(), getMapper()) }
 }

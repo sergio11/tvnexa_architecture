@@ -6,10 +6,7 @@ import com.dreamsoftware.api.domain.repository.IProfileRepository
 import com.dreamsoftware.data.database.datasource.profiles.IBlockedChannelDataSource
 import com.dreamsoftware.data.database.datasource.profiles.IFavoriteChannelDataSource
 import com.dreamsoftware.data.database.datasource.profiles.IProfileDatabaseDataSource
-import com.dreamsoftware.data.database.entity.CreateProfileEntity
-import com.dreamsoftware.data.database.entity.ProfileEntity
-import com.dreamsoftware.data.database.entity.SimpleChannelEntity
-import com.dreamsoftware.data.database.entity.UpdateProfileEntity
+import com.dreamsoftware.data.database.entity.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import java.util.*
@@ -117,5 +114,38 @@ internal class ProfileRepositoryImpl(
      */
     override suspend fun getFavoriteChannels(profileUUID: UUID): List<SimpleChannelEntity> = withContext(Dispatchers.IO) {
         favoriteChannelDataSource.findByProfile(profileUUID)
+    }
+
+    /**
+     * Saves a favorite channel for a given profile.
+     * @param profileUUID The UUID of the profile for which the favorite channel will be saved.
+     * @param channelId The ID of the channel to be saved as a favorite.
+     * @return Unit
+     * @throws Exception If an error occurs while saving the favorite channel.
+     */
+    override suspend fun saveFavoriteChannel(profileUUID: UUID, channelId: String) = withContext(Dispatchers.IO) {
+        favoriteChannelDataSource.save(SaveFavoriteChannel(
+            profileId = profileUUID,
+            channelId = channelId,
+        ))
+    }
+
+    /**
+     * Checks whether a profile with the specified ID exists.
+     * @param profileId The UUID of the profile to check for existence.
+     * @return true if a profile with the specified ID exists, false otherwise.
+     */
+    override suspend fun existsById(profileId: UUID): Boolean = withContext(Dispatchers.IO) {
+        profileDatabaseDataSource.existsById(profileId)
+    }
+
+    /**
+     * Checks whether a profile with the specified ID can be managed by the user with the provided ID.
+     * @param profileId The UUID of the profile to check for manageability.
+     * @param userId The UUID of the user attempting to manage the profile.
+     * @return true if the user can manage the profile, false otherwise.
+     */
+    override suspend fun canBeManagedByUser(profileId: UUID, userId: UUID): Boolean = withContext(Dispatchers.IO) {
+        profileDatabaseDataSource.canBeManagedByUser(profileId, userId)
     }
 }

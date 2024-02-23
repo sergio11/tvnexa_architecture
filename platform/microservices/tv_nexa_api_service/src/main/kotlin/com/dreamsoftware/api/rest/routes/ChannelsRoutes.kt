@@ -1,6 +1,5 @@
 package com.dreamsoftware.api.rest.routes
 
-import com.dreamsoftware.api.domain.model.ErrorType
 import com.dreamsoftware.api.rest.utils.Constants.DEFAULT_OFFSET
 import com.dreamsoftware.api.rest.utils.Constants.DEFAULT_PAGE_SIZE
 import com.dreamsoftware.api.rest.controllers.IChannelController
@@ -14,10 +13,10 @@ import org.koin.ktor.ext.inject
  * These routes include functionalities such as retrieving channels based on category, country, and pagination,
  * as well as finding a channel by its ID.
  *
- * @property channelService An instance of the [IChannelController] interface for handling channel-related operations.
+ * @property channelController An instance of the [IChannelController] interface for handling channel-related operations.
  */
 fun Route.channelRoutes() {
-    val channelService by inject<IChannelController>()
+    val channelController by inject<IChannelController>()
 
     /**
      * Defines the routes under the "/channels" endpoint for channel-related operations.
@@ -27,7 +26,7 @@ fun Route.channelRoutes() {
         /**
          * Endpoint for retrieving channels based on category, country, and pagination.
          * Accepts GET requests to "/channels/" and retrieves channels using parameters such as category, country,
-         * offset, and limit. Utilizes the [channelService.findByCategoryAndCountryPaginated] method.
+         * offset, and limit. Utilizes the [channelController.findByCategoryAndCountryPaginated] method.
          * Generates a success response with a code of 2001, a message indicating successful channel retrieval,
          * and data containing the paginated list of channels.
          *
@@ -46,7 +45,7 @@ fun Route.channelRoutes() {
                 generateSuccessResponse(
                     code = 2001,
                     message = "Channels retrieved successfully.",
-                    data = channelService.findByCategoryAndCountryPaginated(category, country, offset, limit)
+                    data = channelController.findByCategoryAndCountryPaginated(category, country, offset, limit)
                 )
             }
         }
@@ -54,7 +53,7 @@ fun Route.channelRoutes() {
         /**
          * Endpoint for finding a channel by its ID.
          * Accepts GET requests to "/channels/{channelId}" and retrieves a channel by its ID
-         * using the [channelService.findById] method.
+         * using the [channelController.findById] method.
          * Generates a success response with a code of 2002, a message indicating successful channel retrieval,
          * and data containing the details of the found channel.
          *
@@ -63,14 +62,12 @@ fun Route.channelRoutes() {
          */
         get("/{channelId}") {
             with(call) {
-                getStringParam("channelId")?.let { channelId ->
+                doIfParamExists("channelId") {
                     generateSuccessResponse(
                         code = 2002,
                         message = "Channel found.",
-                        data = channelService.findById(channelId)
+                        data = channelController.findById(it)
                     )
-                } ?: run {
-                    generateErrorResponse(ErrorType.BAD_REQUEST)
                 }
             }
         }
@@ -90,7 +87,7 @@ fun Route.channelRoutes() {
                     generateSuccessResponse(
                         code = 2003,
                         message = "Channels found by name.",
-                        data = channelService.findByNameLike(it)
+                        data = channelController.findByNameLike(it)
                     )
                 }
             }

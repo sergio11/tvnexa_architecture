@@ -48,4 +48,10 @@ interface IChannelDatabaseDataSource : ISupportDatabaseDataSource<String, SaveCh
      */
     suspend fun findByNameLike(term: String): Iterable<SimpleChannelEntity>
 
+    /**
+     * Checks whether a channel with the specified ID exists.
+     * @param channelId The ID of the user to check for existence.
+     * @return true if a channel with the specified ID exists, false otherwise.
+     */
+    suspend fun existsById(channelId: String): Boolean
 }
