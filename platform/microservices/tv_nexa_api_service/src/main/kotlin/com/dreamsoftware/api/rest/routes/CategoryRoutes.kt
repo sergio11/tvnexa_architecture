@@ -2,7 +2,7 @@ package com.dreamsoftware.api.rest.routes
 
 import com.dreamsoftware.api.rest.utils.doIfParamExists
 import com.dreamsoftware.api.rest.utils.generateSuccessResponse
-import com.dreamsoftware.api.domain.services.ICategoryService
+import com.dreamsoftware.api.rest.controllers.ICategoryController
 import io.ktor.server.application.*
 import io.ktor.server.routing.*
 import org.koin.ktor.ext.inject
@@ -11,11 +11,11 @@ import org.koin.ktor.ext.inject
  * Class representing the routes related to categories in the application.
  * These routes include functionalities such as retrieving all categories and finding a category by ID.
  *
- * @property categoryService An instance of the [ICategoryService] interface for handling category-related operations.
+ * @property categoryService An instance of the [ICategoryController] interface for handling category-related operations.
  */
 fun Route.categoriesRoutes() {
 
-    val categoryService by inject<ICategoryService>()
+    val categoryService by inject<ICategoryController>()
 
     /**
      * Defines the routes under the "/categories" endpoint for category-related operations.

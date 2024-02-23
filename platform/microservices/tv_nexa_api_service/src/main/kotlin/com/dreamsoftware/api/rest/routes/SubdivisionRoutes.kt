@@ -2,7 +2,7 @@ package com.dreamsoftware.api.rest.routes
 
 import com.dreamsoftware.api.rest.utils.doIfParamExists
 import com.dreamsoftware.api.rest.utils.generateSuccessResponse
-import com.dreamsoftware.api.domain.services.ISubdivisionService
+import com.dreamsoftware.api.rest.controllers.ISubdivisionController
 import io.ktor.server.application.*
 import io.ktor.server.routing.*
 import org.koin.ktor.ext.inject
@@ -11,10 +11,10 @@ import org.koin.ktor.ext.inject
  * Class representing the routes related to subdivisions in the application.
  * These routes include functionalities such as retrieving all subdivisions and finding a subdivision by its code.
  *
- * @property subdivisionService An instance of the [ISubdivisionService] interface for handling subdivision-related operations.
+ * @property subdivisionService An instance of the [ISubdivisionController] interface for handling subdivision-related operations.
  */
 fun Route.subdivisionRoutes() {
-    val subdivisionService by inject<ISubdivisionService>()
+    val subdivisionService by inject<ISubdivisionController>()
 
     /**
      * Defines the routes under the "/subdivisions" endpoint for subdivision-related operations.

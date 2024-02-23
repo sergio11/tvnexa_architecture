@@ -1,10 +1,8 @@
 package com.dreamsoftware.api.rest.routes
 
-import com.dreamsoftware.api.domain.model.ErrorType
 import com.dreamsoftware.api.rest.utils.doIfParamExists
 import com.dreamsoftware.api.rest.utils.generateSuccessResponse
-import com.dreamsoftware.api.domain.services.ICountryService
-import com.dreamsoftware.api.rest.utils.generateErrorResponse
+import com.dreamsoftware.api.rest.controllers.ICountryController
 import io.ktor.server.application.*
 import io.ktor.server.routing.*
 import org.koin.ktor.ext.inject
@@ -13,10 +11,10 @@ import org.koin.ktor.ext.inject
  * Class representing the routes related to countries in the application.
  * These routes include functionalities such as retrieving all countries and finding a country by its code.
  *
- * @property countryService An instance of the [ICountryService] interface for handling country-related operations.
+ * @property countryService An instance of the [ICountryController] interface for handling country-related operations.
  */
 fun Route.countryRoutes() {
-    val countryService by inject<ICountryService>()
+    val countryService by inject<ICountryController>()
 
     /**
      * Defines the routes under the "/countries" endpoint for country-related operations.

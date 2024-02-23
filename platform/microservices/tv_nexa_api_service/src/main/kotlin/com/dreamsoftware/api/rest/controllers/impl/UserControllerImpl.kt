@@ -1,12 +1,12 @@
-package com.dreamsoftware.api.domain.services.impl
+package com.dreamsoftware.api.rest.controllers.impl
 
 import com.auth0.jwt.JWT
 import com.auth0.jwt.algorithms.Algorithm
 import com.dreamsoftware.api.domain.model.exceptions.AppException
 import com.dreamsoftware.api.domain.repository.IProfileRepository
 import com.dreamsoftware.api.domain.repository.IUserRepository
-import com.dreamsoftware.api.domain.services.IUserService
-import com.dreamsoftware.api.domain.services.impl.core.SupportService
+import com.dreamsoftware.api.rest.controllers.IUserController
+import com.dreamsoftware.api.rest.controllers.impl.core.SupportController
 import com.dreamsoftware.api.rest.dto.request.*
 import com.dreamsoftware.api.rest.dto.response.AuthResponseDTO
 import com.dreamsoftware.api.rest.dto.response.ProfileResponseDTO
@@ -22,7 +22,7 @@ import io.ktor.server.application.*
 import java.util.*
 
 /**
- * Implementation of the IUserService interface responsible for managing user-related operations.
+ * Implementation of the IUserController interface responsible for managing user-related operations.
  *
  * @property userRepository The repository responsible for user-related data operations.
  * @property profileRepository The repository responsible for profile-related data operations.
@@ -35,7 +35,7 @@ import java.util.*
  * @property createUserProfileMapper The mapper used to map [DataInput] to [CreateProfileEntity].
  * @property channelMapper The mapper used to map [SimpleChannelEntity] to [SimpleChannelResponseDTO].
  */
-internal class UserServiceImpl(
+internal class UserControllerImpl(
     private val userRepository: IUserRepository,
     private val profileRepository: IProfileRepository,
     private val mapper: ISimpleMapper<UserEntity, UserResponseDTO>,
@@ -46,7 +46,7 @@ internal class UserServiceImpl(
     private val updateUserMapper: ISimpleMapper<UpdatedUserRequestDTO, UpdateUserEntity>,
     private val createUserProfileMapper: ISimpleMapper<DataInput, CreateProfileEntity>,
     private val channelMapper: ISimpleMapper<SimpleChannelEntity, SimpleChannelResponseDTO>
-): SupportService(), IUserService {
+): SupportController(), IUserController {
 
     private companion object {
         const val EXPIRATION_TIME_IN_MILLIS = 48 * 60 * 60 * 1000L

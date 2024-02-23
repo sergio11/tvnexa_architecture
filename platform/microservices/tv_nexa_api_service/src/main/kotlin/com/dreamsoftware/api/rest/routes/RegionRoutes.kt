@@ -2,7 +2,7 @@ package com.dreamsoftware.api.rest.routes
 
 import com.dreamsoftware.api.rest.utils.doIfParamExists
 import com.dreamsoftware.api.rest.utils.generateSuccessResponse
-import com.dreamsoftware.api.domain.services.IRegionService
+import com.dreamsoftware.api.rest.controllers.IRegionController
 import io.ktor.server.application.*
 import io.ktor.server.routing.*
 import org.koin.ktor.ext.inject
@@ -11,10 +11,10 @@ import org.koin.ktor.ext.inject
  * Class representing the routes related to regions in the application.
  * These routes include functionalities such as retrieving all regions and finding a region by its code.
  *
- * @property regionService An instance of the [IRegionService] interface for handling region-related operations.
+ * @property regionService An instance of the [IRegionController] interface for handling region-related operations.
  */
 fun Route.regionsRoutes() {
-    val regionService by inject<IRegionService>()
+    val regionService by inject<IRegionController>()
 
     /**
      * Defines the routes under the "/regions" endpoint for region-related operations.

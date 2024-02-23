@@ -1,23 +1,23 @@
-package com.dreamsoftware.api.domain.services.impl
+package com.dreamsoftware.api.rest.controllers.impl
 
 import com.dreamsoftware.api.domain.model.exceptions.AppException
 import com.dreamsoftware.api.domain.repository.ICountryRepository
-import com.dreamsoftware.api.domain.services.ICountryService
-import com.dreamsoftware.api.domain.services.impl.core.SupportService
+import com.dreamsoftware.api.rest.controllers.ICountryController
+import com.dreamsoftware.api.rest.controllers.impl.core.SupportController
 import com.dreamsoftware.api.rest.dto.response.CountryResponseDTO
 import com.dreamsoftware.core.ISimpleMapper
 import com.dreamsoftware.data.database.entity.CountryEntity
 
 /**
- * Implementation of the ICountryService interface responsible for managing country-related operations.
+ * Implementation of the ICountryController interface responsible for managing country-related operations.
  *
  * @property countryRepository The repository responsible for country-related data operations.
  * @property mapper The mapper used to map CountryEntity objects to CountryResponseDTO objects.
  */
-internal class CountryServiceImpl(
+internal class CountryControllerImpl(
     private val countryRepository: ICountryRepository,
     private val mapper: ISimpleMapper<CountryEntity, CountryResponseDTO>
-): SupportService(), ICountryService {
+): SupportController(), ICountryController {
 
     /**
      * Retrieves a list of all countries.

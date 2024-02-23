@@ -1,10 +1,10 @@
-package com.dreamsoftware.api.domain.services.impl
+package com.dreamsoftware.api.rest.controllers.impl
 
 import com.dreamsoftware.api.domain.model.exceptions.AppException
 import com.dreamsoftware.api.domain.repository.IChannelRepository
 import com.dreamsoftware.api.domain.repository.IEpgChannelProgrammeRepository
-import com.dreamsoftware.api.domain.services.IEpgChannelProgrammeService
-import com.dreamsoftware.api.domain.services.impl.core.SupportService
+import com.dreamsoftware.api.rest.controllers.IEpgChannelProgrammeController
+import com.dreamsoftware.api.rest.controllers.impl.core.SupportController
 import com.dreamsoftware.api.rest.dto.response.EpgChannelProgrammeResponseDTO
 import com.dreamsoftware.core.ISimpleMapper
 import com.dreamsoftware.data.database.entity.EpgChannelProgrammeEntity
@@ -13,18 +13,18 @@ import kotlinx.coroutines.awaitAll
 import java.time.LocalDateTime
 
 /**
- * Implementation of the [IEpgChannelProgrammeService] interface responsible for providing EPG (Electronic Program Guide)
+ * Implementation of the [IEpgChannelProgrammeController] interface responsible for providing EPG (Electronic Program Guide)
  * information related operations.
  *
  * @property epgChannelProgrammeRepository The repository responsible for EPG-related data operations.
  * @property channelRepository The repository responsible for channel-related data operations.
  * @property epgChannelProgrammeMapper The mapper used to map EPG channel program entities to response DTOs.
  */
-internal class EpgChannelProgrammeServiceImpl(
+internal class EpgChannelProgrammeControllerImpl(
     private val epgChannelProgrammeRepository: IEpgChannelProgrammeRepository,
     private val channelRepository: IChannelRepository,
     private val epgChannelProgrammeMapper: ISimpleMapper<EpgChannelProgrammeEntity, EpgChannelProgrammeResponseDTO>
-) : SupportService(), IEpgChannelProgrammeService {
+) : SupportController(), IEpgChannelProgrammeController {
 
     /**
      * Retrieves EPG (Electronic Program Guide) programs for a specific channel within a given date range.

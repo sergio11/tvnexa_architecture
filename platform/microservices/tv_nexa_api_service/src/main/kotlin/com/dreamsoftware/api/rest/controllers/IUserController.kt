@@ -1,4 +1,4 @@
-package com.dreamsoftware.api.domain.services
+package com.dreamsoftware.api.rest.controllers
 
 import com.dreamsoftware.api.domain.model.exceptions.AppException
 import com.dreamsoftware.api.rest.dto.request.*
@@ -12,7 +12,7 @@ import java.util.*
  * Interface defining user-related operations for sign-up, sign-in, fetching user profiles,
  * and updating user profiles.
  */
-interface IUserService {
+interface IUserController {
 
     /**
      * Registers a new user.

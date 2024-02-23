@@ -1,6 +1,6 @@
 package com.dreamsoftware.api.rest.routes
 
-import com.dreamsoftware.api.domain.services.IUserService
+import com.dreamsoftware.api.rest.controllers.IUserController
 import com.dreamsoftware.api.rest.utils.generateSuccessResponse
 import io.ktor.server.application.*
 import io.ktor.server.request.*
@@ -11,11 +11,11 @@ import org.koin.ktor.ext.inject
  * Class representing the routes related to user accounts in the application.
  * These routes include functionalities such as user registration and authentication.
  *
- * @property userService An instance of the [IUserService] interface for handling user-related operations.
+ * @property userService An instance of the [IUserController] interface for handling user-related operations.
  */
 fun Route.accountsRoutes() {
 
-    val userService by inject<IUserService>()
+    val userService by inject<IUserController>()
 
     /**
      * Defines the routes under the "/accounts" endpoint for user-related operations.
