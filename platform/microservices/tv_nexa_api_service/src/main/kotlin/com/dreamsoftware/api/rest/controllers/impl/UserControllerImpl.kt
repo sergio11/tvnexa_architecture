@@ -143,53 +143,70 @@ internal class UserControllerImpl(
         }
 
     /**
-     * Retrieves profiles associated with a user identified by their UUID.
+     * Retrieves the profiles associated with a user.
      *
-     * @param uuid The unique identifier (UUID) of the user.
+     * @param uuid The unique identifier of the user.
      * @return A list of [ProfileResponseDTO] objects representing the user's profiles.
      *
-     * @throws AppException.InternalServerError If there is an internal server error during profile retrieval.
+     * @throws AppException.InternalServerError If there is an internal server error.
+     * @throws AppException.NotFoundException.UserNotFoundException If the specified user is not found.
      */
-    @Throws(AppException.InternalServerError::class)
+    @Throws(
+        AppException.InternalServerError::class,
+        AppException.NotFoundException.UserNotFoundException::class
+    )
     override suspend fun getUserProfiles(uuid: UUID): List<ProfileResponseDTO> =
         safeCall(errorMessage = "An error occurred while finding profiles by user.") {
+            if(!userRepository.existsById(uuid)) {
+                throw AppException.NotFoundException.UserNotFoundException("User $uuid not found")
+            }
             profileRepository.findByUser(uuid).map(profileMapper::map)
         }
 
     /**
-     * Retrieves the user profile details for the specified profile.
-     *
-     * @param userUuid The UUID of the user for whom the profile is being retrieved.
-     * @param profileUUID The UUID of the profile to retrieve.
-     * @return A [ProfileResponseDTO] object containing the profile details.
-     * @throws AppException.InternalServerError If an internal application error occurs during the process.
+     * Retrieves detailed information about a user profile.
+     * @param userUuid The UUID of the user associated with the profile.
+     * @param profileUUID The UUID of the profile for which detailed information will be retrieved.
+     * @return A ProfileResponseDTO object containing detailed information about the user profile.
+     * @throws AppException.InternalServerError If an internal server error occurs during the operation.
      * @throws AppException.NotFoundException.ProfileNotFoundException If the specified profile is not found.
+     * @throws AppException.NotFoundException.UserNotFoundException If the specified user is not found.
+     * @throws AppException.NotFoundException.UserNotAllowedException If the specified user is not allowed to perform the operation.
      */
     @Throws(
         AppException.InternalServerError::class,
-        AppException.NotFoundException.ProfileNotFoundException::class
+        AppException.NotFoundException.ProfileNotFoundException::class,
+        AppException.NotFoundException.UserNotFoundException::class,
+        AppException.NotFoundException.UserNotAllowedException::class
     )
     override suspend fun getUserProfileDetail(userUuid: UUID, profileUUID: UUID): ProfileResponseDTO =
         safeCall(errorMessage = "An error occurred while finding the profile") {
+            if(!userRepository.existsById(userUuid)) {
+                throw AppException.NotFoundException.UserNotFoundException("User $userUuid not found")
+            }
+            if(!profileRepository.canBeManagedByUser(profileUUID, userUuid)) {
+                throw AppException.NotFoundException.UserNotAllowedException("User $userUuid are not allowed to manage this profile")
+            }
             profileRepository.getProfileById(profileUUID)?.let(profileMapper::map)
                 ?: throw AppException.NotFoundException.ProfileNotFoundException("Profile with code '$profileUUID' not found.")
         }
 
     /**
-     * Updates a user's profile based on the provided data.
-     *
-     * @param userUuid The unique identifier of the user.
-     * @param profileUUID The unique identifier of the profile to be updated.
-     * @param data The data containing the updates to be applied to the profile.
-     * @return A [ProfileResponseDTO] representing the updated user profile.
-     * @throws AppException.InternalServerError if an unexpected internal error occurs.
-     * @throws AppException.NotFoundException.ProfileNotFoundException if the specified profile is not found.
-     * @throws AppException.UserProfileAlreadyExistsException if there is an attempt to create a duplicate profile.
+     * Updates a user profile with the provided data.
+     * @param userUuid The UUID of the user associated with the profile.
+     * @param profileUUID The UUID of the profile to be updated.
+     * @param data The UpdatedProfileRequestDTO containing the updated profile data.
+     * @return A ProfileResponseDTO object containing the updated information of the user profile.
+     * @throws AppException.InternalServerError If an internal server error occurs during the operation.
+     * @throws AppException.NotFoundException.ProfileNotFoundException If the specified profile is not found.
+     * @throws AppException.NotFoundException.UserNotFoundException If the specified user is not found.
+     * @throws AppException.NotFoundException.UserNotAllowedException If the specified user is not allowed to perform the operation.
      */
     @Throws(
         AppException.InternalServerError::class,
         AppException.NotFoundException.ProfileNotFoundException::class,
-        AppException.UserProfileAlreadyExistsException::class
+        AppException.NotFoundException.UserNotFoundException::class,
+        AppException.NotFoundException.UserNotAllowedException::class
     )
     override suspend fun updateUserProfile(
         userUuid: UUID,
@@ -198,6 +215,12 @@ internal class UserControllerImpl(
     ): ProfileResponseDTO =
         safeCall(errorMessage = "An error occurred while finding profiles by user.") {
             with(profileRepository) {
+                if(!userRepository.existsById(userUuid)) {
+                    throw AppException.NotFoundException.UserNotFoundException("User $userUuid not found")
+                }
+                if(!canBeManagedByUser(profileUUID, userUuid)) {
+                    throw AppException.NotFoundException.UserNotAllowedException("User $userUuid are not allowed to manage this profile")
+                }
                 update(profileUUID, updateProfileMapper.map(data))
                 getProfileById(profileUUID)?.let(profileMapper::map)
                     ?: throw AppException.NotFoundException.ProfileNotFoundException("Profile with code '$profileUUID' not found.")
@@ -230,57 +253,76 @@ internal class UserControllerImpl(
             }
         }
 
+
     /**
-     * Deletes a user's profile.
-     *
-     * @param userUuid The unique identifier of the user.
-     * @param profileUUID The unique identifier of the profile to be deleted.
-     * @throws [AppException.InternalServerError] if an unexpected internal error occurs.
-     * @throws [AppException.NotFoundException.UserNotFoundException] if the specified user is not found.
-     * @throws [AppException.NotFoundException.ProfileNotFoundException] if the specified profile is not found.
+     * Deletes a user profile.
+     * @param userUuid The UUID of the user requesting the profile deletion.
+     * @param profileUUID The UUID of the profile to be deleted.
+     * @throws AppException.InternalServerError If an internal server error occurs during the operation.
+     * @throws AppException.NotFoundException.UserNotFoundException If the specified user is not found.
+     * @throws AppException.NotFoundException.ProfileNotFoundException If the specified profile is not found.
+     * @throws AppException.NotFoundException.UserNotAllowedException If the specified user is not allowed to perform the operation.
      */
     @Throws(
         AppException.InternalServerError::class,
         AppException.NotFoundException.UserNotFoundException::class,
-        AppException.NotFoundException.ProfileNotFoundException::class
+        AppException.NotFoundException.ProfileNotFoundException::class,
+        AppException.NotFoundException.UserNotAllowedException::class
     )
     override suspend fun deleteUserProfile(userUuid: UUID, profileUUID: UUID): Unit =
         safeCall(errorMessage = "An error occurred while deleting profile.") {
             profileRepository.deleteProfile(profileUUID)
         }
 
+
     /**
-     * Creates a new profile for the authenticated user.
-     *
-     * @param userUuid The unique identifier of the user.
-     * @param data The [CreateProfileRequestDTO] containing the data for the new profile.
-     * @return A [ProfileResponseDTO] representing the newly created user profile.
-     * @throws [AppException.InternalServerError] if an unexpected internal error occurs.
-     * @throws [AppException.UserProfileAlreadyExistsException] if there is an attempt to create a duplicate profile.
+     * Creates a new user profile.
+     * @param userUuid The UUID of the user for whom the profile will be created.
+     * @param data The CreateProfileRequestDTO containing the data for creating the profile.
+     * @throws AppException.InternalServerError If an internal server error occurs during the operation.
+     * @throws AppException.NotFoundException.UserNotFoundException If the specified user is not found.
+     * @throws AppException.UserProfilesLimitReachedException If the user has reached the limit of allowed profiles.
+     * @throws AppException.UserProfileAlreadyExistsException If a profile already exists for the user with the specified data.
      */
     @Throws(
         AppException.InternalServerError::class,
+        AppException.NotFoundException.UserNotFoundException::class,
+        AppException.UserProfilesLimitReachedException::class,
         AppException.UserProfileAlreadyExistsException::class
     )
     override suspend fun createProfile(userUuid: UUID, data: CreateProfileRequestDTO): Unit =
         safeCall(errorMessage = "An error occurred while deleting profile.") {
+            if(!userRepository.existsById(userUuid)) {
+                throw AppException.NotFoundException.UserNotFoundException("User $userUuid not found")
+            }
+            if(profileRepository.hasUserProfileLimitReached(userUuid)) {
+                throw AppException.UserProfilesLimitReachedException("The user $userUuid has reached the limit of allowed profiles.")
+            }
             profileRepository.createProfile(createUserProfileMapper.map(DataInput(data, userUuid)))
         }
 
     /**
-     * Verifies the PIN of a user's profile.
-     *
-     * @param userUuid The unique identifier of the user.
-     * @param profileUUID The unique identifier of the profile to be verified.
-     * @param data The PIN to be verified.
-     * @return `true` if the PIN is verified successfully, `false` otherwise.
-     * @throws [AppException.NotFoundException.ProfileNotFoundException] if the specified profile is not found.
+     * Verifies a PIN for a given user profile.
+     * @param userUuid The UUID of the user associated with the profile.
+     * @param profileUUID The UUID of the profile for which the PIN will be verified.
+     * @param data The PinVerificationRequestDTO containing the PIN data to be verified.
+     * @return true if the PIN is verified successfully, false otherwise.
+     * @throws AppException.NotFoundException.UserNotFoundException If the specified user is not found.
+     * @throws AppException.NotFoundException.UserNotAllowedException If the specified user is not allowed to perform the operation.
      */
     @Throws(
-        AppException.NotFoundException.ProfileNotFoundException::class
+        AppException.InternalServerError::class,
+        AppException.NotFoundException.UserNotFoundException::class,
+        AppException.NotFoundException.UserNotAllowedException::class
     )
     override suspend fun verifyPin(userUuid: UUID, profileUUID: UUID, data: PinVerificationRequestDTO): Boolean =
         safeCall(errorMessage = "An error occurred while verifying pin.") {
+            if(!userRepository.existsById(userUuid)) {
+                throw AppException.NotFoundException.UserNotFoundException("User $userUuid not found")
+            }
+            if(!profileRepository.canBeManagedByUser(profileUUID, userUuid)) {
+                throw AppException.NotFoundException.UserNotAllowedException("User $userUuid are not allowed to manage this profile")
+            }
             profileRepository.verifyPin(profileUUID, data.pin)
         }
 

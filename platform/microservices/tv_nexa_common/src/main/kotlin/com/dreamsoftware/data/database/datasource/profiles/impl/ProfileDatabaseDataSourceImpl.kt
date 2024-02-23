@@ -9,6 +9,7 @@ import com.dreamsoftware.data.database.datasource.profiles.IProfileDatabaseDataS
 import com.dreamsoftware.data.database.entity.CreateProfileEntity
 import com.dreamsoftware.data.database.entity.ProfileEntity
 import com.dreamsoftware.data.database.entity.UpdateProfileEntity
+import org.jetbrains.exposed.sql.SqlExpressionBuilder.eq
 import org.jetbrains.exposed.sql.and
 import org.jetbrains.exposed.sql.count
 import org.jetbrains.exposed.sql.select
@@ -30,6 +31,11 @@ internal class ProfileDatabaseDataSourceImpl(
     mapper,
     ProfileEntityDAO
 ), IProfileDatabaseDataSource {
+
+    private companion object {
+        const val MAX_PROFILES_BY_USER = 5
+    }
+
 
     /**
      * Maps properties from [CreateProfileEntity] to an Exposed [UpdateBuilder].
@@ -113,5 +119,14 @@ internal class ProfileDatabaseDataSourceImpl(
      */
     override suspend fun canBeManagedByUser(profileId: UUID, userId: UUID): Boolean = execQuery {
         entityDAO.find { ProfileTable.id eq profileId and(ProfileTable.userId eq userId) }.count() > 0
+    }
+
+    /**
+     * Checks whether the user has reached the limit of allowed profiles.
+     * @param uuid The UUID of the user to check.
+     * @return true if the user has reached the limit of allowed profiles, false otherwise.
+     */
+    override suspend fun hasUserProfileLimitReached(uuid: UUID): Boolean = execQuery {
+        entityDAO.find { ProfileTable.id eq uuid }.count() >= MAX_PROFILES_BY_USER
     }
 }
