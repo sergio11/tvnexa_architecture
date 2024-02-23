@@ -173,13 +173,36 @@ interface IUserController {
     suspend fun getBlockedChannels(userUuid: UUID, profileUUID: UUID): List<SimpleChannelResponseDTO>
 
     /**
-     * Retrieves a list of favorite channels for the specified user and user profile.
-     *
-     * @param userUuid The unique identifier of the user.
-     * @param profileUUID The unique identifier of the user profile.
-     * @return A list of [SimpleChannelResponseDTO] objects representing the favorite channels.
-     * @throws AppException.InternalServerError if there is an internal server error during the operation.
+     * Retrieves the list of favorite channels for a given user profile.
+     * @param userUuid The UUID of the user requesting the favorite channels.
+     * @param profileUUID The UUID of the profile for which favorite channels are being fetched.
+     * @return A list of SimpleChannelResponseDTO representing the favorite channels.
+     * @throws AppException.InternalServerError If an internal server error occurs during the operation.
+     * @throws AppException.NotFoundException.UserNotFoundException If the specified user is not found.
+     * @throws AppException.NotFoundException.UserNotAllowedException If the specified user is not allowed to perform the operation.
      */
-    @Throws(AppException.InternalServerError::class)
+    @Throws(
+        AppException.InternalServerError::class,
+        AppException.NotFoundException.UserNotFoundException::class,
+        AppException.NotFoundException.UserNotAllowedException::class,
+    )
     suspend fun getFavoriteChannels(userUuid: UUID, profileUUID: UUID): List<SimpleChannelResponseDTO>
+
+    /**
+     * Saves a channel as a favorite for a given user profile.
+     * @param userUuid The UUID of the user associated with the operation.
+     * @param profileUUID The UUID of the profile for which the channel will be saved as a favorite.
+     * @param channelId The ID of the channel to be saved as a favorite.
+     * @throws AppException.InternalServerError If an internal server error occurs during the operation.
+     * @throws AppException.NotFoundException.ChannelNotFoundException If the specified channel is not found.
+     * @throws AppException.NotFoundException.UserNotFoundException If the specified user is not found.
+     * @throws AppException.NotFoundException.UserNotAllowedException If the specified user is not allowed to perform the operation.
+     */
+    @Throws(
+        AppException.InternalServerError::class,
+        AppException.NotFoundException.ChannelNotFoundException::class,
+        AppException.NotFoundException.UserNotFoundException::class,
+        AppException.NotFoundException.UserNotAllowedException::class,
+    )
+    suspend fun saveFavoriteChannel(userUuid: UUID, profileUUID: UUID, channelId: String)
 }

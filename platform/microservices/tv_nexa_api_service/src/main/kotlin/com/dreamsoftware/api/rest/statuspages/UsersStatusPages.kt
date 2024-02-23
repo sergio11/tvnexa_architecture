@@ -14,6 +14,12 @@ fun StatusPagesConfig.configureUsersStatusPages() {
             ErrorType.USER_NOT_FOUND.toErrorResponseDTO()
         )
     }
+    exception<AppException.NotFoundException.UserNotAllowedException> { call, _ ->
+        call.respond(
+            HttpStatusCode.Forbidden,
+            ErrorType.USER_NOT_ALLOWED.toErrorResponseDTO()
+        )
+    }
     exception<AppException.InvalidCredentialsException> { call, _ ->
         call.respond(
             HttpStatusCode.BadRequest,

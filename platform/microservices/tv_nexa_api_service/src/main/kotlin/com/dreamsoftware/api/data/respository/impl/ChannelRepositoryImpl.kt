@@ -6,6 +6,9 @@ import com.dreamsoftware.api.domain.repository.IChannelRepository
 import com.dreamsoftware.data.database.datasource.channel.IChannelDatabaseDataSource
 import com.dreamsoftware.data.database.entity.ChannelDetailEntity
 import com.dreamsoftware.data.database.entity.SimpleChannelEntity
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
+import java.util.*
 
 /**
  * Implementation of the [IChannelRepository] interface that provides access to channel data
@@ -50,7 +53,21 @@ internal class ChannelRepositoryImpl(
             channelDataSource.findDetailByKey(id)
         }
 
+    /**
+     * Checks whether a channel with the specified ID exists.
+     * @param channelId The ID of the user to check for existence.
+     * @return true if a channel with the specified ID exists, false otherwise.
+     */
+    override suspend fun existsById(channelId: String): Boolean = withContext(Dispatchers.IO) {
+        channelDataSource.existsById(channelId)
+    }
 
+    /**
+     *  Filter channels by country.
+     *
+     *  @param countryId The unique identifier of the country to filter by.
+     *  @return An iterable collection of channel entities matching the specified country filter.
+     */
     /**
      *  Filter channels by country.
      *
@@ -62,6 +79,12 @@ internal class ChannelRepositoryImpl(
             channelDataSource.findByCountry(countryId).toList()
         }
 
+    /**
+     * Searches for channels whose names contain the specified term in a case-insensitive manner.
+     *
+     * @param term The search term to match against channel names.
+     * @return A list of [SimpleChannelEntity] representing the channels found.
+     */
     /**
      * Searches for channels whose names contain the specified term in a case-insensitive manner.
      *

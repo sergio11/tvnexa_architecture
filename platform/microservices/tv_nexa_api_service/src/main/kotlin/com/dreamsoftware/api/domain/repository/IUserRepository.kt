@@ -30,6 +30,13 @@ interface IUserRepository {
     suspend fun existsByUsername(username: String): Boolean
 
     /**
+     * Checks whether a user with the specified ID exists.
+     * @param userId The ID of the user to check for existence.
+     * @return true if a user with the specified ID exists, false otherwise.
+     */
+    suspend fun existsById(userId: UUID): Boolean
+
+    /**
      * Creates a new user in the system.
      *
      * @param user User information to create.

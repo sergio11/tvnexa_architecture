@@ -11,10 +11,10 @@ import org.koin.ktor.ext.inject
  * Class representing the routes related to regions in the application.
  * These routes include functionalities such as retrieving all regions and finding a region by its code.
  *
- * @property regionService An instance of the [IRegionController] interface for handling region-related operations.
+ * @property regionController An instance of the [IRegionController] interface for handling region-related operations.
  */
 fun Route.regionsRoutes() {
-    val regionService by inject<IRegionController>()
+    val regionController by inject<IRegionController>()
 
     /**
      * Defines the routes under the "/regions" endpoint for region-related operations.
@@ -23,7 +23,7 @@ fun Route.regionsRoutes() {
 
         /**
          * Endpoint for retrieving all regions.
-         * Accepts GET requests to "/regions/" and retrieves all regions using the [regionService.findAll] method.
+         * Accepts GET requests to "/regions/" and retrieves all regions using the [regionController.findAll] method.
          * Generates a success response with a code of 5001, a message indicating successful retrieval of regions,
          * and data containing the list of regions.
          */
@@ -31,14 +31,14 @@ fun Route.regionsRoutes() {
             call.generateSuccessResponse(
                 code = 5001,
                 message = "Regions retrieved successfully.",
-                data = regionService.findAll()
+                data = regionController.findAll()
             )
         }
 
         /**
          * Endpoint for finding a region by its code.
          * Accepts GET requests to "/regions/{regionCode}" and retrieves a region by its code
-         * using the [regionService.findByCode] method.
+         * using the [regionController.findByCode] method.
          * Generates a success response with a code of 5002, a message indicating successful region retrieval,
          * and data containing the details of the found region.
          *
@@ -51,7 +51,7 @@ fun Route.regionsRoutes() {
                     generateSuccessResponse(
                         code = 5002,
                         message = "Region found.",
-                        data = regionService.findByCode(regionCode)
+                        data = regionController.findByCode(regionCode)
                     )
                 }
             }

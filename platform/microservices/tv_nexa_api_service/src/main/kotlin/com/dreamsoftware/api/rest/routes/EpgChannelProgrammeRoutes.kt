@@ -15,11 +15,11 @@ import java.time.LocalDateTime
  * These routes include functionalities such as retrieving EPG data based on channel ID and date range,
  * as well as retrieving EPG data based on country code and date range.
  *
- * @property epgChannelProgrammeService An instance of the [IEpgChannelProgrammeController] interface
+ * @property epgChannelProgrammeController An instance of the [IEpgChannelProgrammeController] interface
  * for handling EPG channel programme-related operations.
  */
 fun Route.epgChannelProgrammeRoutes() {
-    val epgChannelProgrammeService by inject<IEpgChannelProgrammeController>()
+    val epgChannelProgrammeController by inject<IEpgChannelProgrammeController>()
 
     /**
      * Defines the routes under the "/epg" endpoint for EPG channel programme-related operations.
@@ -29,7 +29,7 @@ fun Route.epgChannelProgrammeRoutes() {
         /**
          * Endpoint for retrieving EPG data based on channel ID and date range.
          * Accepts GET requests to "/epg/channel-programmes/{channelId}" and retrieves EPG data
-         * using the [epgChannelProgrammeService.findByChannelIdAndDateRange] method.
+         * using the [epgChannelProgrammeController.findByChannelIdAndDateRange] method.
          * Generates a success response with a code of 4000, a message indicating successful EPG data retrieval by channel,
          * and data containing the list of EPG programmes.
          *
@@ -42,7 +42,7 @@ fun Route.epgChannelProgrammeRoutes() {
         get("/channel-programmes/{channelId}") {
             with(call) {
                 handleEpgProgrammesRequest { idOrCode, startAt, endAt ->
-                    val programmes = epgChannelProgrammeService.findByChannelIdAndDateRange(idOrCode, startAt, endAt)
+                    val programmes = epgChannelProgrammeController.findByChannelIdAndDateRange(idOrCode, startAt, endAt)
                     generateSuccessResponse(
                         code = 4000,
                         message = "EPG data by channel retrieved successfully.",
@@ -55,7 +55,7 @@ fun Route.epgChannelProgrammeRoutes() {
         /**
          * Endpoint for retrieving EPG data based on country code and date range.
          * Accepts GET requests to "/epg/country-programmes/{countryCode}" and retrieves EPG data
-         * using the [epgChannelProgrammeService.findByCountryAndDate] method.
+         * using the [epgChannelProgrammeController.findByCountryAndDate] method.
          * Generates a success response with a code of 4001, a message indicating successful EPG data retrieval by country,
          * and data containing the list of EPG programmes.
          *
@@ -68,7 +68,7 @@ fun Route.epgChannelProgrammeRoutes() {
         get("/country-programmes/{countryCode}") {
             with(call) {
                 handleEpgProgrammesRequest { idOrCode, startAt, endAt ->
-                    val programmes = epgChannelProgrammeService.findByCountryAndDate(idOrCode, startAt, endAt)
+                    val programmes = epgChannelProgrammeController.findByCountryAndDate(idOrCode, startAt, endAt)
                     generateSuccessResponse(
                         code = 4001,
                         message = "EPG data by country retrieved successfully.",

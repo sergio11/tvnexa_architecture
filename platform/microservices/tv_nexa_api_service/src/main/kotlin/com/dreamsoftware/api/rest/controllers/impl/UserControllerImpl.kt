@@ -3,6 +3,7 @@ package com.dreamsoftware.api.rest.controllers.impl
 import com.auth0.jwt.JWT
 import com.auth0.jwt.algorithms.Algorithm
 import com.dreamsoftware.api.domain.model.exceptions.AppException
+import com.dreamsoftware.api.domain.repository.IChannelRepository
 import com.dreamsoftware.api.domain.repository.IProfileRepository
 import com.dreamsoftware.api.domain.repository.IUserRepository
 import com.dreamsoftware.api.rest.controllers.IUserController
@@ -26,6 +27,7 @@ import java.util.*
  *
  * @property userRepository The repository responsible for user-related data operations.
  * @property profileRepository The repository responsible for profile-related data operations.
+ * @property channelRepository the repository responsible for channel-related data operations.
  * @property mapper The mapper used to map [UserEntity] objects to [UserResponseDTO] objects.
  * @property profileMapper The mapper used to map [ProfileEntity] objects to [ProfileResponseDTO] objects.
  * @property updateProfileMapper The mapper used to map [UpdatedProfileRequestDTO] to [UpdateProfileEntity].
@@ -38,6 +40,7 @@ import java.util.*
 internal class UserControllerImpl(
     private val userRepository: IUserRepository,
     private val profileRepository: IProfileRepository,
+    private val channelRepository: IChannelRepository,
     private val mapper: ISimpleMapper<UserEntity, UserResponseDTO>,
     private val profileMapper: ISimpleMapper<ProfileEntity, ProfileResponseDTO>,
     private val updateProfileMapper: ISimpleMapper<UpdatedProfileRequestDTO, UpdateProfileEntity>,
@@ -298,20 +301,73 @@ internal class UserControllerImpl(
                 .map(channelMapper::map)
         }
 
+
     /**
-     * Retrieves a list of favorite channels for the specified user profile.
-     *
-     * @param userUuid The unique identifier of the user.
-     * @param profileUUID The unique identifier of the user profile.
-     * @return A list of [SimpleChannelResponseDTO] objects representing the favorite channels.
-     * @throws AppException.InternalServerError if there is an internal server error during the operation.
+     * Retrieves the list of favorite channels for a given user profile.
+     * @param userUuid The UUID of the user requesting the favorite channels.
+     * @param profileUUID The UUID of the profile for which favorite channels are being fetched.
+     * @return A list of SimpleChannelResponseDTO representing the favorite channels.
+     * @throws AppException.InternalServerError If an internal server error occurs during the operation.
+     * @throws AppException.NotFoundException.ProfileNotFoundException If the specified profile is not found.
+     * @throws AppException.NotFoundException.UserNotFoundException If the specified user is not found.
+     * @throws AppException.NotFoundException.UserNotAllowedException If the specified user is not allowed to perform the operation.
      */
-    @Throws(AppException.InternalServerError::class)
+    @Throws(
+        AppException.InternalServerError::class,
+        AppException.NotFoundException.ProfileNotFoundException::class,
+        AppException.NotFoundException.UserNotFoundException::class,
+        AppException.NotFoundException.UserNotAllowedException::class,
+    )
     override suspend fun getFavoriteChannels(userUuid: UUID, profileUUID: UUID): List<SimpleChannelResponseDTO> =
         safeCall(errorMessage = "An error occurred while fetching favorite channels.") {
-                // Fetch favorite channels from the profile repository
-                profileRepository.getFavoriteChannels(profileUUID)
+            if(!userRepository.existsById(userUuid)) {
+                throw AppException.NotFoundException.UserNotFoundException("User $userUuid not found")
+            }
+            if(!profileRepository.existsById(profileUUID)) {
+                throw AppException.NotFoundException.ProfileNotFoundException("Profile $profileUUID not found")
+            }
+            if(!profileRepository.canBeManagedByUser(profileUUID, userUuid)) {
+                throw AppException.NotFoundException.UserNotAllowedException("User $userUuid are not allowed to manage this profile")
+            }
+            // Fetch favorite channels from the profile repository
+            profileRepository.getFavoriteChannels(profileUUID)
                 // Map the retrieved channels to SimpleChannelResponseDTO using the channelMapper
                 .map(channelMapper::map)
         }
+
+    /**
+     * Saves a channel as a favorite for a given user profile.
+     * @param userUuid The UUID of the user associated with the operation.
+     * @param profileUUID The UUID of the profile for which the channel will be saved as a favorite.
+     * @param channelId The ID of the channel to be saved as a favorite.
+     * @throws AppException.InternalServerError If an internal server error occurs during the operation.
+     * @throws AppException.NotFoundException.ProfileNotFoundException If the specified profile is not found.
+     * @throws AppException.NotFoundException.ChannelNotFoundException If the specified channel is not found.
+     * @throws AppException.NotFoundException.UserNotFoundException If the specified user is not found.
+     * @throws AppException.NotFoundException.UserNotAllowedException If the specified user is not allowed to perform the operation.
+     */
+    @Throws(
+        AppException.InternalServerError::class,
+        AppException.NotFoundException.ProfileNotFoundException::class,
+        AppException.NotFoundException.ChannelNotFoundException::class,
+        AppException.NotFoundException.UserNotFoundException::class,
+        AppException.NotFoundException.UserNotAllowedException::class,
+    )
+    override suspend fun saveFavoriteChannel(userUuid: UUID, profileUUID: UUID, channelId: String) {
+        safeCall(errorMessage = "An error occurred while saving favorite channel") {
+            if(!userRepository.existsById(userUuid)) {
+                throw AppException.NotFoundException.UserNotFoundException("User $userUuid not found")
+            }
+            if(!profileRepository.existsById(profileUUID)) {
+                throw AppException.NotFoundException.ProfileNotFoundException("Profile $profileUUID not found")
+            }
+            if(!profileRepository.canBeManagedByUser(profileUUID, userUuid)) {
+                throw AppException.NotFoundException.UserNotAllowedException("User $userUuid are not allowed to manage this profile")
+            }
+            if(!channelRepository.existsById(channelId)) {
+                throw AppException.NotFoundException.ChannelNotFoundException("Channel $channelId not found")
+            }
+            profileRepository.saveFavoriteChannel(profileUUID = profileUUID, channelId = channelId)
+        }
+    }
 }

@@ -95,4 +95,23 @@ internal class ProfileDatabaseDataSourceImpl(
     override suspend fun verifyPin(profileUuid: UUID, pin: Int): Boolean = execQuery {
         entityDAO.find { ProfileTable.id eq profileUuid and(ProfileTable.pin eq pin) }.count() > 0
     }
+
+    /**
+     * Checks whether a profile with the specified ID exists.
+     * @param profileId The UUID of the profile to check for existence.
+     * @return true if a profile with the specified ID exists, false otherwise.
+     */
+    override suspend fun existsById(profileId: UUID): Boolean = execQuery {
+        entityDAO.find { ProfileTable.id eq profileId }.count() > 0
+    }
+
+    /**
+     * Checks whether a profile with the specified ID can be managed by the user with the provided ID.
+     * @param profileId The UUID of the profile to check for manageability.
+     * @param userId The UUID of the user attempting to manage the profile.
+     * @return true if the user can manage the profile, false otherwise.
+     */
+    override suspend fun canBeManagedByUser(profileId: UUID, userId: UUID): Boolean = execQuery {
+        entityDAO.find { ProfileTable.id eq profileId and(ProfileTable.userId eq userId) }.count() > 0
+    }
 }

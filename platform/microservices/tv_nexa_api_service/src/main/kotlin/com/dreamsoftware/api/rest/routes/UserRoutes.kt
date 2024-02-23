@@ -1,6 +1,7 @@
 package com.dreamsoftware.api.rest.routes
 
 import com.dreamsoftware.api.rest.controllers.IUserController
+import com.dreamsoftware.api.rest.utils.doIfParamExists
 import com.dreamsoftware.api.rest.utils.fetchAuthUserUuidOrThrow
 import com.dreamsoftware.api.rest.utils.generateSuccessResponse
 import com.dreamsoftware.api.rest.utils.getUUIDParamOrThrow
@@ -13,11 +14,11 @@ import org.koin.ktor.ext.inject
  * Class representing the routes related to user profiles in the application.
  * These routes include functionalities such as retrieving and updating user profiles.
  *
- * @property userService An instance of the [IUserController] interface for handling user-related operations.
+ * @property userController An instance of the [IUserController] interface for handling user-related operations.
  */
 fun Route.userRoutes() {
 
-    val userService by inject<IUserController>()
+    val userController by inject<IUserController>()
 
     /**
      * Defines the routes under the "/user" endpoint for user user-related operations.
@@ -26,7 +27,7 @@ fun Route.userRoutes() {
 
         /**
          * Endpoint for retrieving the user profile.
-         * Accepts GET requests to "/user/" and retrieves the user profile using the [userService.getUserProfile] method.
+         * Accepts GET requests to "/user/" and retrieves the user profile using the [userController.getUserProfile] method.
          * Generates a success response with a code of 8001, a message indicating successful retrieval of the user profile,
          * and data containing the user profile information.
          */
@@ -35,14 +36,14 @@ fun Route.userRoutes() {
                 generateSuccessResponse(
                     code = 8001,
                     message = "User profile retrieved successfully.",
-                    data = userService.getUserDetail(fetchAuthUserUuidOrThrow())
+                    data = userController.getUserDetail(fetchAuthUserUuidOrThrow())
                 )
             }
         }
 
         /**
          * Endpoint for updating the user profile.
-         * Accepts PUT requests to "/user/" and updates the user profile using the [userService.updateUserProfile] method.
+         * Accepts PUT requests to "/user/" and updates the user profile using the [userController.updateUserProfile] method.
          * Generates a success response with a code of 8002, a message indicating successful update of the user profile,
          * and data containing any additional information related to the update.
          */
@@ -51,7 +52,7 @@ fun Route.userRoutes() {
                 generateSuccessResponse(
                     code = 8002,
                     message = "User detail updated successfully.",
-                    data = userService.updateUserDetail(fetchAuthUserUuidOrThrow(), receive())
+                    data = userController.updateUserDetail(fetchAuthUserUuidOrThrow(), receive())
                 )
             }
         }
@@ -66,7 +67,7 @@ fun Route.userRoutes() {
                     generateSuccessResponse(
                         code = 8003,
                         message = "Profiles retrieved successfully",
-                        data = userService.getUserProfiles(fetchAuthUserUuidOrThrow())
+                        data = userController.getUserProfiles(fetchAuthUserUuidOrThrow())
                     )
                 }
             }
@@ -83,7 +84,7 @@ fun Route.userRoutes() {
                     generateSuccessResponse(
                         code = 8004,
                         message = "Profile retrieved successfully",
-                        data = userService.getUserProfileDetail(
+                        data = userController.getUserProfileDetail(
                             userUuid = fetchAuthUserUuidOrThrow(),
                             profileUUID = getUUIDParamOrThrow("profileId")
                         )
@@ -101,7 +102,7 @@ fun Route.userRoutes() {
                     generateSuccessResponse(
                         code = 8005,
                         message = "User profile updated successfully.",
-                        data = userService.updateUserProfile(
+                        data = userController.updateUserProfile(
                             userUuid = fetchAuthUserUuidOrThrow(),
                             profileUUID = getUUIDParamOrThrow("profileId"),
                             data = receive()
@@ -120,7 +121,7 @@ fun Route.userRoutes() {
                     generateSuccessResponse(
                         code = 8006,
                         message = "User profile deleted successfully.",
-                        data = userService.deleteUserProfile(
+                        data = userController.deleteUserProfile(
                             userUuid = fetchAuthUserUuidOrThrow(),
                             profileUUID = getUUIDParamOrThrow("profileId")
                         )
@@ -138,7 +139,7 @@ fun Route.userRoutes() {
                     generateSuccessResponse(
                         code = 8007,
                         message = "User profile created successfully.",
-                        data = userService.createProfile(
+                        data = userController.createProfile(
                             userUuid = fetchAuthUserUuidOrThrow(),
                             data = receive()
                         )
@@ -153,7 +154,7 @@ fun Route.userRoutes() {
              */
             post("/{profileId}/verify-pin") {
                 with(call) {
-                    val isVerificationSuccess = userService.verifyPin(
+                    val isVerificationSuccess = userController.verifyPin(
                         userUuid = fetchAuthUserUuidOrThrow(),
                         profileUUID = getUUIDParamOrThrow("profileId"),
                         data = receive()
@@ -180,7 +181,7 @@ fun Route.userRoutes() {
                     generateSuccessResponse(
                         code = 8010,
                         message = "Blocked channels retrieved successfully.",
-                        data = userService.getBlockedChannels(
+                        data = userController.getBlockedChannels(
                             userUuid = fetchAuthUserUuidOrThrow(),
                             profileUUID = getUUIDParamOrThrow("profileId")
                         )
@@ -198,11 +199,32 @@ fun Route.userRoutes() {
                     generateSuccessResponse(
                         code = 8011,
                         message = "Favorite channels retrieved successfully.",
-                        data = userService.getFavoriteChannels(
+                        data = userController.getFavoriteChannels(
                             userUuid = fetchAuthUserUuidOrThrow(),
                             profileUUID = getUUIDParamOrThrow("profileId")
                         )
                     )
+                }
+            }
+
+            /**
+             * Route handler for saving a channel as a favorite for a specific user profile.
+             * This endpoint allows users to save a channel as a favorite for a given user profile.
+             */
+            put("/{profileId}/favorite-channels/{channelId}") {
+                with(call) {
+                    doIfParamExists("channelId") { channelId ->
+                        userController.saveFavoriteChannel(
+                            userUuid = fetchAuthUserUuidOrThrow(),
+                            profileUUID = getUUIDParamOrThrow("profileId"),
+                            channelId = channelId
+                        )
+                        generateSuccessResponse(
+                            code = 8012,
+                            message = "Save favorite channel completed.",
+                            data = "Save channel $channelId as favorite successfully"
+                        )
+                    }
                 }
             }
         }

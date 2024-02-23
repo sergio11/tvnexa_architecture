@@ -10,6 +10,7 @@ enum class ErrorType(val code: Int, val message: String) {
     REQUEST_VALIDATION_FAILED(104, "The provided data did not pass the validation checks."),
     EPG_CHANNEL_NOT_FOUND(105, "The requested EPG channel was not found in the system."),
     USER_NOT_FOUND(111, "The requested user was not found in the system."),
+    USER_NOT_ALLOWED(112, "Authenticated user are not able to access to this resource"),
     INTERNAL_SERVER_ERROR(107, "An internal server error occurred. Please try again later."),
     SUBDIVISION_NOT_FOUND(110, "The requested subdivision was not found in the system."),
     INVALID_CREDENTIALS(112, "The provided credentials are invalid."),

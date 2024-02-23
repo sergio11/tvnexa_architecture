@@ -54,6 +54,15 @@ internal class UserRepositoryImpl(
     }
 
     /**
+     * Checks whether a user with the specified ID exists.
+     * @param userId The ID of the user to check for existence.
+     * @return true if a user with the specified ID exists, false otherwise.
+     */
+    override suspend fun existsById(userId: UUID): Boolean = withContext(Dispatchers.IO) {
+        userDatabaseDataSource.existsById(userId)
+    }
+
+    /**
      * Creates a new user based on the provided user data.
      *
      * @param user The user data to be created.

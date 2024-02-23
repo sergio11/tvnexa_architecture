@@ -11,11 +11,11 @@ import org.koin.ktor.ext.inject
  * Class representing the routes related to user accounts in the application.
  * These routes include functionalities such as user registration and authentication.
  *
- * @property userService An instance of the [IUserController] interface for handling user-related operations.
+ * @property userController An instance of the [IUserController] interface for handling user-related operations.
  */
 fun Route.accountsRoutes() {
 
-    val userService by inject<IUserController>()
+    val userController by inject<IUserController>()
 
     /**
      * Defines the routes under the "/accounts" endpoint for user-related operations.
@@ -24,13 +24,13 @@ fun Route.accountsRoutes() {
 
         /**
          * Endpoint for user registration.
-         * Accepts POST requests to "/accounts/signup" and registers a new user using the [userService.signUp] method.
+         * Accepts POST requests to "/accounts/signup" and registers a new user using the [userController.signUp] method.
          * Generates a success response with a code of 7002, a message indicating successful registration,
          * and data containing a confirmation message.
          */
         post("/signup") {
             with(call) {
-                userService.signUp(receive())
+                userController.signUp(receive())
                 generateSuccessResponse(
                     code = 7001,
                     message = "User registered successfully.",
@@ -41,16 +41,16 @@ fun Route.accountsRoutes() {
 
         /**
          * Endpoint for user authentication.
-         * Accepts POST requests to "/accounts/signin" and authenticates a user using the [userService.signIn] method.
+         * Accepts POST requests to "/accounts/signin" and authenticates a user using the [userController.signIn] method.
          * Generates a success response with a code of 7002, a message indicating successful authentication,
-         * and data containing the user information retrieved from the [userService.signIn] method.
+         * and data containing the user information retrieved from the [userController.signIn] method.
          */
         post("/signin") {
             with(call) {
                 generateSuccessResponse(
                     code = 7002,
                     message = "User authenticated successfully.",
-                    data = userService.signIn(receive())
+                    data = userController.signIn(receive())
                 )
             }
         }
