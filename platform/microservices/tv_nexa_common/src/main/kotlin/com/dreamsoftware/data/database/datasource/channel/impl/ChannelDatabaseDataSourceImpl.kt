@@ -8,9 +8,7 @@ import com.dreamsoftware.data.database.datasource.core.SupportDatabaseDataSource
 import com.dreamsoftware.data.database.entity.ChannelDetailEntity
 import com.dreamsoftware.data.database.entity.SaveChannelEntity
 import com.dreamsoftware.data.database.entity.SimpleChannelEntity
-import org.jetbrains.exposed.sql.Transaction
-import org.jetbrains.exposed.sql.and
-import org.jetbrains.exposed.sql.lowerCase
+import org.jetbrains.exposed.sql.*
 import org.jetbrains.exposed.sql.statements.UpdateBuilder
 import kotlin.reflect.KProperty1
 
@@ -47,17 +45,26 @@ internal class ChannelDatabaseDataSourceImpl(
      * @return An iterable collection of [SimpleChannelEntity] objects matching the provided filters.
      */
     override suspend fun filterByCategoryAndCountry(categoryId: String?, countryId: String?, offset: Long, limit: Long): Iterable<SimpleChannelEntity> = execQuery {
-        entityDAO.find {
-            if (!categoryId.isNullOrBlank() && !countryId.isNullOrBlank()) {
-                (ChannelCategoryTable.category eq categoryId) and (ChannelTable.country eq countryId)
-            } else if (!categoryId.isNullOrBlank()) {
-                ChannelCategoryTable.category eq categoryId
-            } else if (!countryId.isNullOrBlank()) {
-                ChannelTable.country eq countryId
-            } else {
-                ChannelTable.id.isNotNull()
+        ChannelTable.join(ChannelCategoryTable, JoinType.INNER) {
+            ChannelTable.id eq ChannelCategoryTable.channel
+        }
+            .slice(ChannelTable.columns)
+            .select {
+                val categoryPredicate = if (!categoryId.isNullOrBlank()) {
+                    ChannelCategoryTable.category eq categoryId
+                } else {
+                    Op.TRUE
+                }
+                val countryPredicate = if (!countryId.isNullOrBlank()) {
+                    ChannelTable.country eq countryId
+                } else {
+                    Op.TRUE
+                }
+                categoryPredicate and countryPredicate
             }
-        }.limit(limit.toInt(), offset = offset).map(mapper::map)
+            .limit(limit.toInt(), offset = offset)
+            .map(entityDAO::wrapRow)
+            .map(mapper::map)
     }
 
     /**
