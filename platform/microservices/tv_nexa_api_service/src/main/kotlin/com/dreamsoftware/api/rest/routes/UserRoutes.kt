@@ -227,6 +227,27 @@ fun Route.userRoutes() {
                     }
                 }
             }
+
+            /**
+             * Route handler for deleting a favorite channel from a user's profile.
+             * This endpoint allows users to remove a channel from their list of favorite channels.
+             */
+            delete("/{profileId}/favorite-channels/{channelId}") {
+                with(call) {
+                    doIfParamExists("channelId") { channelId ->
+                        userController.deleteFavoriteChannel(
+                            userUuid = fetchAuthUserUuidOrThrow(),
+                            profileUUID = getUUIDParamOrThrow("profileId"),
+                            channelId = channelId
+                        )
+                        generateSuccessResponse(
+                            code = 8013,
+                            message = "Delete favorite channel completed.",
+                            data = "delete channel $channelId from favorites successfully"
+                        )
+                    }
+                }
+            }
         }
     }
 }

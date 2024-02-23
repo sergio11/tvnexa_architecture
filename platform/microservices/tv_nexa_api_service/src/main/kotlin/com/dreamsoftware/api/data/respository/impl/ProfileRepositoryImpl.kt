@@ -131,6 +131,15 @@ internal class ProfileRepositoryImpl(
     }
 
     /**
+     * Deletes a favorite channel from a user profile.
+     * @param profileUUID The UUID of the user profile from which the favorite channel will be deleted.
+     * @param channelId The ID of the channel to be deleted as a favorite.
+     */
+    override suspend fun deleteFavoriteChannel(profileUUID: UUID, channelId: String) = withContext(Dispatchers.IO) {
+        favoriteChannelDataSource.deleteByProfileAndChannel(profileUUID, channelId)
+    }
+
+    /**
      * Checks whether a profile with the specified ID exists.
      * @param profileId The UUID of the profile to check for existence.
      * @return true if a profile with the specified ID exists, false otherwise.

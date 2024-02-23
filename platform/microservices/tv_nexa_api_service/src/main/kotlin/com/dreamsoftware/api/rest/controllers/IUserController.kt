@@ -205,4 +205,22 @@ interface IUserController {
         AppException.NotFoundException.UserNotAllowedException::class,
     )
     suspend fun saveFavoriteChannel(userUuid: UUID, profileUUID: UUID, channelId: String)
+
+    /**
+     * Deletes a favorite channel for a given user profile.
+     * @param userUuid The UUID of the user associated with the operation.
+     * @param profileUUID The UUID of the profile for which the favorite channel will be deleted.
+     * @param channelId The ID of the channel to be deleted as a favorite.
+     * @throws AppException.InternalServerError If an internal server error occurs during the operation.
+     * @throws AppException.NotFoundException.ChannelNotFoundException If the specified channel is not found.
+     * @throws AppException.NotFoundException.UserNotFoundException If the specified user is not found.
+     * @throws AppException.NotFoundException.UserNotAllowedException If the specified user is not allowed to perform the operation.
+     */
+    @Throws(
+        AppException.InternalServerError::class,
+        AppException.NotFoundException.ChannelNotFoundException::class,
+        AppException.NotFoundException.UserNotFoundException::class,
+        AppException.NotFoundException.UserNotAllowedException::class,
+    )
+    suspend fun deleteFavoriteChannel(userUuid: UUID, profileUUID: UUID, channelId: String)
 }

@@ -8,6 +8,7 @@ import com.dreamsoftware.data.database.datasource.core.SupportDatabaseDataSource
 import com.dreamsoftware.data.database.datasource.profiles.IFavoriteChannelDataSource
 import com.dreamsoftware.data.database.entity.SaveFavoriteChannel
 import com.dreamsoftware.data.database.entity.SimpleChannelEntity
+import org.jetbrains.exposed.sql.and
 import org.jetbrains.exposed.sql.statements.UpdateBuilder
 import java.util.*
 
@@ -46,5 +47,15 @@ internal class FavoriteChannelDataSourceImpl(
      */
     override suspend fun findByProfile(profile: UUID): List<SimpleChannelEntity> = execQuery {
         entityDAO.find { FavoriteChannelsTable.profile eq profile }.map(mapper::map)
+    }
+
+    /**
+     * Deletes data associated with a specific profile and channel.
+     * @param profileId The UUID of the profile associated.
+     * @param channelId The ID of the channel
+     */
+    override suspend fun deleteByProfileAndChannel(profileId: UUID, channelId: String): Unit = execWrite {
+        entityDAO.find { FavoriteChannelsTable.profile eq profileId and(FavoriteChannelsTable.channel eq channelId) }
+            .forEach { it.delete() }
     }
 }
