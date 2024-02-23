@@ -149,6 +149,29 @@ internal class ProfileRepositoryImpl(
     }
 
     /**
+     * Saves a channel as blocked for a given user profile.
+     * @param profileUUID The UUID of the profile for which the channel will be saved as blocked.
+     * @param channelId The ID of the channel to be saved as blocked.
+     */
+    override suspend fun saveBlockedChannel(profileUUID: UUID, channelId: String) = withContext(Dispatchers.IO) {
+        blockedChannelsDataSource.save(
+            SaveBlockedChannel(
+                profileId = profileUUID,
+                channelId = channelId,
+            )
+        )
+    }
+
+    /**
+     * Deletes a blocked channel from a user profile.
+     * @param profileUUID The UUID of the profile from which the blocked channel will be deleted.
+     * @param channelId The ID of the channel to be deleted from the blocked list.
+     */
+    override suspend fun deleteBlockedChannel(profileUUID: UUID, channelId: String) = withContext(Dispatchers.IO) {
+        blockedChannelsDataSource.deleteByProfileAndChannel(profileId = profileUUID, channelId = channelId)
+    }
+
+    /**
      * Checks whether a profile with the specified ID exists.
      * @param profileId The UUID of the profile to check for existence.
      * @return true if a profile with the specified ID exists, false otherwise.

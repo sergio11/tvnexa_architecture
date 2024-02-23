@@ -173,15 +173,56 @@ interface IUserController {
     suspend fun verifyPin(userUuid: UUID, profileUUID: UUID, data: PinVerificationRequestDTO): Boolean
 
     /**
-     * Retrieves a list of blocked channels for the specified user and user profile.
-     *
-     * @param userUuid The unique identifier of the user.
-     * @param profileUUID The unique identifier of the user profile.
-     * @return A list of [SimpleChannelResponseDTO] objects representing the blocked channels.
-     * @throws AppException.InternalServerError if there is an internal server error during the operation.
+     * Retrieves the list of blocked channels for a given user profile.
+     * @param userUuid The UUID of the user requesting the blocked channels.
+     * @param profileUUID The UUID of the profile for which blocked channels are being fetched.
+     * @return A list of SimpleChannelResponseDTO representing the blocked channels.
+     * @throws AppException.InternalServerError If an internal server error occurs during the operation.
+     * @throws AppException.NotFoundException.UserNotFoundException If the specified user is not found.
+     * @throws AppException.NotFoundException.UserNotAllowedException If the specified user is not allowed to perform the operation.
      */
-    @Throws(AppException.InternalServerError::class)
+    @Throws(
+        AppException.InternalServerError::class,
+        AppException.NotFoundException.UserNotFoundException::class,
+        AppException.NotFoundException.UserNotAllowedException::class,
+    )
     suspend fun getBlockedChannels(userUuid: UUID, profileUUID: UUID): List<SimpleChannelResponseDTO>
+
+    /**
+     * Saves a channel as blocked for a given user profile.
+     * @param userUuid The UUID of the user associated with the operation.
+     * @param profileUUID The UUID of the profile for which the channel will be saved as blocked.
+     * @param channelId The ID of the channel to be saved as blocked.
+     * @throws AppException.InternalServerError If an internal server error occurs during the operation.
+     * @throws AppException.NotFoundException.ChannelNotFoundException If the specified channel is not found.
+     * @throws AppException.NotFoundException.UserNotFoundException If the specified user is not found.
+     * @throws AppException.NotFoundException.UserNotAllowedException If the specified user is not allowed to perform the operation.
+     */
+    @Throws(
+        AppException.InternalServerError::class,
+        AppException.NotFoundException.ChannelNotFoundException::class,
+        AppException.NotFoundException.UserNotFoundException::class,
+        AppException.NotFoundException.UserNotAllowedException::class,
+    )
+    suspend fun saveBlockedChannel(userUuid: UUID, profileUUID: UUID, channelId: String)
+
+    /**
+     * Deletes a blocked channel from a user profile.
+     * @param userUuid The UUID of the user associated with the operation.
+     * @param profileUUID The UUID of the profile for which the blocked channel will be deleted.
+     * @param channelId The ID of the channel to be deleted from the blocked list.
+     * @throws AppException.InternalServerError If an internal server error occurs during the operation.
+     * @throws AppException.NotFoundException.ChannelNotFoundException If the specified channel is not found.
+     * @throws AppException.NotFoundException.UserNotFoundException If the specified user is not found.
+     * @throws AppException.NotFoundException.UserNotAllowedException If the specified user is not allowed to perform the operation.
+     */
+    @Throws(
+        AppException.InternalServerError::class,
+        AppException.NotFoundException.ChannelNotFoundException::class,
+        AppException.NotFoundException.UserNotFoundException::class,
+        AppException.NotFoundException.UserNotAllowedException::class,
+    )
+    suspend fun deleteBlockedChannel(userUuid: UUID, profileUUID: UUID, channelId: String)
 
     /**
      * Retrieves the list of favorite channels for a given user profile.
