@@ -1,23 +1,23 @@
-package com.dreamsoftware.api.domain.services.impl
+package com.dreamsoftware.api.rest.controllers.impl
 
 import com.dreamsoftware.api.domain.model.exceptions.AppException
 import com.dreamsoftware.api.domain.repository.IRegionRepository
-import com.dreamsoftware.api.domain.services.IRegionService
-import com.dreamsoftware.api.domain.services.impl.core.SupportService
+import com.dreamsoftware.api.rest.controllers.IRegionController
+import com.dreamsoftware.api.rest.controllers.impl.core.SupportController
 import com.dreamsoftware.api.rest.dto.response.RegionResponseDTO
 import com.dreamsoftware.core.ISimpleMapper
 import com.dreamsoftware.data.database.entity.RegionEntity
 
 /**
- * Implementation of the IRegionService interface responsible for managing region-related operations.
+ * Implementation of the IRegionController interface responsible for managing region-related operations.
  *
  * @property regionRepository The repository responsible for region-related data operations.
  * @property regionMapper The mapper used to map RegionEntity objects to RegionResponseDTO objects.
  */
-internal class RegionServiceImpl(
+internal class RegionControllerImpl(
     private val regionRepository: IRegionRepository,
     private val regionMapper: ISimpleMapper<RegionEntity, RegionResponseDTO>
-) : SupportService(), IRegionService {
+) : SupportController(), IRegionController {
 
     /**
      * Retrieves a list of all regions.

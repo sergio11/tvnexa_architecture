@@ -1,9 +1,9 @@
-package com.dreamsoftware.api.domain.services.impl
+package com.dreamsoftware.api.rest.controllers.impl
 
 import com.dreamsoftware.api.domain.model.exceptions.AppException
 import com.dreamsoftware.api.domain.repository.IChannelRepository
-import com.dreamsoftware.api.domain.services.IChannelService
-import com.dreamsoftware.api.domain.services.impl.core.SupportService
+import com.dreamsoftware.api.rest.controllers.IChannelController
+import com.dreamsoftware.api.rest.controllers.impl.core.SupportController
 import com.dreamsoftware.api.rest.dto.response.ChannelDetailResponseDTO
 import com.dreamsoftware.api.rest.dto.response.SimpleChannelResponseDTO
 import com.dreamsoftware.core.ISimpleMapper
@@ -11,17 +11,17 @@ import com.dreamsoftware.data.database.entity.ChannelDetailEntity
 import com.dreamsoftware.data.database.entity.SimpleChannelEntity
 
 /**
- * Implementation of the IChannelService interface responsible for managing channel-related operations.
+ * Implementation of the IChannelController interface responsible for managing channel-related operations.
  *
  * @property channelRepository The repository responsible for channel-related data operations.
  * @property channelDetailMapper The mapper used to map ChannelDetailEntity objects to ChannelDetailResponseDTO objects.
  * @property simpleChannelMapper The mapper used to map SimpleChannelEntity objects to SimpleChannelResponseDTO objects.
  */
-internal class ChannelServiceImpl(
+internal class ChannelControllerImpl(
     private val channelRepository: IChannelRepository,
     private val channelDetailMapper: ISimpleMapper<ChannelDetailEntity, ChannelDetailResponseDTO>,
     private val simpleChannelMapper: ISimpleMapper<SimpleChannelEntity, SimpleChannelResponseDTO>
-): SupportService(), IChannelService {
+): SupportController(), IChannelController {
 
     /**
      * Retrieves a list of simple channel responses by category, country, offset, and limit.

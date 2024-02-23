@@ -1,23 +1,23 @@
-package com.dreamsoftware.api.domain.services.impl
+package com.dreamsoftware.api.rest.controllers.impl
 
 import com.dreamsoftware.api.domain.model.exceptions.AppException
 import com.dreamsoftware.api.domain.repository.ISubdivisionRepository
-import com.dreamsoftware.api.domain.services.ISubdivisionService
-import com.dreamsoftware.api.domain.services.impl.core.SupportService
+import com.dreamsoftware.api.rest.controllers.ISubdivisionController
+import com.dreamsoftware.api.rest.controllers.impl.core.SupportController
 import com.dreamsoftware.api.rest.dto.response.SubdivisionResponseDTO
 import com.dreamsoftware.core.ISimpleMapper
 import com.dreamsoftware.data.database.entity.SubdivisionEntity
 
 /**
- * Implementation of [ISubdivisionService] responsible for managing Subdivisions.
+ * Implementation of [ISubdivisionController] responsible for managing Subdivisions.
  *
  * @property subdivisionRepository The repository handling Subdivision data.
  * @property subdivisionMapper The mapper converting SubdivisionEntity to SubdivisionResponseDTO.
  */
-internal class SubdivisionServiceImpl(
+internal class SubdivisionControllerImpl(
     private val subdivisionRepository: ISubdivisionRepository,
     private val subdivisionMapper: ISimpleMapper<SubdivisionEntity, SubdivisionResponseDTO>
-) : SupportService(), ISubdivisionService {
+) : SupportController(), ISubdivisionController {
 
     /**
      * Retrieves all Subdivision response DTOs.

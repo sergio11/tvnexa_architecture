@@ -1,4 +1,4 @@
-package com.dreamsoftware.api.domain.services
+package com.dreamsoftware.api.rest.controllers
 
 import com.dreamsoftware.api.domain.model.exceptions.AppException
 import com.dreamsoftware.api.rest.dto.response.ChannelDetailResponseDTO
@@ -7,7 +7,7 @@ import com.dreamsoftware.api.rest.dto.response.SimpleChannelResponseDTO
 /**
  * Interface for managing channels.
  */
-interface IChannelService {
+interface IChannelController {
 
     /**
      * Retrieves a paginated list of channels.

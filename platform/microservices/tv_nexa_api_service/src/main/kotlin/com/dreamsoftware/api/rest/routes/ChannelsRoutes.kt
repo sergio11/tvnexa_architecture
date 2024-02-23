@@ -3,7 +3,7 @@ package com.dreamsoftware.api.rest.routes
 import com.dreamsoftware.api.domain.model.ErrorType
 import com.dreamsoftware.api.rest.utils.Constants.DEFAULT_OFFSET
 import com.dreamsoftware.api.rest.utils.Constants.DEFAULT_PAGE_SIZE
-import com.dreamsoftware.api.domain.services.IChannelService
+import com.dreamsoftware.api.rest.controllers.IChannelController
 import com.dreamsoftware.api.rest.utils.*
 import io.ktor.server.application.*
 import io.ktor.server.routing.*
@@ -14,10 +14,10 @@ import org.koin.ktor.ext.inject
  * These routes include functionalities such as retrieving channels based on category, country, and pagination,
  * as well as finding a channel by its ID.
  *
- * @property channelService An instance of the [IChannelService] interface for handling channel-related operations.
+ * @property channelService An instance of the [IChannelController] interface for handling channel-related operations.
  */
 fun Route.channelRoutes() {
-    val channelService by inject<IChannelService>()
+    val channelService by inject<IChannelController>()
 
     /**
      * Defines the routes under the "/channels" endpoint for channel-related operations.

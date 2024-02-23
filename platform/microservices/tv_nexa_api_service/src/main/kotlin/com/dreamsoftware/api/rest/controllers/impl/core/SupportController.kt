@@ -1,4 +1,4 @@
-package com.dreamsoftware.api.domain.services.impl.core
+package com.dreamsoftware.api.rest.controllers.impl.core
 
 import com.dreamsoftware.api.domain.model.exceptions.AppException
 import kotlinx.coroutines.CoroutineScope
@@ -9,7 +9,7 @@ import org.slf4j.LoggerFactory
 /**
  * Base class providing support functions for services.
  */
-abstract class SupportService {
+abstract class SupportController {
     // Logger for logging service-related information
     protected val log = LoggerFactory.getLogger(this::class.java)
 

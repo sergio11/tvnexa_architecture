@@ -1,23 +1,23 @@
-package com.dreamsoftware.api.domain.services.impl
+package com.dreamsoftware.api.rest.controllers.impl
 
 import com.dreamsoftware.api.domain.model.exceptions.AppException
 import com.dreamsoftware.api.domain.repository.ICategoryRepository
-import com.dreamsoftware.api.domain.services.ICategoryService
-import com.dreamsoftware.api.domain.services.impl.core.SupportService
+import com.dreamsoftware.api.rest.controllers.ICategoryController
+import com.dreamsoftware.api.rest.controllers.impl.core.SupportController
 import com.dreamsoftware.api.rest.dto.response.CategoryResponseDTO
 import com.dreamsoftware.core.ISimpleMapper
 import com.dreamsoftware.data.database.entity.CategoryEntity
 
 /**
- * Implementation of [ICategoryService] responsible for handling category-related operations.
+ * Implementation of [ICategoryController] responsible for handling category-related operations.
  *
  * @property categoryRepository The repository handling data access for categories.
  * @property mapper The mapper responsible for converting entities to DTOs.
  */
-internal class CategoryServiceImpl(
+internal class CategoryControllerImpl(
     private val categoryRepository: ICategoryRepository,
     private val mapper: ISimpleMapper<CategoryEntity, CategoryResponseDTO>
-): SupportService(), ICategoryService {
+): SupportController(), ICategoryController {
 
     /**
      * Retrieves all categories.

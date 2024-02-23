@@ -4,7 +4,7 @@ import com.dreamsoftware.api.domain.model.ErrorType
 import com.dreamsoftware.api.rest.utils.generateErrorResponse
 import com.dreamsoftware.api.rest.utils.generateSuccessResponse
 import com.dreamsoftware.api.rest.utils.getLocalDateTimeQueryParamOrNull
-import com.dreamsoftware.api.domain.services.IEpgChannelProgrammeService
+import com.dreamsoftware.api.rest.controllers.IEpgChannelProgrammeController
 import io.ktor.server.application.*
 import io.ktor.server.routing.*
 import org.koin.ktor.ext.inject
@@ -15,11 +15,11 @@ import java.time.LocalDateTime
  * These routes include functionalities such as retrieving EPG data based on channel ID and date range,
  * as well as retrieving EPG data based on country code and date range.
  *
- * @property epgChannelProgrammeService An instance of the [IEpgChannelProgrammeService] interface
+ * @property epgChannelProgrammeService An instance of the [IEpgChannelProgrammeController] interface
  * for handling EPG channel programme-related operations.
  */
 fun Route.epgChannelProgrammeRoutes() {
-    val epgChannelProgrammeService by inject<IEpgChannelProgrammeService>()
+    val epgChannelProgrammeService by inject<IEpgChannelProgrammeController>()
 
     /**
      * Defines the routes under the "/epg" endpoint for EPG channel programme-related operations.

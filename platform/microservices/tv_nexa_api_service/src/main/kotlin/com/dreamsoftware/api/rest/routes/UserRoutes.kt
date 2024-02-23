@@ -1,6 +1,6 @@
 package com.dreamsoftware.api.rest.routes
 
-import com.dreamsoftware.api.domain.services.IUserService
+import com.dreamsoftware.api.rest.controllers.IUserController
 import com.dreamsoftware.api.rest.utils.fetchAuthUserUuidOrThrow
 import com.dreamsoftware.api.rest.utils.generateSuccessResponse
 import com.dreamsoftware.api.rest.utils.getUUIDParamOrThrow
@@ -13,11 +13,11 @@ import org.koin.ktor.ext.inject
  * Class representing the routes related to user profiles in the application.
  * These routes include functionalities such as retrieving and updating user profiles.
  *
- * @property userService An instance of the [IUserService] interface for handling user-related operations.
+ * @property userService An instance of the [IUserController] interface for handling user-related operations.
  */
 fun Route.userRoutes() {
 
-    val userService by inject<IUserService>()
+    val userService by inject<IUserController>()
 
     /**
      * Defines the routes under the "/user" endpoint for user user-related operations.
