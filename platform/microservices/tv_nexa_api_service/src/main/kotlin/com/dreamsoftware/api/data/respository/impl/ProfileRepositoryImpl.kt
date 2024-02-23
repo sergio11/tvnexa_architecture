@@ -86,6 +86,15 @@ internal class ProfileRepositoryImpl(
     }
 
     /**
+     * Checks whether the user has reached the limit of allowed profiles.
+     * @param uuid The UUID of the user to check.
+     * @return true if the user has reached the limit of allowed profiles, false otherwise.
+     */
+    override suspend fun hasUserProfileLimitReached(uuid: UUID): Boolean = withContext(Dispatchers.IO) {
+        profileDatabaseDataSource.hasUserProfileLimitReached(uuid)
+    }
+
+    /**
      * Verifies the PIN of a user's profile.
      *
      * @param profileUuid The unique identifier of the profile to be verified.

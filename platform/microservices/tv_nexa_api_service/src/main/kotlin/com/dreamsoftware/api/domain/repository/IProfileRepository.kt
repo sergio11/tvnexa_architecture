@@ -58,6 +58,13 @@ interface IProfileRepository {
     suspend fun createProfile(data: CreateProfileEntity)
 
     /**
+     * Checks whether the user has reached the limit of allowed profiles.
+     * @param uuid The UUID of the user to check.
+     * @return true if the user has reached the limit of allowed profiles, false otherwise.
+     */
+    suspend fun hasUserProfileLimitReached(uuid: UUID): Boolean
+
+    /**
      * Verifies the PIN of a user's profile.
      *
      * @param profileUuid The unique identifier of the profile to be verified.

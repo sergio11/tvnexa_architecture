@@ -58,4 +58,11 @@ interface IProfileDatabaseDataSource : ISupportDatabaseDataSource<UUID, CreatePr
      * @return true if the user can manage the profile, false otherwise.
      */
     suspend fun canBeManagedByUser(profileId: UUID, userId: UUID): Boolean
+
+    /**
+     * Checks whether the user has reached the limit of allowed profiles.
+     * @param uuid The UUID of the user to check.
+     * @return true if the user has reached the limit of allowed profiles, false otherwise.
+     */
+    suspend fun hasUserProfileLimitReached(uuid: UUID): Boolean
 }

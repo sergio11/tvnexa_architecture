@@ -20,6 +20,12 @@ fun StatusPagesConfig.configureUsersStatusPages() {
             ErrorType.USER_NOT_ALLOWED.toErrorResponseDTO()
         )
     }
+    exception<AppException.UserProfilesLimitReachedException> { call, _ ->
+        call.respond(
+            HttpStatusCode.BadRequest,
+            ErrorType.USER_PROFILES_LIMIT_REACHED.toErrorResponseDTO()
+        )
+    }
     exception<AppException.InvalidCredentialsException> { call, _ ->
         call.respond(
             HttpStatusCode.BadRequest,
