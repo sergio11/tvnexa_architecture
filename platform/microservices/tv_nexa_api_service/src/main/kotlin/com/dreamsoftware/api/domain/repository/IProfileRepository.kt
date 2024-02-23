@@ -106,6 +106,20 @@ interface IProfileRepository {
     suspend fun deleteFavoriteChannel(profileUUID: UUID, channelId: String)
 
     /**
+     * Saves a channel as blocked for a given user profile.
+     * @param profileUUID The UUID of the profile for which the channel will be saved as blocked.
+     * @param channelId The ID of the channel to be saved as blocked.
+     */
+    suspend fun saveBlockedChannel(profileUUID: UUID, channelId: String)
+
+    /**
+     * Deletes a blocked channel from a user profile.
+     * @param profileUUID The UUID of the profile from which the blocked channel will be deleted.
+     * @param channelId The ID of the channel to be deleted from the blocked list.
+     */
+    suspend fun deleteBlockedChannel(profileUUID: UUID, channelId: String)
+
+    /**
      * Checks whether a profile with the specified ID exists.
      * @param profileId The UUID of the profile to check for existence.
      * @return true if a profile with the specified ID exists, false otherwise.

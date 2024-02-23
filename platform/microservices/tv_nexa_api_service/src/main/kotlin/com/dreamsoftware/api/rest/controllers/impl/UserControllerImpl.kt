@@ -20,6 +20,7 @@ import com.dreamsoftware.core.toUUID
 import com.dreamsoftware.data.database.dao.AvatarType
 import com.dreamsoftware.data.database.entity.*
 import io.ktor.server.application.*
+import kotlinx.coroutines.CoroutineScope
 import java.util.*
 
 /**
@@ -327,21 +328,84 @@ internal class UserControllerImpl(
         }
 
     /**
-     * Retrieves a list of blocked channels for the specified user profile.
-     *
-     * @param userUuid The unique identifier of the user.
-     * @param profileUUID The unique identifier of the user profile.
-     * @return A list of [SimpleChannelResponseDTO] objects representing the blocked channels.
-     * @throws AppException.InternalServerError if there is an internal server error during the operation.
+     * Retrieves the list of blocked channels for a given user profile.
+     * @param userUuid The UUID of the user requesting the blocked channels.
+     * @param profileUUID The UUID of the profile for which blocked channels are being fetched.
+     * @return A list of SimpleChannelResponseDTO representing the blocked channels.
+     * @throws AppException.InternalServerError If an internal server error occurs during the operation.
+     * @throws AppException.NotFoundException.UserNotFoundException If the specified user is not found.
+     * @throws AppException.NotFoundException.UserNotAllowedException If the specified user is not allowed to perform the operation.
      */
-    @Throws(AppException.InternalServerError::class)
+    @Throws(
+        AppException.InternalServerError::class,
+        AppException.NotFoundException.UserNotFoundException::class,
+        AppException.NotFoundException.UserNotAllowedException::class,
+    )
     override suspend fun getBlockedChannels(userUuid: UUID, profileUUID: UUID): List<SimpleChannelResponseDTO> =
-        safeCall(errorMessage = "An error occurred while fetching blocked channels.") {
+        safeProfileManagementCall(
+            errorMessage = "An error occurred while fetching blocked channels.",
+            userUuid = userUuid,
+            profileUUID = profileUUID
+        ) {
             // Fetch blocked channels from the profile repository
             profileRepository.getBlockedChannels(profileUUID)
                 // Map the retrieved channels to SimpleChannelResponseDTO using the channelMapper
                 .map(channelMapper::map)
         }
+
+    /**
+     * Saves a channel as blocked for a given user profile.
+     * @param userUuid The UUID of the user associated with the operation.
+     * @param profileUUID The UUID of the profile for which the channel will be saved as blocked.
+     * @param channelId The ID of the channel to be saved as blocked.
+     * @throws AppException.InternalServerError If an internal server error occurs during the operation.
+     * @throws AppException.NotFoundException.ChannelNotFoundException If the specified channel is not found.
+     * @throws AppException.NotFoundException.UserNotFoundException If the specified user is not found.
+     * @throws AppException.NotFoundException.UserNotAllowedException If the specified user is not allowed to perform the operation.
+     */
+    @Throws(
+        AppException.InternalServerError::class,
+        AppException.NotFoundException.ChannelNotFoundException::class,
+        AppException.NotFoundException.UserNotFoundException::class,
+        AppException.NotFoundException.UserNotAllowedException::class,
+    )
+    override suspend fun saveBlockedChannel(userUuid: UUID, profileUUID: UUID, channelId: String) {
+        safeProfileManagementCall(
+            errorMessage = "An error occurred while saving blocked channel",
+            userUuid = userUuid,
+            profileUUID = profileUUID,
+            channelId = channelId
+        ) {
+            profileRepository.saveBlockedChannel(profileUUID, channelId)
+        }
+    }
+
+    /**
+     * Deletes a blocked channel from a user profile.
+     * @param userUuid The UUID of the user associated with the operation.
+     * @param profileUUID The UUID of the profile for which the blocked channel will be deleted.
+     * @param channelId The ID of the channel to be deleted from the blocked list.
+     * @throws AppException.InternalServerError If an internal server error occurs during the operation.
+     * @throws AppException.NotFoundException.ChannelNotFoundException If the specified channel is not found.
+     * @throws AppException.NotFoundException.UserNotFoundException If the specified user is not found.
+     * @throws AppException.NotFoundException.UserNotAllowedException If the specified user is not allowed to perform the operation.
+     */
+    @Throws(
+        AppException.InternalServerError::class,
+        AppException.NotFoundException.ChannelNotFoundException::class,
+        AppException.NotFoundException.UserNotFoundException::class,
+        AppException.NotFoundException.UserNotAllowedException::class,
+    )
+    override suspend fun deleteBlockedChannel(userUuid: UUID, profileUUID: UUID, channelId: String) {
+        safeProfileManagementCall(
+            errorMessage = "An error occurred while deleting channel from blocked list",
+            userUuid = userUuid,
+            profileUUID = profileUUID,
+            channelId = channelId
+        ) {
+            profileRepository.deleteBlockedChannel(profileUUID, channelId)
+        }
+    }
 
 
     /**
@@ -361,16 +425,11 @@ internal class UserControllerImpl(
         AppException.NotFoundException.UserNotAllowedException::class,
     )
     override suspend fun getFavoriteChannels(userUuid: UUID, profileUUID: UUID): List<SimpleChannelResponseDTO> =
-        safeCall(errorMessage = "An error occurred while fetching favorite channels.") {
-            if(!userRepository.existsById(userUuid)) {
-                throw AppException.NotFoundException.UserNotFoundException("User $userUuid not found")
-            }
-            if(!profileRepository.existsById(profileUUID)) {
-                throw AppException.NotFoundException.ProfileNotFoundException("Profile $profileUUID not found")
-            }
-            if(!profileRepository.canBeManagedByUser(profileUUID, userUuid)) {
-                throw AppException.NotFoundException.UserNotAllowedException("User $userUuid are not allowed to manage this profile")
-            }
+        safeProfileManagementCall(
+            errorMessage = "An error occurred while fetching favorite channels.",
+            userUuid = userUuid,
+            profileUUID = profileUUID
+        ) {
             // Fetch favorite channels from the profile repository
             profileRepository.getFavoriteChannels(profileUUID)
                 // Map the retrieved channels to SimpleChannelResponseDTO using the channelMapper
@@ -396,19 +455,12 @@ internal class UserControllerImpl(
         AppException.NotFoundException.UserNotAllowedException::class,
     )
     override suspend fun saveFavoriteChannel(userUuid: UUID, profileUUID: UUID, channelId: String) {
-        safeCall(errorMessage = "An error occurred while saving favorite channel") {
-            if(!userRepository.existsById(userUuid)) {
-                throw AppException.NotFoundException.UserNotFoundException("User $userUuid not found")
-            }
-            if(!profileRepository.existsById(profileUUID)) {
-                throw AppException.NotFoundException.ProfileNotFoundException("Profile $profileUUID not found")
-            }
-            if(!profileRepository.canBeManagedByUser(profileUUID, userUuid)) {
-                throw AppException.NotFoundException.UserNotAllowedException("User $userUuid are not allowed to manage this profile")
-            }
-            if(!channelRepository.existsById(channelId)) {
-                throw AppException.NotFoundException.ChannelNotFoundException("Channel $channelId not found")
-            }
+        safeProfileManagementCall(
+            errorMessage = "An error occurred while saving favorite channel",
+            userUuid = userUuid,
+            profileUUID = profileUUID,
+            channelId = channelId
+        ) {
             profileRepository.saveFavoriteChannel(profileUUID = profileUUID, channelId = channelId)
         }
     }
@@ -430,20 +482,50 @@ internal class UserControllerImpl(
         AppException.NotFoundException.UserNotAllowedException::class,
     )
     override suspend fun deleteFavoriteChannel(userUuid: UUID, profileUUID: UUID, channelId: String) {
-        safeCall(errorMessage = "An error occurred while remove channel from favorites") {
-            if(!userRepository.existsById(userUuid)) {
-                throw AppException.NotFoundException.UserNotFoundException("User $userUuid not found")
-            }
-            if(!profileRepository.existsById(profileUUID)) {
-                throw AppException.NotFoundException.ProfileNotFoundException("Profile $profileUUID not found")
-            }
-            if(!profileRepository.canBeManagedByUser(profileUUID, userUuid)) {
-                throw AppException.NotFoundException.UserNotAllowedException("User $userUuid are not allowed to manage this profile")
-            }
-            if(!channelRepository.existsById(channelId)) {
-                throw AppException.NotFoundException.ChannelNotFoundException("Channel $channelId not found")
-            }
+        safeProfileManagementCall(
+            errorMessage = "An error occurred while remove channel from favorites",
+            userUuid = userUuid,
+            profileUUID = profileUUID,
+            channelId = channelId
+        ) {
             profileRepository.deleteFavoriteChannel(profileUUID = profileUUID, channelId = channelId)
         }
+    }
+
+    /**
+     * Executes a block of code after performing profile management related checks.
+     * @param errorMessage The error message to be used if an error occurs during the operation.
+     * @param userUuid The UUID of the user associated with the operation.
+     * @param profileUUID The UUID of the profile associated with the operation.
+     * @param channelId The ID of the channel associated with the operation.
+     * @param block The block of code to be executed if all checks pass.
+     * @throws AppException.NotFoundException.UserNotFoundException If the specified user is not found.
+     * @throws AppException.NotFoundException.ProfileNotFoundException If the specified profile is not found.
+     * @throws AppException.NotFoundException.UserNotAllowedException If the specified user is not allowed to perform the operation.
+     * @throws AppException.NotFoundException.ChannelNotFoundException If the specified channel is not found.
+     * @throws AppException.InternalServerError If an internal server error occurs during the operation.
+     */
+    private suspend fun <T>safeProfileManagementCall(
+        errorMessage: String,
+        userUuid: UUID,
+        profileUUID: UUID,
+        channelId: String? = null,
+        block: suspend CoroutineScope.() -> T
+    ) = safeCall(errorMessage) {
+        if(!userRepository.existsById(userUuid)) {
+            throw AppException.NotFoundException.UserNotFoundException("User $userUuid not found")
+        }
+        if(!profileRepository.existsById(profileUUID)) {
+            throw AppException.NotFoundException.ProfileNotFoundException("Profile $profileUUID not found")
+        }
+        if(!profileRepository.canBeManagedByUser(profileUUID, userUuid)) {
+            throw AppException.NotFoundException.UserNotAllowedException("User $userUuid are not allowed to manage this profile")
+        }
+        channelId?.let {
+            if(!channelRepository.existsById(it)) {
+                throw AppException.NotFoundException.ChannelNotFoundException("Channel $channelId not found")
+            }
+        }
+        block()
     }
 }

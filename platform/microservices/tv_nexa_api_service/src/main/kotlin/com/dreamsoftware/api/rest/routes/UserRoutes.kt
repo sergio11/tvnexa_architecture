@@ -190,6 +190,48 @@ fun Route.userRoutes() {
             }
 
             /**
+             * Route handler for saving a channel as blocked for a user's profile.
+             * This endpoint allows users to add a channel to their list of blocked channels.
+             */
+            put("/{profileId}/blocked-channels/{channelId}") {
+                with(call) {
+                    doIfParamExists("channelId") { channelId ->
+                        userController.saveBlockedChannel(
+                            userUuid = fetchAuthUserUuidOrThrow(),
+                            profileUUID = getUUIDParamOrThrow("profileId"),
+                            channelId = channelId
+                        )
+                        generateSuccessResponse(
+                            code = 8011,
+                            message = "Save blocked channel completed.",
+                            data = "Save channel $channelId as blocked successfully"
+                        )
+                    }
+                }
+            }
+
+            /**
+             * Route handler for deleting a blocked channel from a user's profile.
+             * This endpoint allows users to remove a channel from their list of blocked channels.
+             */
+            delete("/{profileId}/blocked-channels/{channelId}") {
+                with(call) {
+                    doIfParamExists("channelId") { channelId ->
+                        userController.deleteBlockedChannel(
+                            userUuid = fetchAuthUserUuidOrThrow(),
+                            profileUUID = getUUIDParamOrThrow("profileId"),
+                            channelId = channelId
+                        )
+                        generateSuccessResponse(
+                            code = 8012,
+                            message = "Delete blocked channel completed.",
+                            data = "delete channel $channelId from blocked list successfully"
+                        )
+                    }
+                }
+            }
+
+            /**
              * Endpoint to retrieve favorite channels for a user's profile identified by {profileId}.
              *
              * This endpoint allows an authenticated user to retrieve the list of favorite channels for their profile.
@@ -197,7 +239,7 @@ fun Route.userRoutes() {
             get("/{profileId}/favorite-channels") {
                 with(call) {
                     generateSuccessResponse(
-                        code = 8011,
+                        code = 8013,
                         message = "Favorite channels retrieved successfully.",
                         data = userController.getFavoriteChannels(
                             userUuid = fetchAuthUserUuidOrThrow(),
@@ -220,7 +262,7 @@ fun Route.userRoutes() {
                             channelId = channelId
                         )
                         generateSuccessResponse(
-                            code = 8012,
+                            code = 8014,
                             message = "Save favorite channel completed.",
                             data = "Save channel $channelId as favorite successfully"
                         )
@@ -241,7 +283,7 @@ fun Route.userRoutes() {
                             channelId = channelId
                         )
                         generateSuccessResponse(
-                            code = 8013,
+                            code = 8015,
                             message = "Delete favorite channel completed.",
                             data = "delete channel $channelId from favorites successfully"
                         )
