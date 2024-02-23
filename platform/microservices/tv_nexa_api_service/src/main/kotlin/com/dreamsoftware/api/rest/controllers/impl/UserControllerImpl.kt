@@ -370,4 +370,38 @@ internal class UserControllerImpl(
             profileRepository.saveFavoriteChannel(profileUUID = profileUUID, channelId = channelId)
         }
     }
+
+    /**
+     * Deletes a favorite channel for a given user profile.
+     * @param userUuid The UUID of the user associated with the operation.
+     * @param profileUUID The UUID of the profile for which the favorite channel will be deleted.
+     * @param channelId The ID of the channel to be deleted as a favorite.
+     * @throws AppException.InternalServerError If an internal server error occurs during the operation.
+     * @throws AppException.NotFoundException.ChannelNotFoundException If the specified channel is not found.
+     * @throws AppException.NotFoundException.UserNotFoundException If the specified user is not found.
+     * @throws AppException.NotFoundException.UserNotAllowedException If the specified user is not allowed to perform the operation.
+     */
+    @Throws(
+        AppException.InternalServerError::class,
+        AppException.NotFoundException.ChannelNotFoundException::class,
+        AppException.NotFoundException.UserNotFoundException::class,
+        AppException.NotFoundException.UserNotAllowedException::class,
+    )
+    override suspend fun deleteFavoriteChannel(userUuid: UUID, profileUUID: UUID, channelId: String) {
+        safeCall(errorMessage = "An error occurred while remove channel from favorites") {
+            if(!userRepository.existsById(userUuid)) {
+                throw AppException.NotFoundException.UserNotFoundException("User $userUuid not found")
+            }
+            if(!profileRepository.existsById(profileUUID)) {
+                throw AppException.NotFoundException.ProfileNotFoundException("Profile $profileUUID not found")
+            }
+            if(!profileRepository.canBeManagedByUser(profileUUID, userUuid)) {
+                throw AppException.NotFoundException.UserNotAllowedException("User $userUuid are not allowed to manage this profile")
+            }
+            if(!channelRepository.existsById(channelId)) {
+                throw AppException.NotFoundException.ChannelNotFoundException("Channel $channelId not found")
+            }
+            profileRepository.deleteFavoriteChannel(profileUUID = profileUUID, channelId = channelId)
+        }
+    }
 }
