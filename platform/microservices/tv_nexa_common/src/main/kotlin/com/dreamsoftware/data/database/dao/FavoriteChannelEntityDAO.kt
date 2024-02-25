@@ -4,15 +4,16 @@ import org.jetbrains.exposed.dao.LongEntity
 import org.jetbrains.exposed.dao.LongEntityClass
 import org.jetbrains.exposed.dao.id.EntityID
 import org.jetbrains.exposed.dao.id.LongIdTable
+import org.jetbrains.exposed.sql.ReferenceOption
 
 // Table associating profiles with favorite channels
 object FavoriteChannelsTable : LongIdTable(name = "favorite_channels") {
 
     // Reference to the profile
-    val profile = reference("profile", ProfileTable)
+    val profile = reference("profile", ProfileTable, onDelete = ReferenceOption.CASCADE)
 
     // Reference to the favorite channel
-    val channel = reference("channel", ChannelTable)
+    val channel = reference("channel", ChannelTable, onDelete = ReferenceOption.CASCADE)
 
     init {
         uniqueIndex("UNIQUE_FavoriteChannels", profile, channel)

@@ -4,15 +4,16 @@ import org.jetbrains.exposed.dao.LongEntity
 import org.jetbrains.exposed.dao.LongEntityClass
 import org.jetbrains.exposed.dao.id.EntityID
 import org.jetbrains.exposed.dao.id.LongIdTable
+import org.jetbrains.exposed.sql.ReferenceOption
 
 // Table associating profiles with favorite countries
 object FavoriteCountriesTable : LongIdTable(name = "favorite_countries") {
 
     // Reference to the profile
-    val profile = reference("profile", ProfileTable)
+    val profile = reference("profile", ProfileTable, onDelete = ReferenceOption.CASCADE)
 
     // Reference to the favorite country
-    val country = reference("country", CountryTable)
+    val country = reference("country", CountryTable, onDelete = ReferenceOption.CASCADE)
 
     init {
         uniqueIndex("UNIQUE_FavoriteCountries", profile, country)
