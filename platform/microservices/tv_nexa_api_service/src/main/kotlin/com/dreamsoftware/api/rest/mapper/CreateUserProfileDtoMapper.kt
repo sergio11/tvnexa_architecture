@@ -24,7 +24,7 @@ class CreateUserProfileDtoMapper : ISimpleMapper<DataInput, CreateProfileEntity>
             isAdmin = false,
             enableNSFW = request.enableNSFW,
             userId = userId,
-            avatarType = runCatching { AvatarType.valueOf(request.type) }.getOrDefault(AvatarType.BOY)
+            avatarType = runCatching { AvatarType.valueOf(request.avatarType) }.getOrDefault(AvatarType.BOY)
         )
     }
 

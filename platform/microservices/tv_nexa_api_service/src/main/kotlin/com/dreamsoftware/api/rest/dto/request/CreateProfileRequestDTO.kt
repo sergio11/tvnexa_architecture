@@ -4,12 +4,12 @@ import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
 /**
- * Data class representing a request to create a new user profile.
+ * Data Transfer Object (DTO) representing a request to create a user profile.
  *
- * @property alias The alias for the new profile.
- * @property pin The secret PIN for the new profile.
- * @property enableNSFW A boolean indicating whether NSFW content is enabled for the new profile.
- * @property type The type of the new profile.
+ * @property alias The alias of the user profile.
+ * @property pin The PIN associated with the profile (optional).
+ * @property enableNSFW Indicates whether NSFW (Not Safe For Work) content is enabled for the profile.
+ * @property avatarType The type of avatar associated with the profile.
  */
 @Serializable
 data class CreateProfileRequestDTO(
@@ -18,11 +18,11 @@ data class CreateProfileRequestDTO(
     val alias: String,
 
     @SerialName("pin")
-    val pin: Int,
+    val pin: Int?,
 
     @SerialName("enable_NSFW")
     val enableNSFW: Boolean,
 
-    @SerialName("type")
-    val type: String
+    @SerialName("avatar_type")
+    val avatarType: String
 )
