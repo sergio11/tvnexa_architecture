@@ -290,6 +290,27 @@ fun Route.userRoutes() {
                     }
                 }
             }
+
+            /**
+             * Endpoint to check if a channel is saved as a favorite for a user profile.
+             * It returns a success response indicating whether the channel is saved as a favorite or not.
+             **/
+            get("/{profileId}/favorite-channels/{channelId}") {
+                with(call) {
+                    doIfParamExists("channelId") { channelId ->
+                        val isSavedAsFavorite = userController.isChannelSavedAsFavorite(
+                            userUuid = fetchAuthUserUuidOrThrow(),
+                            profileUUID = getUUIDParamOrThrow("profileId"),
+                            channelId = channelId
+                        )
+                        generateSuccessResponse(
+                            code = if(isSavedAsFavorite) 8016 else 8017,
+                            message = "Check favorite channel completed",
+                            data = if (isSavedAsFavorite) "Channel is saved as favorite." else "Channel is not saved as favorite.",
+                        )
+                    }
+                }
+            }
         }
     }
 }

@@ -140,6 +140,17 @@ internal class ProfileRepositoryImpl(
     }
 
     /**
+     * Checks if a channel is saved as a favorite for a user.
+     *
+     * @param profileUUID The UUID of the user's profile.
+     * @param channelId The ID of the channel to be checked.
+     * @return `true` if the channel is saved as a favorite, `false` otherwise.
+     */
+    override suspend fun isChannelSavedAsFavorite(profileUUID: UUID, channelId: String): Boolean = withContext(Dispatchers.IO) {
+        favoriteChannelDataSource.isChannelSavedAsFavorite(profileUUID, channelId)
+    }
+
+    /**
      * Deletes a favorite channel from a user profile.
      * @param profileUUID The UUID of the user profile from which the favorite channel will be deleted.
      * @param channelId The ID of the channel to be deleted as a favorite.
