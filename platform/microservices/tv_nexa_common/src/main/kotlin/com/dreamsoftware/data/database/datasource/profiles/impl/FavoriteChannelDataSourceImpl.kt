@@ -58,4 +58,16 @@ internal class FavoriteChannelDataSourceImpl(
         entityDAO.find { FavoriteChannelsTable.profile eq profileId and(FavoriteChannelsTable.channel eq channelId) }
             .forEach { it.delete() }
     }
+
+    /**
+     * Checks if a channel is saved as a favorite for a user profile.
+     *
+     * @param profileId The UUID of the user profile.
+     * @param channelId The ID of the channel to be checked.
+     * @return `true` if the channel is saved as a favorite for the user profile, `false` otherwise.
+     */
+    override suspend fun isChannelSavedAsFavorite(profileId: UUID, channelId: String): Boolean = execQuery {
+        entityDAO.find { FavoriteChannelsTable.profile eq profileId and(FavoriteChannelsTable.channel eq channelId) }
+            .count() > 0
+    }
 }

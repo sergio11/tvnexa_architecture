@@ -45,9 +45,9 @@ internal class ChannelDatabaseDataSourceImpl(
      * @return An iterable collection of [SimpleChannelEntity] objects matching the provided filters.
      */
     override suspend fun filterByCategoryAndCountry(categoryId: String?, countryId: String?, offset: Long, limit: Long): Iterable<SimpleChannelEntity> = execQuery {
-        ChannelTable.join(ChannelCategoryTable, JoinType.INNER) {
-            ChannelTable.id eq ChannelCategoryTable.channel
-        }
+        ChannelTable.join(
+            ChannelCategoryTable, JoinType.LEFT, additionalConstraint = { ChannelTable.id eq ChannelCategoryTable.channel }
+        )
             .slice(ChannelTable.columns)
             .select {
                 val categoryPredicate = if (!categoryId.isNullOrBlank()) {

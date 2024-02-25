@@ -466,6 +466,34 @@ internal class UserControllerImpl(
     }
 
     /**
+     * Checks if a channel is saved as a favorite by a user.
+     *
+     * @param userUuid The UUID of the user whose favorites are being checked.
+     * @param profileUUID The UUID of the user's profile.
+     * @param channelId The ID of the channel being checked.
+     * @return `true` if the channel is saved as a favorite by the user, `false` otherwise.
+     * @throws AppException.InternalServerError If there is an internal server error in the application.
+     * @throws AppException.NotFoundException.ChannelNotFoundException If the specified channel is not found.
+     * @throws AppException.NotFoundException.UserNotFoundException If the specified user is not found.
+     * @throws AppException.NotFoundException.UserNotAllowedException If the user is not allowed to access the channel.
+     */
+    @Throws(
+        AppException.InternalServerError::class,
+        AppException.NotFoundException.ChannelNotFoundException::class,
+        AppException.NotFoundException.UserNotFoundException::class,
+        AppException.NotFoundException.UserNotAllowedException::class,
+    )
+    override suspend fun isChannelSavedAsFavorite(userUuid: UUID, profileUUID: UUID, channelId: String): Boolean =
+        safeProfileManagementCall(
+            errorMessage = "An error occurred while checking favorite channel",
+            userUuid = userUuid,
+            profileUUID = profileUUID,
+            channelId = channelId
+        ) {
+            profileRepository.isChannelSavedAsFavorite(profileUUID = profileUUID, channelId = channelId)
+        }
+
+    /**
      * Deletes a favorite channel for a given user profile.
      * @param userUuid The UUID of the user associated with the operation.
      * @param profileUUID The UUID of the profile for which the favorite channel will be deleted.
