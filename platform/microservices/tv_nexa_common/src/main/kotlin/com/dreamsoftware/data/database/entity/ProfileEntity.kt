@@ -6,7 +6,7 @@ import java.util.UUID
 data class ProfileEntity(
     val uuid: UUID,
     val alias: String,
-    val pin: Int,
+    val pin: Int?,
     val userId: UUID,
     val isAdmin: Boolean,
     val avatarType: AvatarType,
@@ -15,7 +15,7 @@ data class ProfileEntity(
 
 data class CreateProfileEntity(
     val alias: String,
-    val pin: Int,
+    val pin: Int?,
     val userId: UUID,
     val isAdmin: Boolean,
     val avatarType: AvatarType,

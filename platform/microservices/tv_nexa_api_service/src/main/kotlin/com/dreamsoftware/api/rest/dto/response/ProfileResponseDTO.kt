@@ -9,6 +9,7 @@ import kotlinx.serialization.Serializable
  * @property uuid The unique identifier of the profile.
  * @property alias The alias associated with the profile.
  * @property isAdmin Indicates whether the profile is an admin.
+ * @property isSecured Indicates whether the profile has a secure PIN or not
  * @property enableNSFW A boolean indicating whether NSFW content is enabled for the profile.
  * @property avatarType The type of the profile avatar.
  */
@@ -31,6 +32,12 @@ data class ProfileResponseDTO(
      */
     @SerialName("is_admin")
     val isAdmin: Boolean,
+
+    /**
+     * Indicates whether the profile has a secure PIN or not
+     */
+    @SerialName("is_secured")
+    val isSecured: Boolean,
 
     /**
      * A boolean indicating whether NSFW content is enabled for the profile.

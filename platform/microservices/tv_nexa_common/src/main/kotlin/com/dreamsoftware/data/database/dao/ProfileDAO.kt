@@ -28,7 +28,7 @@ object ProfileTable : UUIDTable(name = "profiles") {
     val isAdmin = bool("is_admin")
 
     // Secret PIN for profile (6 digits), default value set to 123456
-    val pin = integer("pin").default(123456)
+    val pin = integer("pin").default(123456).nullable()
 
     // Enable NSFW for the profile
     val enableNSFW = bool("enable_nsfw").default(false)

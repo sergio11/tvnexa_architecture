@@ -116,3 +116,13 @@ fun ApplicationConfig.getStringProperty(name: String): String = property(name).g
  */
 fun ApplicationCall.fetchAuthUserUuidOrThrow(): UUID = authentication.principal<JWTPrincipal>()?.subject?.let(UUID::fromString)
     ?: throw BadRequestException("Authorization header can not be found")
+
+
+fun String.isPasswordValid(): Boolean {
+    val minLength = 8
+    return length >= minLength &&
+            any { it.isLowerCase() } &&
+            any { it.isUpperCase() } &&
+            any { it.isDigit() } &&
+            any { it in setOf('!', '@', '#', '$', '%', '^', '&', '*') }
+}
