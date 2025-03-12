@@ -14,6 +14,11 @@ TVNexa 🌐 is an innovative online television platform that allows you to explo
   <img src="https://img.shields.io/badge/IntelliJ_IDEA-000000.svg?style=for-the-badge&logo=intellij-idea&logoColor=white" />
 </p>
 
+## ⚠️ Disclaimer  
+
+**TVNexa** is an **educational project** developed for learning and research purposes. It leverages the **iptv-org API** (a public collection of freely available IPTV channels from around the world). You can explore more about this API at [iptv-org API](https://github.com/iptv-org/api). TVNexa is designed to explore IPTV integration, API optimization, and database management techniques.  
+
+This project is **not intended for commercial use** and does not host, distribute, or provide unauthorized access to copyrighted content. Users should comply with local laws and regulations regarding IPTV services and streaming content. TVNexa is meant for **technical experimentation** and **software development practice** only.  
 
 ## ✨ Features
 
@@ -324,6 +329,12 @@ Once the containers are running, you can access the TVNexa platform through your
 ### Explore and Enjoy:
 
 You are now ready to explore the diverse world of IPTVs and global television through TVNexa. Navigate through channels, streams, and guides, and enjoy an enriched viewing experience.
+
+## ⚠️ Disclaimer  
+
+**TVNexa** is an **educational project** developed for learning and research purposes. It leverages the **iptv-org API** (a public collection of freely available IPTV channels from around the world). You can explore more about this API at [iptv-org API](https://github.com/iptv-org/api). TVNexa is designed to explore IPTV integration, API optimization, and database management techniques.  
+
+This project is **not intended for commercial use** and does not host, distribute, or provide unauthorized access to copyrighted content. Users should comply with local laws and regulations regarding IPTV services and streaming content. TVNexa is meant for **technical experimentation** and **software development practice** only.  
 
 ## Contribution
 Contributions to TvNexa are highly encouraged! If you're interested in adding new features, resolving bugs, or enhancing the project's functionality, please feel free to submit pull requests.
